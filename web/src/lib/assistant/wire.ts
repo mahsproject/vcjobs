@@ -1,5 +1,5 @@
 // The assistant's wire contract, mirroring `internal/assistant`'s Event and the
-// stored transcript. The agent runs inside the freehire backend, so a turn is one
+// stored transcript. The agent runs inside the VC Jobs backend, so a turn is one
 // HTTP request whose body is a stream of named SSE events — there is no control
 // protocol, no session attach and no input lease any more.
 //
@@ -34,7 +34,7 @@ export interface SessionSummary {
 
 /** One stored transcript message. `content` is role-specific: a prompt, one model
  *  turn (text plus the tool calls it asked for), one tool's result, or a status note
- *  freehire handed the model (`system`) — which is never shown. */
+ *  VC Jobs handed the model (`system`) — which is never shown. */
 export interface StoredMessage {
   seq: number;
   role: 'user' | 'assistant' | 'tool' | 'system';
@@ -76,7 +76,7 @@ export function eventsFromTranscript(messages: StoredMessage[]): TurnEvent[] {
   };
 
   for (const message of messages) {
-    // A status note begins a turn the way a prompt does, but it is freehire's words, not the
+    // A status note begins a turn the way a prompt does, but it is VC Jobs's words, not the
     // candidate's, so nothing of it is shown.
     if (message.role === 'system') {
       close();

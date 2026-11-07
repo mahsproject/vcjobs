@@ -48,7 +48,7 @@ if (!PUBLIC_OTEL_LOGS_ENDPOINT && PUBLIC_SENTRY_DSN) {
 startTrackersIfAllowed();
 
 // Reports uncaught client-side errors to Sentry; inert when init was skipped above.
-const telemetry = createErrorTelemetry({ endpoint: PUBLIC_OTEL_LOGS_ENDPOINT, service: 'freehire-web', environment: PUBLIC_OTEL_ENVIRONMENT, version: PUBLIC_OTEL_SERVICE_VERSION });
+const telemetry = createErrorTelemetry({ endpoint: PUBLIC_OTEL_LOGS_ENDPOINT, service: 'VC Jobs-web', environment: PUBLIC_OTEL_ENVIRONMENT, version: PUBLIC_OTEL_SERVICE_VERSION });
 if (telemetry) {
   installErrorListeners(window, telemetry);
   // The SDK flushes on document hide too; pagehide covers navigation/bfcache.

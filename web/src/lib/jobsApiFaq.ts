@@ -6,7 +6,7 @@ import type { FaqItem } from './seo';
 
 export const JOBS_API_FAQ: FaqItem[] = [
   {
-    question: 'Can I use the freehire API in a commercial product?',
+    question: 'Can I use the VC Jobs API in a commercial product?',
     answer:
       'Yes, with an API plan. A plan licenses you to store the postings you read and show them in your own product — a job board, a recruiting tool, an agent you sell. Without a plan the API is for personal and non-commercial use. Either way you may not resell the raw data as a dataset or feed of its own.',
   },
@@ -23,7 +23,7 @@ export const JOBS_API_FAQ: FaqItem[] = [
   {
     question: 'Which plan fits research or skills analytics?',
     answer:
-      'Usually the API plan. Analytics reads the catalogue once and then keeps up with what changed, which fits well inside 1,200 requests a minute. Take Data when you need to re-read large slices of the catalogue often. If your project needs something neither plan has yet, write to hello@freehire.me — we add features on request.',
+      'Usually the API plan. Analytics reads the catalogue once and then keeps up with what changed, which fits well inside 1,200 requests a minute. Take Data when you need to re-read large slices of the catalogue often. If your project needs something neither plan has yet, write to hello@vcjobs.io — we add features on request.',
   },
   {
     question: 'Can I keep historical postings and train models on them?',

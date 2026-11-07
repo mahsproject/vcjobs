@@ -5,7 +5,7 @@
 // is Iceland), and this is the same table the OS uses.
 //
 // The tail of the map is tzdata's BACKWARD links — zones that were renamed but which
-// browsers still report. Asia/Calcutta is the most common single value in freehire's
+// browsers still report. Asia/Calcutta is the most common single value in VC Jobs's
 // data, so dropping those would leave the largest group flagless.
 //
 // Zones under Etc/ and plain UTC are deliberately absent: they name an offset, not a

@@ -16,13 +16,7 @@
     description?: string;
     canonical?: string;
     ogType?: string;
-    // Absolute URL of a preview image. Pages with a page-specific card (a job or
-    // company) pass their own; when absent the site-wide static brand image is
-    // used, so every page emits a summary_large_image preview.
     image?: string;
-    // Crawler directive, emitted only when a route asks for one — absent means the
-    // default (indexable), which is what nearly every page wants. Routes that
-    // suppress themselves conditionally build this with `listingRobots`.
     robots?: string;
   } = $props();
 
@@ -46,7 +40,7 @@
     <meta property="og:description" content={description} />
   {/if}
   <meta property="og:type" content={ogType} />
-  <meta property="og:site_name" content="freehire" />
+  <meta property="og:site_name" content="VC Jobs" />
   <meta property="og:image" content={previewImage} />
   <meta property="og:image:type" content="image/png" />
   <meta property="og:image:width" content="1200" />

@@ -7,8 +7,8 @@
 </script>
 
 <Seo
-  title="freehire for ChatGPT — search IT jobs inside ChatGPT"
-  description="Add the freehire app to ChatGPT in one click and search the live IT job catalogue from a chat: jobs as cards, salary ranges, similar roles and which postings are still open. Free, no account needed."
+  title="VC Jobs for ChatGPT — search IT jobs inside ChatGPT"
+  description="Add the VC Jobs app to ChatGPT in one click and search the live IT job catalogue from a chat: jobs as cards, salary ranges, similar roles and which postings are still open. Free, no account needed."
   {canonical}
 />
 

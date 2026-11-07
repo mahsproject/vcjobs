@@ -662,13 +662,13 @@ export function createApi(
     return requestData<Display>(`/api/v1/jobs/${slug}/apply-form`);
   }
 
-  /** The application form of a vacancy that takes applications on freehire, with the
+  /** The application form of a vacancy that takes applications on VC Jobs, with the
    *  caller's prefill and whether they already applied. 404 for any other posting. */
   async function getDirectApplyForm(slug: string): Promise<DirectApplyForm> {
     return requestData<DirectApplyForm>(`/api/v1/jobs/${encodeURIComponent(slug)}/direct-apply`);
   }
 
-  /** Apply on freehire: the employer receives the CV and answers by email. */
+  /** Apply on VC Jobs: the employer receives the CV and answers by email. */
   async function sendDirectApplication(slug: string, input: DirectApplication): Promise<void> {
     await call(`/api/v1/jobs/${encodeURIComponent(slug)}/direct-apply`, jsonBody('POST', input));
   }
@@ -2388,7 +2388,7 @@ export function createApi(
     return requestData<FoundJob | null>(`/api/v1/jobs/find?url=${encodeURIComponent(url)}`);
   }
 
-  /** Hand a job link to freehire. One sequence serves every surface: the catalog is checked,
+  /** Hand a job link to VC Jobs. One sequence serves every surface: the catalog is checked,
    *  the vacancy imported when anything can read it, and the board behind it recorded for
    *  onboarding either way. The outcome says which of those happened (422 for a non-URL). */
   async function resolveJobLink(url: string): Promise<ResolvedLink> {

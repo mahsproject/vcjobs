@@ -21,7 +21,7 @@
     jsonLdScript([
       webApiJsonLd(origin),
       breadcrumbJsonLd([
-        { name: 'freehire', url: `${origin}/` },
+        { name: 'VC Jobs', url: `${origin}/` },
         { name: 'API reference', url: canonical },
       ]),
     ]),
@@ -29,8 +29,8 @@
 </script>
 
 <Seo
-  title="freehire API reference — query jobs by filters"
-  description="The freehire HTTP API: a read-first, open endpoint set over the job catalogue. Search and filter jobs by seniority, skills, region, salary and more, read companies, and track applications with an API key."
+  title="VC Jobs API reference — query jobs by filters"
+  description="The VC Jobs HTTP API: a read-first, open endpoint set over the job catalogue. Search and filter jobs by seniority, skills, region, salary and more, read companies, and track applications with an API key."
   {canonical}
 />
 

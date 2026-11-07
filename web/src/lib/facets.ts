@@ -709,7 +709,7 @@ const COMPANY_SIZE: FacetOption[] = ['1-10', '11-50', '51-200', '201-500', '501-
 // The ISO 3166-1 alpha-2 code set — the country vocabulary the location dictionary
 // draws from — plus 'xk', Kosovo's user-assigned code: ISO has not assigned it, but
 // the location dictionary emits it and Intl names it, so leaving it out made Kosovo
-// the one country a posting could carry and no picker could select (freehire#3847). The company country facet is a static searchable select over this
+// the one country a posting could carry and no picker could select (VC Jobs#3847). The company country facet is a static searchable select over this
 // (labelled via countryLabel), not a live distribution: the companies list is plain
 // SQL with no facet-count endpoint yet, so options carry no counts.
 const ISO_COUNTRY_CODES = [

@@ -666,8 +666,8 @@ export interface SubmissionInput {
   salary_period?: string;
 }
 
-/** What freehire could parse from a pasted job URL, for the submit form to prefill —
- *  never persisted. A field freehire's own dictionaries derive better than any source
+/** What VC Jobs could parse from a pasted job URL, for the submit form to prefill —
+ *  never persisted. A field VC Jobs's own dictionaries derive better than any source
  *  page states it (skills, cities) is not included. */
 export interface PrefillResult {
   title?: string;
@@ -733,11 +733,11 @@ export interface EmployerCompanyProfileInput {
   subindustry?: string;
 }
 
-/** How a candidate applies to an employer's vacancy: through its own link, or on freehire.
+/** How a candidate applies to an employer's vacancy: through its own link, or on VC Jobs.
  *  Chosen when the vacancy is created and fixed after. */
-export type EmployerApplyMode = 'external' | 'freehire';
+export type EmployerApplyMode = 'external' | 'VC Jobs';
 
-/** One question an employer asks with a vacancy that takes applications on freehire. */
+/** One question an employer asks with a vacancy that takes applications on VC Jobs. */
 export interface EmployerQuestion {
   label: string;
   type: 'text' | 'boolean' | 'select';
@@ -746,7 +746,7 @@ export interface EmployerQuestion {
   options?: string[];
 }
 
-/** The application form of a vacancy that takes applications on freehire
+/** The application form of a vacancy that takes applications on VC Jobs
  *  (GET /jobs/:slug/direct-apply). `prefill` and `applied` are the signed-in caller's own. */
 export interface DirectApplyForm {
   company_name: string;
@@ -773,9 +773,9 @@ export type DirectApplication = ({ resume: true } | { cv_id: string }) & {
 export interface EmployerVacancyInput {
   /** Absent means `external`. */
   apply_mode?: EmployerApplyMode;
-  /** Only for `freehire`. */
+  /** Only for `VC Jobs`. */
   questions?: EmployerQuestion[];
-  /** Required for `external`, refused for `freehire`. */
+  /** Required for `external`, refused for `VC Jobs`. */
   url?: string;
   title: string;
   location?: string;
@@ -797,7 +797,7 @@ export interface EmployerVacancyInput {
 /** PATCH /employer/jobs/:slug body: a nil/absent field is left unchanged. The URL and
  *  company identity are not present — neither is editable after creation. */
 export interface EmployerVacancyPatch {
-  /** Replaces the questions of a vacancy that takes applications on freehire. */
+  /** Replaces the questions of a vacancy that takes applications on VC Jobs. */
   questions?: EmployerQuestion[];
   title?: string;
   location?: string;

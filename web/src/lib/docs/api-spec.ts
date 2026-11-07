@@ -1,11 +1,11 @@
-// The freehire public API, described as data. This single module is the source
+// The VC Jobs public API, described as data. This single module is the source
 // of truth for BOTH the rendered /docs/api page and the generated docs/API.md
 // (web/scripts/gen-api-docs.mjs), so the two can never drift. The job-search
 // filter vocabulary is NOT duplicated here — it lives in ./filters, derived from
 // the generated contracts so it stays in lock-step with the Go StringFacets.
 
 /** Production base URL for every path below. */
-export const BASE_URL = 'https://freehire.me/api/v1';
+export const BASE_URL = 'https://vcjobs.io/api/v1';
 
 /** Authentication requirement for an endpoint, rendered as a badge. */
 export type Auth = 'none' | 'cookie-or-key' | 'cookie' | 'moderator' | 'extension';
@@ -78,7 +78,7 @@ export const OVERVIEW: Overview[] = [
       'Authenticated endpoints accept either the browser session cookie (set by ' +
         'sign-in, same-origin) or a personal API key sent as a Bearer token — see the ' +
         'authentication model below. Keys are created in your account, at ' +
-        '[freehire.me/my/integrations/api-keys](https://freehire.me/my/integrations/api-keys), not through this API.',
+        '[vcjobs.io/my/integrations/api-keys](https://vcjobs.io/my/integrations/api-keys), not through this API.',
     ],
   },
   {
@@ -136,12 +136,12 @@ export const OVERVIEW: Overview[] = [
       'With a full-access key the budget is per account instead, shared by all of its ' +
         'full-access keys and by the access tokens of its signed-in MCP and CLI ' +
         "connections, and its size is the account's tier: Pro and Ultra raise it, and the " +
-        '[API and Data plans](https://freehire.me/jobs-api) raise it further. By default ' +
+        '[API and Data plans](https://vcjobs.io/jobs-api) raise it further. By default ' +
         'the API and Data plans have no daily cap, and Data has the highest per-minute limit. ' +
         'An embed key is budgeted like no key. Send the key as ' +
         '`Authorization: Bearer <token>`. An API plan also licenses the data for use in ' +
-        'your own product, under the [data licence](https://freehire.me/terms#data-licence).',
-      'The budgets in force on freehire.me. Every public REST read draws on the same one ' +
+        'your own product, under the [data licence](https://vcjobs.io/terms#data-licence).',
+      'The budgets in force on vcjobs.io. Every public REST read draws on the same one ' +
         '(the ChatGPT app keeps its own); `api_limits.tiers` in `GET /plans` lists the figures in force.',
       '| Tier | Per minute | Per day |\n' +
         '|---|---|---|\n' +
@@ -149,8 +149,8 @@ export const OVERVIEW: Overview[] = [
         '| Free account | 600 | 10,000 |\n' +
         '| Pro | 800 | 30,000 |\n' +
         '| Ultra | 1,000 | 100,000 |\n' +
-        '| [API](https://freehire.me/jobs-api) | 1,200 | no cap |\n' +
-        '| [Data](https://freehire.me/jobs-api) | 6,000 | no cap |',
+        '| [API](https://vcjobs.io/jobs-api) | 1,200 | no cap |\n' +
+        '| [Data](https://vcjobs.io/jobs-api) | 6,000 | no cap |',
     ],
   },
   {
@@ -186,13 +186,13 @@ export const OVERVIEW: Overview[] = [
         'the browser session cookie, and additionally require a freshly proven identity — ' +
         'a password re-entry or a sign-in-provider check — that a script has no way to ' +
         'supply. Create and revoke keys in your account instead, at ' +
-        '[freehire.me/my/integrations/api-keys](https://freehire.me/my/integrations/api-keys); the plaintext token is ' +
+        '[vcjobs.io/my/integrations/api-keys](https://vcjobs.io/my/integrations/api-keys); the plaintext token is ' +
         'shown exactly once, at creation, so store it then.',
       'The `/jobs/{slug}/fit` endpoints are pre-rename aliases of ' +
         '`/jobs/{slug}/match-analysis` and hit the same handlers. They still work, ' +
         'so existing clients do not break — use the match-analysis paths in new code.',
       'Most of this API is also a CLI. If you are writing an agent rather than an ' +
-        'integration, `freehire` covers the same surface with less ceremony — ' +
+        'integration, `VC Jobs` covers the same surface with less ceremony — ' +
         'search, tracking, the inbox and CV tailoring — over one API key.',
     ],
   },
@@ -440,7 +440,7 @@ export const GROUPS: Group[] = [
         method: 'GET',
         path: '/jobs/{slug}/direct-apply',
         auth: 'none',
-        summary: 'The application form of a vacancy that takes applications on freehire.',
+        summary: 'The application form of a vacancy that takes applications on VC Jobs.',
         description:
           'Only for a posting whose `direct_apply` is true — its employer published it here ' +
           'and receives applications by email. Any other posting is a `404`. Signed in with the ' +
@@ -468,7 +468,7 @@ export const GROUPS: Group[] = [
         method: 'POST',
         path: '/jobs/{slug}/direct-apply',
         auth: 'cookie',
-        summary: 'Apply on freehire: the employer receives your CV and answers by email.',
+        summary: 'Apply on VC Jobs: the employer receives your CV and answers by email.',
         description:
           'Needs a verified email. The employer gets the chosen CV as a PDF, the answers, the ' +
           'note and your address as Reply-To. One application per vacancy: `409` once it was ' +
@@ -1112,7 +1112,7 @@ ${BASE_URL}/auth/oauth/google/start`,
         method: 'GET',
         path: '/auth/extension/connect',
         auth: 'extension',
-        summary: 'Consent screen for "Sign in with freehire" from the browser extension.',
+        summary: 'Consent screen for "Sign in with VC Jobs" from the browser extension.',
         description:
           'Opened by the extension via `chrome.identity.launchWebAuthFlow`, not ' +
           'called directly — renders an HTML consent page, not JSON. ' +
@@ -1771,7 +1771,7 @@ data: {"type":"result","stop_reason":"completed"}
           'directly) to negotiate the WebRTC call. `501` when voice mode is not configured.',
         pathParams: [{ name: 'id', type: 'string (UUID)', required: true, description: 'The session id.' }],
         curl: `curl -X POST "${BASE_URL}/assistant/sessions/<id>/voice-token" -H "Authorization: Bearer $FREEHIRE_API_KEY"`,
-        responseExample: `{ "data": { "value": "ek_...", "model": "gpt-realtime", "calls_url": "https://freehire.me/api/v1/realtime/calls" } }`,
+        responseExample: `{ "data": { "value": "ek_...", "model": "gpt-realtime", "calls_url": "https://vcjobs.io/api/v1/realtime/calls" } }`,
       },
       {
         method: 'POST',
@@ -2502,7 +2502,7 @@ data: {"type":"result","stop_reason":"completed"}
         auth: 'cookie',
         summary: 'Subscribe a saved search to a digest channel.',
         description:
-          'Channels: `telegram`, `email`, `push`, `webhook`. `push` needs a device the freehire mobile app has ' +
+          'Channels: `telegram`, `email`, `push`, `webhook`. `push` needs a device the VC Jobs mobile app has ' +
           'registered (`GET /me/push-tokens`) — without one the request is refused with 409.',
         body: [
           { name: 'saved_search_id', type: 'integer', required: true, description: 'The saved search to subscribe.', example: '2' },
@@ -2593,7 +2593,7 @@ data: {"type":"result","stop_reason":"completed"}
         description:
           'There is exactly one destination per account. Deliveries are plain, unsigned HTTP POSTs — subscribe a ' +
           'saved search to the `webhook` channel (see `POST /me/subscriptions`) to receive its matches here. ' +
-          'Before the URL is stored it receives a test delivery (`saved_search_name` "freehire webhook test", an ' +
+          'Before the URL is stored it receives a test delivery (`saved_search_name` "VC Jobs webhook test", an ' +
           'empty `jobs` list); a URL that does not answer it with a 2xx is refused with 422, naming what it answered.',
         body: [
           { name: 'url', type: 'string', required: true, description: 'Destination URL — must be http or https.', example: 'https://example.com/hook' },
@@ -2891,7 +2891,7 @@ data: {"type":"result","stop_reason":"completed"}
   {
     title: 'Link intake & discovery',
     intro:
-      'Turning a URL in the wild into something freehire knows about. One intake ' +
+      'Turning a URL in the wild into something VC Jobs knows about. One intake ' +
       'sequence serves every surface — the website, the bot, the extension and the ' +
       'CLI — deliberately, so a pasted link gets the same answer everywhere.',
     endpoints: [
@@ -2905,7 +2905,7 @@ data: {"type":"result","stop_reason":"completed"}
           'than 404 — "we do not carry this" is a normal answer here. Used by the ' +
           'extension to tell whether the page you are on is a job we already have. ' +
           'A miss also carries `meta.ats_board`: true when the URL sits on an ATS board ' +
-          'freehire knows how to crawl, so a client can tell a posting worth adding ' +
+          'VC Jobs knows how to crawl, so a client can tell a posting worth adding ' +
           'from an arbitrary page.',
         query: [{ name: 'url', type: 'string', required: true, description: "The posting's URL in the wild.", example: 'https://boards.greenhouse.io/acme/jobs/123' }],
         curl: `curl "${BASE_URL}/jobs/find?url=https%3A%2F%2Fboards.greenhouse.io%2Facme%2Fjobs%2F123"`,
@@ -2915,7 +2915,7 @@ data: {"type":"result","stop_reason":"completed"}
         method: 'POST',
         path: '/jobs/resolve',
         auth: 'cookie-or-key',
-        summary: 'Hand freehire a link: import the posting, and the board behind it.',
+        summary: 'Hand VC Jobs a link: import the posting, and the board behind it.',
         description:
           'Five outcomes in one shape, distinguished by status: **200 found** — the ' +
           'catalogue already carries the vacancy. Either the URL itself is stored (nothing ' +
@@ -3885,7 +3885,7 @@ data: {"eligible":1903114,"covered":1897020,"snapshot_covered":1889512,"queued":
     {
       "source_path": "header.links[0]",
       "destination_url": "https://github.com/you",
-      "traced_url": "https://freehire.me/cv/acme-x7abc",
+      "traced_url": "https://vcjobs.io/cv/acme-x7abc",
       "clicks": 12,
       "bot_clicks": 3,
       "distinct_visitors": 9,
@@ -4201,8 +4201,8 @@ data: {"eligible":1903114,"covered":1897020,"snapshot_covered":1889512,"queued":
     intro:
       'Your job mail, and the link between a message and the application it ' +
       'belongs to. Mail arrives three ways: a connected Gmail account, the hosted ' +
-      "freehire address, or a batch your own client pushed. Only the first two are " +
-      'classified by freehire — pushed mail is yours to triage, which is what makes ' +
+      "VC Jobs address, or a batch your own client pushed. Only the first two are " +
+      'classified by VC Jobs — pushed mail is yours to triage, which is what makes ' +
       'that tier free. Everything here takes a full-scope API key, so a harness can ' +
       'drive the whole surface; the Gmail consent redirect is the one exception and ' +
       'stays browser-only.',
@@ -4343,7 +4343,7 @@ data: {"eligible":1903114,"covered":1897020,"snapshot_covered":1889512,"queued":
         auth: 'cookie-or-key',
         summary: 'Push a batch your own mail client fetched.',
         description:
-          'Stored under source `external`. freehire provides no transport here and ' +
+          'Stored under source `external`. VC Jobs provides no transport here and ' +
           'never classifies this mail — that is the point of the tier. `external_id` ' +
           '(the Message-ID in practice) is the dedup key: re-pushing the same id ' +
           'updates that message instead of storing a copy, so a nightly re-sync is ' +
@@ -4492,10 +4492,10 @@ data: {"eligible":1903114,"covered":1897020,"snapshot_covered":1889512,"queued":
         method: 'GET',
         path: '/me/mailbox',
         auth: 'cookie-or-key',
-        summary: 'Your hosted freehire address, and whether the feature is configured.',
+        summary: 'Your hosted VC Jobs address, and whether the feature is configured.',
         description: '`address` is null until you claim one; `available` is false when the instance runs without a mailbox domain.',
         curl: `curl "${BASE_URL}/me/mailbox" -H "Authorization: Bearer fhk_…"`,
-        responseExample: `{ "data": { "available": true, "address": "you@mail.freehire.me" } }`,
+        responseExample: `{ "data": { "available": true, "address": "you@mail.vcjobs.io" } }`,
       },
       {
         method: 'POST',
@@ -4503,7 +4503,7 @@ data: {"eligible":1903114,"covered":1897020,"snapshot_covered":1889512,"queued":
         auth: 'cookie-or-key',
         summary: 'Claim your hosted address.',
         curl: `curl -X POST "${BASE_URL}/me/mailbox" -H "Authorization: Bearer fhk_…"`,
-        responseExample: `{ "data": { "available": true, "address": "you@mail.freehire.me" } }`,
+        responseExample: `{ "data": { "available": true, "address": "you@mail.vcjobs.io" } }`,
       },
       {
         method: 'DELETE',

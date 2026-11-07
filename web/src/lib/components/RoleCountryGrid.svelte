@@ -51,7 +51,7 @@
   const full = new Intl.NumberFormat('en-US');
 
   // A country whose coverage jumped prints no change anywhere: its cells would report
-  // freehire's onboarding, not the market (COVERAGE_JUMP_RATIO says why).
+  // VC Jobs's onboarding, not the market (COVERAGE_JUMP_RATIO says why).
   const jumped = (country: string) => grid.coverageJumps.has(country);
 
   function shadeOf(country: string, cell: GridCell): string {
@@ -195,10 +195,10 @@
         ? 'Darker means a larger share of that country’s open roles.'
         : 'Green grew, red shrank over 30 days.'}
       Change compares postings by when they were published, and shows "—" when there were
-      fewer than {GROWTH_MIN_BASE} a month ago. These are postings on freehire, not the whole
+      fewer than {GROWTH_MIN_BASE} a month ago. These are postings on VC Jobs, not the whole
       job market.
       {#if grid.coverageJumps.size > 0}
-        * postings freehire carries for that country grew {COVERAGE_JUMP_RATIO}× or more in 30
+        * postings VC Jobs carries for that country grew {COVERAGE_JUMP_RATIO}× or more in 30
         days — a jump that size is usually new sources rather than hiring, and the two cannot be
         told apart, so its change is not shown.
       {/if}

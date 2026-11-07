@@ -64,15 +64,15 @@
       domain: 'claude.ai',
       // Our Claude listing is the account connector, so it signs the visitor in.
       directory: {
-        url: 'https://claude.ai/directory/freehire-account',
+        url: 'https://claude.ai/directory/VC Jobs-account',
         brand: siClaude,
-        note: 'One click, signs in with freehire',
+        note: 'One click, signs in with VC Jobs',
       },
       steps: [
         'Open Settings, then Connectors.',
         'Choose Add custom connector.',
-        'Name it freehire, paste the address, and choose Add.',
-        'Start a new chat, turn the freehire connector on, and ask a job question.',
+        'Name it VC Jobs, paste the address, and choose Add.',
+        'Start a new chat, turn the VC Jobs connector on, and ask a job question.',
       ],
     },
     {
@@ -89,8 +89,8 @@
       steps: [
         'Open Settings, then Apps & Connectors.',
         'Under Advanced settings, turn on Developer mode.',
-        'Choose Create, name it freehire, and paste the address.',
-        'In a new chat, pick freehire from the + menu and ask a job question.',
+        'Choose Create, name it VC Jobs, and paste the address.',
+        'In a new chat, pick VC Jobs from the + menu and ask a job question.',
       ],
     },
     {
@@ -101,9 +101,9 @@
       mono: true,
       steps: [
         'Open Connect apps in the sidebar.',
-        'Add a custom app, name it freehire, and paste the address.',
+        'Add a custom app, name it VC Jobs, and paste the address.',
         'If Grok Bot asks you to authorize, finish the sign-in in your browser.',
-        'In a chat, type @ and pick freehire, then ask a job question.',
+        'In a chat, type @ and pick VC Jobs, then ask a job question.',
       ],
     },
     {
@@ -112,7 +112,7 @@
       domain: 'claude.ai',
       logo: '/brands/claude-code.svg',
       steps: ['Run this once in your terminal, then ask Claude Code a job question.'],
-      snippet: (u) => `claude mcp add --transport http freehire ${u}`,
+      snippet: (u) => `claude mcp add --transport http VC Jobs ${u}`,
     },
     {
       id: 'codex',
@@ -121,10 +121,10 @@
       logo: '/brands/codex.svg',
       mono: true,
       steps: [
-        'Run the command below in your terminal to add freehire to Codex.',
+        'Run the command below in your terminal to add VC Jobs to Codex.',
         'Run codex mcp list to verify the server is configured, then start a new Codex session and ask a job question.',
       ],
-      snippet: (u) => `codex mcp add freehire --url ${u}`,
+      snippet: (u) => `codex mcp add VC Jobs --url ${u}`,
     },
     {
       // Gemini's own web app has no way to add an MCP server; its CLI does.
@@ -132,14 +132,14 @@
       label: 'Gemini CLI',
       domain: 'gemini.google.com',
       steps: ['Run this once in your terminal, then ask Gemini CLI a job question.'],
-      snippet: (u) => `gemini mcp add --transport http freehire ${u}`,
+      snippet: (u) => `gemini mcp add --transport http VC Jobs ${u}`,
     },
     {
       id: 'cursor',
       label: 'Cursor',
       domain: 'cursor.com',
       directory: {
-        url: 'https://cursor.directory/plugins/freehire-mcp',
+        url: 'https://cursor.directory/plugins/VC Jobs-mcp',
         brand: siCursor,
         note: 'Listed on cursor.directory',
       },
@@ -147,7 +147,7 @@
       file: '~/.cursor/mcp.json',
       snippet: (u) => `{
   "mcpServers": {
-    "freehire": { "url": "${u}" }
+    "VC Jobs": { "url": "${u}" }
   }
 }`,
     },
@@ -346,9 +346,9 @@
         {#if mode === 'account'}
           <p class="mt-5 text-sm leading-relaxed text-muted-foreground">
             {#if h.id === 'codex'}
-              Run <code>codex mcp login freehire</code> to open the freehire sign-in page and approve the connection.
+              Run <code>codex mcp login VC Jobs</code> to open the VC Jobs sign-in page and approve the connection.
             {:else}
-              The first time it is used, your assistant opens a freehire sign-in page and asks you to approve the
+              The first time it is used, your assistant opens a VC Jobs sign-in page and asks you to approve the
               connection.
             {/if}
           </p>
@@ -359,7 +359,7 @@
   {/each}
 
   {#if !compact}
-    {@const agentPrompt = `Add the freehire MCP server to ${selected?.label ?? 'this assistant'}. Its address is ${url} (streamable HTTP transport).${mode === 'account' ? ' It signs in through a freehire page that I will approve in my browser.' : ''} When it is connected, run one job search to confirm it works, then tell me it is ready.`}
+    {@const agentPrompt = `Add the VC Jobs MCP server to ${selected?.label ?? 'this assistant'}. Its address is ${url} (streamable HTTP transport).${mode === 'account' ? ' It signs in through a VC Jobs page that I will approve in my browser.' : ''} When it is connected, run one job search to confirm it works, then tell me it is ready.`}
     <div class="mt-8 max-w-2xl">
       <h3 class="text-sm font-medium">Or copy this and send it to your agent</h3>
       <figure class="mt-3 overflow-hidden rounded-xl border border-border bg-secondary/60 shadow-sm">

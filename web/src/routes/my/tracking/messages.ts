@@ -2,7 +2,7 @@ import { defineMessages } from '#lib/i18n/t.js';
 
 export const messages = defineMessages(
   {
-    headTitle: 'Tracking — freehire',
+    headTitle: 'Tracking — VC Jobs',
     title: 'Tracking',
     tabStripLabel: 'Tracking view',
     sections: {
@@ -15,7 +15,7 @@ export const messages = defineMessages(
   },
   {
     ru: {
-      headTitle: 'Отслеживание — freehire',
+      headTitle: 'Отслеживание — VC Jobs',
       title: 'Отслеживание',
       tabStripLabel: 'Вид отслеживания',
       sections: {

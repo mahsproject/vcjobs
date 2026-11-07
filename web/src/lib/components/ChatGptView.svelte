@@ -6,13 +6,13 @@
 
   // The older custom GPT over the REST API. Still published, and still the one way to
   // track from ChatGPT with an API key instead of an OAuth connector.
-  const GPT_URL = 'https://chatgpt.com/g/g-6a5281b64948819193bf3a1021e075da-freehire';
+  const GPT_URL = 'https://chatgpt.com/g/g-6a5281b64948819193bf3a1021e075da-VC Jobs';
 
   // What the app answers, one line each. Every row is a tool the published app's
   // server (`/api/v1/mcp`, internal/api/mcpapp) actually has.
   const answers = [
-    { title: 'Search with real filters', body: 'Region, work mode, stack, seniority, salary — ChatGPT searches the live freehire catalogue, not the open web.' },
-    { title: 'Jobs as cards', body: 'Results and postings render as cards right in the chat, each linking to its freehire page and the employer.' },
+    { title: 'Search with real filters', body: 'Region, work mode, stack, seniority, salary — ChatGPT searches the live VC Jobs catalogue, not the open web.' },
+    { title: 'Jobs as cards', body: 'Results and postings render as cards right in the chat, each linking to its VC Jobs page and the employer.' },
     { title: 'Is it still open?', body: 'Paste a shortlist and ChatGPT checks which postings are still open and which have closed.' },
     { title: 'Similar roles', body: 'Ask for more like the one you picked — the same neighbours the job page shows.' },
     { title: 'Salary ranges', body: 'What a role pays by seniority, from postings that state a salary.' },
@@ -26,7 +26,7 @@
     <div class="grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
       <div>
         <p class="reveal font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground" style="--d:0ms">
-          // freehire app for ChatGPT
+          // VC Jobs app for ChatGPT
         </p>
 
         <h1
@@ -37,9 +37,9 @@
         </h1>
 
         <p class="reveal mt-7 max-w-xl text-lg leading-relaxed text-muted-foreground" style="--d:160ms">
-          freehire is in ChatGPT's app directory. Add it in one click and ask for jobs in plain language —
-          ChatGPT searches the live <code class="font-mono text-foreground">freehire</code> catalogue and shows
-          the results as cards. Free, and no freehire account needed.
+          VC Jobs is in ChatGPT's app directory. Add it in one click and ask for jobs in plain language —
+          ChatGPT searches the live <code class="font-mono text-foreground">VC Jobs</code> catalogue and shows
+          the results as cards. Free, and no VC Jobs account needed.
         </p>
 
         <div class="reveal mt-9 flex flex-wrap items-center gap-3" style="--d:240ms">
@@ -70,14 +70,14 @@
           class="flex items-center gap-2 border-b border-border px-4 py-2.5 text-xs text-muted-foreground"
         >
           <span class="size-2.5 rounded-full bg-muted-foreground/30"></span>
-          ChatGPT · freehire
+          ChatGPT · VC Jobs
         </figcaption>
         <div class="flex flex-col gap-4 p-4 leading-relaxed">
           <div class="self-end max-w-[85%] rounded-2xl rounded-br-sm bg-foreground px-3.5 py-2 text-background">
-            @freehire remote senior backend Go jobs in Europe
+            @VC Jobs remote senior backend Go jobs in Europe
           </div>
           <div class="max-w-[92%] rounded-2xl rounded-bl-sm border border-border bg-background px-3.5 py-2.5">
-            <p class="text-muted-foreground">Here are open roles from freehire:</p>
+            <p class="text-muted-foreground">Here are open roles from VC Jobs:</p>
             <p class="mt-2 font-medium text-foreground">Senior Go Engineer — payments platform</p>
             <p class="text-xs text-muted-foreground">Remote · EU · €85–100k</p>
             <p class="mt-2 font-medium text-foreground">Senior Backend Engineer (Go, Kafka)</p>
@@ -115,13 +115,13 @@
           href={CHATGPT_APP_URL}
           target="_blank"
           rel="noopener noreferrer"
-          class="font-medium text-foreground underline-offset-4 hover:underline">Open freehire in ChatGPT</a
+          class="font-medium text-foreground underline-offset-4 hover:underline">Open VC Jobs in ChatGPT</a
         ><!-- eslint-enable svelte/no-navigation-without-resolve -->
         and choose Add.
       </li>
       <li>
         <span class="font-medium text-foreground">2.</span>
-        In a new chat, pick freehire from the + menu (or type @freehire) and ask a job question.
+        In a new chat, pick VC Jobs from the + menu (or type @VC Jobs) and ask a job question.
       </li>
     </ol>
 
@@ -133,7 +133,7 @@
       <a href={resolve('/my/tracking')} class="font-medium text-foreground underline-offset-4 hover:underline"
         >Tracking</a
       >
-      board, add the account connector instead — it signs in with freehire the first time it is used. The
+      board, add the account connector instead — it signs in with VC Jobs the first time it is used. The
       <a href={resolve('/mcp')} class="font-medium text-foreground underline-offset-4 hover:underline"
         >setup guide</a
       > walks through it.
@@ -145,7 +145,7 @@
         href={GPT_URL}
         target="_blank"
         rel="noopener noreferrer"
-        class="font-medium text-foreground underline-offset-4 hover:underline">freehire GPT ↗</a
+        class="font-medium text-foreground underline-offset-4 hover:underline">VC Jobs GPT ↗</a
       ><!-- eslint-enable svelte/no-navigation-without-resolve -->
       still works: paste an
       <a
@@ -164,7 +164,7 @@
     <p class="text-sm leading-relaxed text-muted-foreground">
       Free and open source — no tracking, no lock-in. Read every line on
       <a
-        href="https://github.com/strelov1/freehire"
+        href="/about"
         target="_blank"
         rel="noopener noreferrer"
         class="font-medium text-foreground underline-offset-4 hover:underline">GitHub ↗</a

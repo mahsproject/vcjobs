@@ -206,7 +206,7 @@ export interface Job {
   location: string;
   description: string;
   /**
-   * DirectApply marks an employer vacancy that takes applications on freehire instead
+   * DirectApply marks an employer vacancy that takes applications on VC Jobs instead
    * of linking out (job.IsDirectApply); its URL is empty. Omitted for every other
    * posting rather than served false, so the flag adds nothing to the search index
    * for the catalogue it does not describe.

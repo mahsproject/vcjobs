@@ -86,8 +86,8 @@
 </script>
 
 <Seo
-  title="Dictionary · freehire"
-  description="Explore the specializations, skills, and company industries freehire recognizes. Request a term the dictionaries do not know yet."
+  title="Dictionary · VC Jobs"
+  description="Explore the specializations, skills, and company industries VC Jobs recognizes. Request a term the dictionaries do not know yet."
   canonical={`${page.url.origin}/dictionary`}
 />
 

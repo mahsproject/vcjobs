@@ -9,7 +9,7 @@
   import McpSetup from './McpSetup.svelte';
 
   const tabs = [
-    { id: 'assistant', label: 'freehire Assistant · Pro', icon: MessageSquare },
+    { id: 'assistant', label: 'VC Jobs Assistant · Pro', icon: MessageSquare },
     { id: 'mcp', label: 'MCP', icon: Plug },
     { id: 'cli', label: 'CLI', icon: Terminal },
   ] as const;
@@ -18,8 +18,8 @@
   const panelId = `${uid}-setup`;
   const commands = [
     { title: 'Install the CLI', note: 'Run this once in your terminal.', text: CLI_INSTALL },
-    { title: 'Try your first search', note: 'Search is public. No account or API key needed.', text: 'freehire facets\nfreehire search "golang" --remote --region eu' },
-    { title: 'Connect your account', note: 'Optional. Opens your browser so you can sign in to save and track jobs.', text: 'freehire auth login' },
+    { title: 'Try your first search', note: 'Search is public. No account or API key needed.', text: 'VC Jobs facets\nfreehire search "golang" --remote --region eu' },
+    { title: 'Connect your account', note: 'Optional. Opens your browser so you can sign in to save and track jobs.', text: 'VC Jobs auth login' },
   ];
   const prompts = [
     { title: 'Find your next role', text: 'Find remote senior Go jobs in Europe posted this week.' },
@@ -52,18 +52,18 @@
 <section class="pb-9 pt-10 sm:pt-14">
   <h1 class="max-w-3xl text-balance text-4xl font-semibold leading-tight tracking-tight sm:text-6xl">Your job search, with AI.</h1>
   <p class="mt-5 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-    Use the freehire assistant or connect the tools you already work with.
+    Use the VC Jobs assistant or connect the tools you already work with.
     Find jobs, compare employers and keep your applications moving.
   </p>
 </section>
 
-<TabStrip tabs={tabs} {active} onSelect={(id) => (active = id)} label="Choose how to use freehire" {panelId} />
+<TabStrip tabs={tabs} {active} onSelect={(id) => (active = id)} label="Choose how to use VC Jobs" {panelId} />
 <div id={panelId} role="tabpanel" aria-labelledby={tabStripId(panelId, active)} tabindex="-1" class="min-w-0 py-8 sm:py-10">
   <div hidden={active !== 'assistant'}>
     <div class="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
       <div>
         <div class="flex flex-wrap items-center gap-3">
-          <h2 class="text-2xl font-semibold tracking-tight sm:text-3xl">Start here. Stay in freehire.</h2>
+          <h2 class="text-2xl font-semibold tracking-tight sm:text-3xl">Start here. Stay in VC Jobs.</h2>
           <span class="rounded-full bg-foreground px-2.5 py-1 text-xs font-semibold text-background">Pro</span>
         </div>
         <p class="mt-5 max-w-xl leading-relaxed text-muted-foreground">
@@ -83,7 +83,7 @@
       </div>
       <figure class="overflow-hidden rounded-xl border border-border bg-secondary/20">
         <figcaption class="flex items-center justify-between gap-3 border-b border-border px-5 py-4 text-sm">
-          <span class="font-medium">freehire Assistant</span>
+          <span class="font-medium">VC Jobs Assistant</span>
           <span class="text-xs text-muted-foreground">Example conversation</span>
         </figcaption>
         <div class="space-y-5 p-5 sm:p-6">
@@ -104,10 +104,10 @@
   </div>
 
   <div hidden={active !== 'mcp'}>
-    <h2 class="text-2xl font-semibold tracking-tight sm:text-3xl">Bring freehire to your assistant.</h2>
+    <h2 class="text-2xl font-semibold tracking-tight sm:text-3xl">Bring VC Jobs to your assistant.</h2>
     <p class="mb-7 mt-4 max-w-2xl leading-relaxed text-muted-foreground">
       Choose the assistant you already use and follow its connection steps.
-      Search is free and needs no freehire account. Connect your account to save and track jobs.
+      Search is free and needs no VC Jobs account. Connect your account to save and track jobs.
     </p>
     <McpSetup />
   </div>
@@ -174,8 +174,8 @@
   </p>
   <div class="mt-5 flex flex-wrap gap-3">
     <Button href={resolve('/docs/api')} variant="outline" size="sm">API reference</Button>
-    <Button href="https://freehire.me/llms.txt" target="_blank" rel="noopener noreferrer" variant="outline" size="sm">llms.txt</Button>
-    <Button href="https://freehire.me/openapi.yaml" target="_blank" rel="noopener noreferrer" variant="outline" size="sm">OpenAPI schema</Button>
+    <Button href="/llms.txt" target="_blank" rel="noopener noreferrer" variant="outline" size="sm">llms.txt</Button>
+    <Button href="/openapi.yaml" target="_blank" rel="noopener noreferrer" variant="outline" size="sm">OpenAPI schema</Button>
     <Button href={resolve('/cli') + '#mcp'} variant="outline" size="sm">Local MCP setup</Button>
     <Button href={CLI_REPO} target="_blank" rel="noopener noreferrer" variant="ghost" size="sm">CLI source</Button>
     <Button href={MCP_REPO} target="_blank" rel="noopener noreferrer" variant="ghost" size="sm">MCP source</Button>

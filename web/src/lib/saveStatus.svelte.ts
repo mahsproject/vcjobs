@@ -1,7 +1,7 @@
 // The save state of one autosaving control: saving, saved (for a moment), or failed with
 // a retry. Every autosaving card on the profile reports through one of these and draws it
 // with SaveStatus.svelte, so "it worked" looks and sounds the same everywhere instead of
-// each card inventing its own (see freehire#3879).
+// each card inventing its own (see VC Jobs#3879).
 
 import { ApiError } from '#lib/api.js';
 import { announce } from '#lib/announce.svelte.js';

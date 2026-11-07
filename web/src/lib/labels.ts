@@ -1,20 +1,5 @@
-// Single source of display labels for the closed-vocabulary facet codes, shared by
-// the detail-page facet rows (enrichment.ts), the filter panel (facets.ts) and the
-// /insights pages (insights.ts). Values come from the generated contracts. Keeping
-// ONE map prevents the drift that previously left stale region codes and inconsistent
-// casing in two places. REGIONS is the curated macro-region set (vocab.RegionValues) —
-// keep it in sync with the backend vocabulary.
-//
-// Most maps here list only the codes whose label differs from the title-cased
-// fallback. CATEGORY_LABELS is the deliberate exception and is exhaustive; the reason
-// is recorded above it.
-
 import type { Category } from './generated/contracts';
 
-/** A title-cased fallback label for a code with no explicit label
- *  (e.g. "network_engineering" → "Network Engineering"). Lives here, with the maps,
- *  so "how a label is produced" has one home; enrichment.ts keeps a separate
- *  sentence-cased fallback for the facets it renders. */
 export function titleCase(value: string): string {
   return value
     .split('_')
@@ -22,8 +7,6 @@ export function titleCase(value: string): string {
     .join(' ');
 }
 
-// Region code → display names, one row per vocab.RegionValues entry. `short`
-// is the compact UI label (filter pills, facet rows).
 const REGIONS: { code: string; short: string }[] = [
   { code: 'global', short: 'Worldwide' },
   { code: 'north_america', short: 'North America' },
@@ -32,7 +15,7 @@ const REGIONS: { code: string; short: string }[] = [
   { code: 'uk', short: 'UK' },
   { code: 'mena', short: 'MENA' },
   { code: 'africa', short: 'Africa' },
-  { code: 'apac', short: 'APAC' },
+  { code: 'apac', short: 'India & APAC' },
   { code: 'cis', short: 'CIS' },
 ];
 
@@ -40,17 +23,17 @@ export const REGION_LABELS: Record<string, string> = Object.fromEntries(
   REGIONS.map((r) => [r.code, r.short]),
 );
 
-export const SENIORITY_LABELS: Record<string, string> = { c_level: 'C-level' };
+export const SENIORITY_LABELS: Record<string, string> = {
+  intern: 'Intern / Fellow',
+  junior: 'Analyst',
+  mid: 'Associate',
+  senior: 'VP / Senior Associate',
+  lead: 'Principal / Director',
+  c_level: 'Partner / MD',
+};
 
-// The one role-type value (vocab.RoleTypeValues). There is deliberately no second
-// entry: the catalogue can show that a posting IS a management role and cannot show
-// that it is not, so excluding this pill means "no management marker in the title",
-// which must never be labelled "Individual contributor" anywhere.
 export const ROLE_TYPE_LABELS: Record<string, string> = { people_manager: 'People manager' };
 
-// Security-clearance levels (vocab.ClearanceLevelValues). `other` is a non-US scheme
-// (UK SC/DV, AU NV1, NATO) or a clearance stated with no level — see
-// internal/dict/location.ClearanceLevelsFromDescription.
 export const CLEARANCE_LEVEL_LABELS: Record<string, string> = {
   confidential: 'Confidential',
   secret: 'Secret',
@@ -61,23 +44,18 @@ export const CLEARANCE_LEVEL_LABELS: Record<string, string> = {
   other: 'Other',
 };
 
-// Equity compensation (vocab.EquityValues). There is deliberately no "No equity": a
-// posting that states neither is NOT STATED, which is not a claim about the offer.
 export const EQUITY_LABELS: Record<string, string> = {
-  salary_and_equity: 'Salary + equity',
-  equity_only: 'Equity only',
+  salary_and_equity: 'Salary + carry/equity',
+  equity_only: 'Carry / equity only',
 };
 
-// Source kinds (vocab.SourceTypeValues), as sources.ProviderKind assigns them.
 export const SOURCE_TYPE_LABELS: Record<string, string> = {
-  ats: 'ATS',
-  company: 'Company site',
-  aggregator: 'Aggregator',
-  social: 'Social',
+  ats: 'VC Career Board (ATS)',
+  company: 'Direct Fund Site',
+  aggregator: 'Google Sheet / Curated',
+  social: 'Community',
 };
 
-// English proficiency levels (vocab.EnglishLevelValues); `none` is the
-// no-requirement sentinel — detail pages filter it out before rendering.
 export const ENGLISH_LEVEL_LABELS: Record<string, string> = {
   a1: 'A1', a2: 'A2', b1: 'B1', b2: 'B2', c1: 'C1', c2: 'C2', native: 'Native', none: 'None',
 };
@@ -89,31 +67,12 @@ export const EMPLOYMENT_LABELS: Record<string, string> = {
 
 export const WORK_MODE_LABELS: Record<string, string> = { onsite: 'On-site' };
 
-// All three relocation values, not just the overrides: the filter panel and the
-// detail-page row previously spelled the negative one differently ("None" vs "Not
-// supported"), and "None" was ambiguous with "not stated". Spelling the whole facet
-// out here keeps the three values reading as one set.
 export const RELOCATION_LABELS: Record<string, string> = {
   not_supported: 'Not supported',
   supported: 'Supported',
   required: 'Required',
 };
 
-// The one map that is EXHAUSTIVE rather than override-only, listed in the order of
-// the generated CATEGORY_VALUES so a diff against the vocabulary reads straight down.
-// Categories are the only vocabulary rendered on all three surfaces — the filter
-// panel, the job-detail facet row, and the indexed /insights pages — and those
-// surfaces reach a label through two different fallbacks (facets.ts title-cases every
-// word, enrichment.ts capitalizes only the first). Any code left to the fallback
-// therefore renders two ways by construction, which is what previously forked an
-// entire second map into insights.ts. Listing every code removes the fallback from the
-// path instead of asking three call sites to agree.
-//
-// `satisfies Record<Category, string>` is what keeps it exhaustive: adding a category
-// to the backend vocabulary and regenerating contracts fails `pnpm run check` (TS1360,
-// naming the code) until it is labelled here, and removing one fails the same check
-// (TS2353) rather than leaving a stale entry. The declared type stays
-// Record<string, string> because the `label(map, value)` helpers take that shape.
 export const CATEGORY_LABELS: Record<string, string> = {
   software_engineering: 'Software Engineering',
   backend: 'Backend',
@@ -125,7 +84,7 @@ export const CATEGORY_LABELS: Record<string, string> = {
   network_engineering: 'Network Engineering',
   it_support: 'IT Support / Help Desk',
   data_engineering: 'Data Engineering',
-  data_science: 'Data Science',
+  data_science: 'Data & Research',
   data_analytics: 'Data Analytics',
   ml_ai: 'ML / AI',
   ai_engineering: 'AI Engineering',
@@ -133,83 +92,71 @@ export const CATEGORY_LABELS: Record<string, string> = {
   security: 'Security',
   hardware: 'Hardware',
   embedded: 'Embedded',
-  blockchain: 'Blockchain',
+  blockchain: 'Blockchain / Web3',
   architecture: 'Architecture',
   design: 'Design',
   creative: 'Creative & Media',
   engineering_design: 'Engineering Design',
   industrial_engineering: 'Industrial Engineering',
-  // The label carries the acronym because that is what the profession calls itself and
-  // what a candidate types. "Occupational Safety" alone is the classification's name,
-  // not the market's.
   occupational_safety: 'Health & Safety (HSE)',
-  healthcare: 'Healthcare',
+  healthcare: 'Healthcare & Bio',
   skilled_trades: 'Skilled Trades',
   retail: 'Retail',
   hospitality: 'Hospitality',
   logistics: 'Logistics',
   education: 'Education',
   personal_services: 'Personal Services',
-  administration: 'Administration',
-  social_services: 'Social Services',
-  science: 'Science & Lab',
+  administration: 'Executive Support',
+  social_services: 'Impact & ESG',
+  science: 'DeepTech & Science',
   manufacturing: 'Manufacturing',
   public_safety: 'Public Safety',
-  product: 'Product',
-  project_management: 'Project Management',
-  marketing: 'Marketing',
-  sales: 'Sales',
-  support: 'Support',
-  business_analysis: 'Business Analysis',
+  product: 'Product & EIR',
+  project_management: 'Program Management',
+  marketing: 'Marketing & Community',
+  sales: 'Business Development',
+  support: 'Portfolio Support',
+  business_analysis: 'Market Research',
   solutions_engineering: 'Solutions Engineering',
   developer_relations: 'Developer Relations',
-  technical_writing: 'Technical Writing',
-  recruiting: 'Recruiting',
-  hr: 'HR',
-  finance: 'Finance',
-  legal: 'Legal',
-  operations: 'Operations',
-  customer_success: 'Customer Success',
+  technical_writing: 'Content & Research',
+  recruiting: 'Portfolio Talent',
+  hr: 'People & HR',
+  finance: 'Investment',
+  legal: 'Fund Legal & Compliance',
+  operations: 'Platform & Operations',
+  customer_success: 'Founder Success',
   other: 'Other',
 } satisfies Record<Category, string>;
 
-/** Display label for a category code (e.g. ml_ai → "ML / AI"), shared by the filter
- *  panel, the profile view and the /insights pages. The map above is exhaustive over
- *  the vocabulary, so the fallback only fires for a code the SPA has not been taught. */
 export function categoryLabel(value: string): string {
   return CATEGORY_LABELS[value] ?? titleCase(value);
 }
 
 export const DOMAIN_LABELS: Record<string, string> = {
-  fintech: 'FinTech',
-  ecommerce: 'E-commerce',
-  gamedev: 'GameDev',
+  fintech: 'FinTech & Venture',
+  ecommerce: 'Consumer & D2C',
+  gamedev: 'Gaming',
   edtech: 'EdTech',
   adtech: 'AdTech',
   govtech: 'GovTech',
-  healthcare: 'Healthcare',
-  devtools: 'DevTools',
+  healthcare: 'HealthTech & Bio',
+  devtools: 'B2B SaaS & DevTools',
   cybersecurity: 'Cybersecurity',
-  ai: 'AI',
-  hrtech: 'HRTech',
+  ai: 'AI & Foundation Models',
+  hrtech: 'Future of Work',
   proptech: 'PropTech',
   climatetech: 'ClimateTech',
 };
 
-export const COMPANY_TYPE_LABELS: Record<string, string> = { inhouse: 'In-house' };
+export const COMPANY_TYPE_LABELS: Record<string, string> = { inhouse: 'Venture Fund' };
 
-// Education levels a candidate's degree text resolves to (internal/dict/edulevel),
-// shown on the Talent Network profile.
 export const EDUCATION_LEVEL_LABELS: Record<string, string> = {
   bachelor: "Bachelor's degree",
-  master: "Master's degree",
+  master: "Master's / MBA",
   phd: 'PhD',
 };
 
-// Certification canonicals (internal/dict/certification), shown on the Talent
-// Network profile. Kept in sync with that package's alias table by hand — a code
-// missing here falls back to titleCase, which is why the dictionary stays small and
-// curated rather than open-ended.
 export const CERTIFICATION_LABELS: Record<string, string> = {
   'aws-solutions-architect': 'AWS Certified Solutions Architect',
   'aws-developer': 'AWS Certified Developer',
@@ -229,10 +176,6 @@ export const CERTIFICATION_LABELS: Record<string, string> = {
   'scrum-master': 'Scrum Master',
 };
 
-// The six AI skill-signature archetypes (vocab.AIArchetypeValues). Listed in full
-// rather than override-only: the title-cased fallback would render "Rag App
-// Builder" for an acronym that must read "RAG", so every value needs an explicit
-// entry regardless.
 export const AI_ARCHETYPE_LABELS: Record<string, string> = {
   rag_app_builder: 'RAG Application Builder',
   agent_builder: 'Agent Builder',

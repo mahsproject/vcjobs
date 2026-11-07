@@ -44,7 +44,7 @@
   // but the CLI is the intended client — see /cli.
   const cliExample = $derived(
     revealed
-      ? `freehire auth login --token ${revealed.token}\nfreehire search "golang" --remote`
+      ? `VC Jobs auth login --token ${revealed.token}\nfreehire search "golang" --remote`
       : '',
   );
 

@@ -101,7 +101,7 @@ export function cachePolicy({
  *  Only a signed-in response varies by cookie, so only it is labelled. Saying it
  *  unconditionally reads as the safer claim and is the opposite: Cloudflare will not
  *  store a response that varies on Cookie at all without a custom cache key, which is
- *  Enterprise-only on this zone (freehire-ops' infra/cloudflare/README.md). Labelling
+ *  Enterprise-only on this zone (VC Jobs-ops' infra/cloudflare/README.md). Labelling
  *  every page with it emptied the edge cache the zone exists for — measured 2026-09-23,
  *  every public page answered `cf-cache-status: DYNAMIC` while host2 rendered the whole
  *  anonymous catalogue itself.

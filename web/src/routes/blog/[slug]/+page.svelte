@@ -21,7 +21,7 @@
 </script>
 
 <Seo
-  title="{data.meta.title} · freehire"
+  title="{data.meta.title} · VC Jobs"
   description={data.meta.summary}
   {canonical}
   ogType="article"

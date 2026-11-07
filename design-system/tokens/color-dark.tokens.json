@@ -1,47 +1,47 @@
 {
-  "$description": "Dark-mode color overrides. Same token paths as color.tokens.json; SD merges these into the .dark output. Values ported from web/src/app.css .dark block.",
+  "$description": "Dark-mode color overrides. Official VC Jobs Dark Mode (#1E1E1E Black Charcoal background, #9966CB Amethyst brand, #FFFFFF White foreground).",
   "$type": "color",
   "background": {
-    "$value": "oklch(0.16 0.006 110)"
+    "$value": "#1e1e1e"
   },
   "foreground": {
-    "$value": "oklch(0.985 0 0)"
+    "$value": "#ffffff"
   },
   "card": {
-    "$value": "oklch(0.155 0 0)"
+    "$value": "#262626"
   },
   "card-foreground": {
-    "$value": "oklch(0.985 0 0)"
+    "$value": "#ffffff"
   },
   "popover": {
-    "$value": "oklch(0.21 0 0)"
+    "$value": "#262626"
   },
   "popover-foreground": {
-    "$value": "oklch(0.985 0 0)"
+    "$value": "#ffffff"
   },
   "primary": {
-    "$value": "oklch(0.985 0 0)"
+    "$value": "#ffffff"
   },
   "primary-foreground": {
-    "$value": "oklch(0.155 0 0)"
+    "$value": "#1e1e1e"
   },
   "secondary": {
-    "$value": "oklch(0.31 0 0)"
+    "$value": "#333333"
   },
   "secondary-foreground": {
-    "$value": "oklch(0.985 0 0)"
+    "$value": "#ffffff"
   },
   "muted": {
-    "$value": "oklch(0.24 0 0)"
+    "$value": "#2c2c2c"
   },
   "muted-foreground": {
-    "$value": "oklch(0.72 0 0)"
+    "$value": "#b5b5b5"
   },
   "accent": {
-    "$value": "oklch(0.27 0 0)"
+    "$value": "#332940"
   },
   "accent-foreground": {
-    "$value": "oklch(0.985 0 0)"
+    "$value": "#ffffff"
   },
   "destructive": {
     "$value": "oklch(0.704 0.191 22.216)"
@@ -54,29 +54,29 @@
     "$description": "Same as the action color: on the dark background it already clears 4.5:1."
   },
   "border": {
-    "$value": "oklch(1 0 0 / 8%)"
+    "$value": "oklch(1 0 0 / 12%)"
   },
   "input": {
-    "$value": "oklch(1 0 0 / 35%)"
+    "$value": "#888888"
   },
   "ring": {
     "$value": "{brand-ring}"
   },
   "brand": {
-    "$value": "oklch(0.72 0.095 121)",
-    "$description": "Oats green on dark — calmer olive (not neon) with dark ink."
+    "$value": "#9966cb",
+    "$description": "Official VC Jobs Amethyst (#9966CB) on dark."
   },
   "brand-foreground": {
-    "$value": "oklch(0.18 0.02 120)"
+    "$value": "#ffffff"
   },
   "brand-strong": {
-    "$value": "oklch(0.79 0.1 118)"
+    "$value": "#b88ce6"
   },
   "brand-muted": {
-    "$value": "oklch(0.31 0.045 118)"
+    "$value": "#332447"
   },
   "brand-ring": {
-    "$value": "oklch(0.6 0.09 118)"
+    "$value": "#9966cb"
   },
   "warning": {
     "$value": "oklch(0.828 0.189 84.429)",

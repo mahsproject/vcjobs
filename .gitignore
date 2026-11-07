@@ -276,3 +276,6 @@ extension/*.zip
 
 # Local research notes (competitor scans, market notes) — kept out of the repository.
 /docs/research/
+
+# Legacy static VC Jobs backup
+/legacy-static/

@@ -3,9 +3,9 @@
   import { resolve } from '$app/paths';
   import Seo from '#lib/components/Seo.svelte';
 
-  const repoUrl = 'https://github.com/strelov1/freehire';
+  const repoUrl = '/about';
   const telegramUrl = 'https://t.me/freehiredev';
-  const contactEmail = 'hello@freehire.me';
+  const contactEmail = 'Ozadhanvi99@gmail.com';
 
   const canonical = $derived(`${page.url.origin}/terms`);
 
@@ -14,8 +14,8 @@
 </script>
 
 <Seo
-  title="Terms of Service — freehire"
-  description="The terms for using freehire, the open-source IT job aggregator: your account, acceptable use, job listings, AI features, and liability."
+  title="Terms of Service — VC Jobs"
+  description="The terms for using VC Jobs, the open-source IT job aggregator: your account, acceptable use, job listings, AI features, and liability."
   {canonical}
 />
 
@@ -30,15 +30,15 @@
     </header>
 
     <p class="text-base leading-relaxed text-muted-foreground">
-      freehire (<a
-        href="https://freehire.me"
-        class="font-medium text-foreground underline-offset-4 hover:underline">freehire.me</a
+      VC Jobs (<a
+        href="/"
+        class="font-medium text-foreground underline-offset-4 hover:underline">vcjobs.io</a
       >), including our mobile app, is a free, open-source IT job aggregator. By using it, you
       agree to these terms.
     </p>
 
     <p class="text-sm leading-relaxed text-muted-foreground">
-      freehire is operated by ILYA STRELOV TECNOLOGIA DA INFORMACAO LTDA (CNPJ
+      VC Jobs is operated by ILYA STRELOV TECNOLOGIA DA INFORMACAO LTDA (CNPJ
       58.774.293/0001-44), Florianópolis, Brazil.
     </p>
 

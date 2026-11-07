@@ -188,7 +188,7 @@
         // part of any reaction. Svelte's `set` refuses a write whose active reaction is a
         // derived or a block effect (svelte/src/internal/client/reactivity/sources.js),
         // and `untrack` is what says this assignment answers to neither —
-        // state_unsafe_mutation reached production from this line (FREEHIRE-WEB-26) and
+        // state_unsafe_mutation reached production from this line (VC Jobs-WEB-26) and
         // took the header down with it, which a placeholder animation must never be able
         // to do whatever raced it.
         untrack(() => {

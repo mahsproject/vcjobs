@@ -15,7 +15,7 @@
 
 <!-- The account shell (my/+layout) owns the container, auth gate, and noindex;
      an inner max-width keeps the content readable within the content column.
-     Connected devices (MCP OAuth grants, freehire#3114) sits below API keys:
+     Connected devices (MCP OAuth grants, VC Jobs#3114) sits below API keys:
      both are credentials an account owner manages from one place. -->
 <div class="flex max-w-3xl flex-col gap-10">
   <ApiKeysView />

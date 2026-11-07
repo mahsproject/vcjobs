@@ -1,9 +1,9 @@
 import { api } from '#lib/api.js';
 
-const verifierKey = 'freehire.reauth.verifier';
-const returnKey = 'freehire.reauth.return';
-const draftKey = 'freehire.reauth.draft';
-const expiryKey = 'freehire.reauth.expires';
+const verifierKey = 'VC Jobs.reauth.verifier';
+const returnKey = 'VC Jobs.reauth.return';
+const draftKey = 'VC Jobs.reauth.draft';
+const expiryKey = 'VC Jobs.reauth.expires';
 
 export type ReauthReturnPath = '/my/integrations/api-keys' | '/my/account';
 

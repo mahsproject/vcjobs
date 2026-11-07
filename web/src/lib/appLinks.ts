@@ -1,13 +1,13 @@
-/** The freehire iPhone app's App Store listing — the only push-notification receiver.
+/** The VC Jobs iPhone app's App Store listing — the only push-notification receiver.
  *  Read by the footer's store button and the onboarding tour's push channel.
  *
  *  NO country segment, on purpose. The listing's own share link is `/br/app/...`, which
  *  pins every visitor to the Brazilian storefront; without one Apple redirects each visitor
  *  to their own (measured: the bare form answers 301 to `/us/app/...`, the `/br/` form 200).
  *  A wrong-country page still loads, so nothing downstream could catch it. */
-export const APP_STORE_URL = 'https://apps.apple.com/app/freehire-open-job-search/id6801885119';
+export const APP_STORE_URL = 'https://apps.apple.com/app/VC Jobs-open-job-search/id6801885119';
 
-/** The freehire app in ChatGPT's app directory — one click installs the read-only
+/** The VC Jobs app in ChatGPT's app directory — one click installs the read-only
  *  catalogue server (`/api/v1/mcp`) into ChatGPT. Read by /chatgpt, /mcp and /agents. */
 export const CHATGPT_APP_URL = 'https://chatgpt.com/plugins/plugin_asdk_app_6ad004e028cc8191a9a7e9b32ccbdf93';
 

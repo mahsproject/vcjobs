@@ -95,8 +95,8 @@
   // the same shape SubmitView uses for its own single form.
   let formOpen = $state(false);
   let editingSlug = $state<string | null>(null);
-  // On freehire by default: it is what an employer cannot get from their own careers page.
-  let applyMode = $state<EmployerApplyMode>('freehire');
+  // On VC Jobs by default: it is what an employer cannot get from their own careers page.
+  let applyMode = $state<EmployerApplyMode>('VC Jobs');
   let questions = $state<EmployerQuestion[]>([]);
   let questionsLoaded = $state(true);
   let url = $state('');
@@ -111,7 +111,7 @@
   let formError = $state<string | null>(null);
 
   // A url is the identity of a linked vacancy only, and only when creating one: an edit
-  // never sends it, and a vacancy taking applications on freehire has none to send.
+  // never sends it, and a vacancy taking applications on VC Jobs has none to send.
   const needsUrl = $derived(!editingSlug && applyMode === 'external');
   // A description is required: search keeps out a posting without one, and the server
   // refuses it rather than publish a vacancy nobody can find.
@@ -121,7 +121,7 @@
 
   function resetForm() {
     editingSlug = null;
-    applyMode = 'freehire';
+    applyMode = 'VC Jobs';
     questions = [];
     questionsLoaded = true;
     url = title = location = workMode = employmentType = seniority = descriptionMd = '';
@@ -136,7 +136,7 @@
 
   function openEdit(job: Job) {
     editingSlug = job.public_slug;
-    applyMode = job.direct_apply ? 'freehire' : 'external';
+    applyMode = job.direct_apply ? 'VC Jobs' : 'external';
     questions = [];
     url = job.url;
     title = job.title;
@@ -189,7 +189,7 @@
     try {
       if (editingSlug) {
         const updated = await api.updateEmployerVacancy(editingSlug, {
-          questions: applyMode === 'freehire' ? questions : undefined,
+          questions: applyMode === 'VC Jobs' ? questions : undefined,
           title: title.trim(),
           location: location.trim() || undefined,
           remote: workMode === 'remote',
@@ -199,7 +199,7 @@
       } else {
         const input: EmployerVacancyInput = {
           apply_mode: applyMode,
-          questions: applyMode === 'freehire' ? questions : undefined,
+          questions: applyMode === 'VC Jobs' ? questions : undefined,
           url: applyMode === 'external' ? url.trim() : undefined,
           title: title.trim(),
           location: location.trim() || undefined,
@@ -348,7 +348,7 @@
           {#if !editingSlug}
             <fieldset class="flex flex-col gap-2">
               <legend class="text-sm font-medium">{s.applyModeLabel}</legend>
-              {#each [['freehire', s.applyModeFreehire, s.applyModeFreehireHint], ['external', s.applyModeExternal, s.applyModeExternalHint]] as [mode, label, hint] (mode)}
+              {#each [['VC Jobs', s.applyModeFreehire, s.applyModeFreehireHint], ['external', s.applyModeExternal, s.applyModeExternalHint]] as [mode, label, hint] (mode)}
                 <label class="flex items-start gap-2 text-sm">
                   <input type="radio" name="apply-mode" value={mode} bind:group={applyMode} class="mt-1 accent-current" />
                   <span class="flex flex-col">
@@ -425,7 +425,7 @@
               <TokenInput label={s.fieldSkills} tokens={skills} onAdd={addSkill} onRemove={removeSkill} />
             </label>
           {/if}
-          {#if applyMode === 'freehire' && questionsLoaded}
+          {#if applyMode === 'VC Jobs' && questionsLoaded}
             <EmployerQuestionsEditor bind:questions />
           {/if}
           {#if formError}

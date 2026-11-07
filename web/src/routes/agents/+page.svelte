@@ -11,7 +11,7 @@
     jsonLdScript([
       faqPageJsonLd(AGENTS_FAQ),
       breadcrumbJsonLd([
-        { name: 'freehire', url: `${origin}/` },
+        { name: 'VC Jobs', url: `${origin}/` },
         { name: 'Agents', url: canonical },
       ]),
     ])
@@ -19,8 +19,8 @@
 </script>
 
 <Seo
-  title="freehire AI — Assistant, MCP and CLI"
-  description="Use the freehire Assistant with Pro, connect your own AI assistant through MCP, or search from the CLI. Choose your setup and start your job search."
+  title="VC Jobs AI — Assistant, MCP and CLI"
+  description="Use the VC Jobs Assistant with Pro, connect your own AI assistant through MCP, or search from the CLI. Choose your setup and start your job search."
   {canonical}
 />
 

@@ -17,7 +17,7 @@
   // one claim, not a summary of a summary. The posting count trails it as a fact about
   // the catalogue, stated whether or not the list below is shown.
   const metaDescription = $derived(
-    `${data.description} ${count(data.total)} open ${data.label} jobs on freehire.`,
+    `${data.description} ${count(data.total)} open ${data.label} jobs on VC Jobs.`,
   );
   // Where "the open X jobs" goes. A collection pinning exactly this skill is the same
   // set behind a self-canonical URL, so it wins: /jobs?skills=X answers the reader fine
@@ -42,7 +42,7 @@
         origin,
       ),
       breadcrumbJsonLd([
-        { name: 'freehire', url: `${origin}/` },
+        { name: 'VC Jobs', url: `${origin}/` },
         { name: 'Skills', url: `${origin}/skills` },
         { name: data.label, url: canonical },
       ]),
@@ -50,7 +50,7 @@
   );
 </script>
 
-<Seo title={`What is ${data.label}? · freehire`} description={metaDescription} {canonical} />
+<Seo title={`What is ${data.label}? · VC Jobs`} description={metaDescription} {canonical} />
 <svelte:head>
   <!-- eslint-disable-next-line svelte/no-at-html-tags -- non-executable JSON-LD from jsonLdScript, which escapes `<` -->
   {@html jsonLd}
@@ -58,7 +58,7 @@
 
 <div class="mx-auto w-full max-w-4xl px-4 py-6">
   <nav class="mb-4 flex items-center gap-2 text-sm text-muted-foreground" aria-label="Breadcrumb">
-    <a href={resolve('/')} class="hover:underline">freehire</a>
+    <a href={resolve('/')} class="hover:underline">VC Jobs</a>
     <span>/</span>
     <a href={resolve('/skills')} class="hover:underline">Skills</a>
   </nav>
@@ -87,7 +87,7 @@
       <a href={jobsHref} class="font-medium underline"
         >{count(data.total)} open {data.label} jobs</a
       >
-      on freehire.
+      on VC Jobs.
     </p>
   </header>
 

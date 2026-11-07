@@ -90,7 +90,7 @@ export interface JobFilters {
   /** Apply the experience bound only to the jobs that carry no seniority level, so a
    *  labelled one passes it whatever years it states. Beside the included levels and
    *  `seniorityIncludeUnspecified` this reads "one of these levels, or no level and
-   *  within the bound" — the entry-level profile rule (freehire#3655). A modifier of the
+   *  within the bound" — the entry-level profile rule (VC Jobs#3655). A modifier of the
    *  bound: written to the URL only beside one, and never counted on its own. */
   experienceOnlySeniorityUnspecified: boolean;
   /** Also keep the jobs that carry no seniority level — most of the catalogue, which
@@ -661,7 +661,7 @@ export function filtersFromProfile(profile: UserProfile): JobFilters {
   // The selected levels are included, together with the postings that carry no level at
   // all — most of the catalogue, which an include alone would drop. Including rather than
   // excluding the rest is what makes "Apply my profile" show the levels the user picked
-  // (freehire#3397: an intern saw seven red excludes and an unticked Intern, and read it as
+  // (VC Jobs#3397: an intern saw seven red excludes and an unticked Intern, and read it as
   // the profile not applying). An empty list, or every level, imposes no restriction.
   const levels = profile.seniorities ?? [];
   if (levels.length && !SENIORITY_VALUES.every((v) => levels.includes(v))) {
@@ -669,12 +669,12 @@ export function filtersFromProfile(profile: UserProfile): JobFilters {
     f.seniorityIncludeUnspecified = true;
     // The level include cannot judge a posting with no level, and for someone after an
     // entry role that is most of what it lets through — an intern's alerts were 19 of 19
-    // unlabelled, ten of them asking for 2-5 years (freehire#3397). The posting's stated
+    // unlabelled, ten of them asking for 2-5 years (VC Jobs#3397). The posting's stated
     // years are the backstop for THOSE postings only: one labelled with a picked level
     // passes whatever it states, since most internships state no years at all (95,645
     // labelled intern, 4,071 of them stating at most a year — prod, 2026-10-26). An
     // unlabelled posting must state a bound within the cap; keeping the unstated ones too
-    // was what flooded the alert with 2.6M postings (freehire#3655).
+    // was what flooded the alert with 2.6M postings (VC Jobs#3655).
     const cap = entryExperienceCap(profile.seniorities);
     if (cap != null) {
       f.experienceYearsMax = cap;

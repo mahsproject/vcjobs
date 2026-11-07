@@ -5,48 +5,48 @@
   import { announce } from '#lib/announce.svelte.js';
   import { Button, SectionLabel, TabStrip, tabStripId } from '#lib/ui/index.js';
 
-  const SKILLS_URL = 'https://github.com/strelov1/freehire-cli/tree/main/skills';
+  const SKILLS_URL = '/about';
 
   // The three steps from nothing to a first search. `auth login` opens the
-  // browser (freehire-cli v0.24+), so a new user never handles an API key.
+  // browser (VC Jobs-cli v0.24+), so a new user never handles an API key.
   const steps = [
     { n: 1, label: 'Install — no Go needed', cmd: CLI_INSTALL },
-    { n: 2, label: 'Sign in — opens your browser, no key to paste', cmd: 'freehire auth login' },
-    { n: 3, label: 'Search', cmd: 'freehire search "golang" --remote --region eu' },
+    { n: 2, label: 'Sign in — opens your browser, no key to paste', cmd: 'VC Jobs auth login' },
+    { n: 3, label: 'Search', cmd: 'VC Jobs search "golang" --remote --region eu' },
   ];
 
   // Agent skills, one per task rather than one per tool, so a host loads what the
-  // question needs instead of the whole surface. Mirrors freehire-cli's skills/
+  // question needs instead of the whole surface. Mirrors VC Jobs-cli's skills/
   // directory; the plugin ships each one's slash command alongside it.
   const skills = [
     {
-      name: 'freehire-job-search',
+      name: 'VC Jobs-job-search',
       slash: '/job-search',
       desc: 'Read the saved profile, ground every filter in facets, search, and shortlist.',
     },
     {
-      name: 'freehire-track-applications',
+      name: 'VC Jobs-track-applications',
       slash: '/track-applications',
       desc: 'Where each application stands, stage moves, and reporting one that never answered.',
     },
     {
-      name: 'freehire-market-fit',
+      name: 'VC Jobs-market-fit',
       slash: '/market-fit',
       desc: 'Score a stack against live vacancy demand and put a number on every gap.',
     },
     {
-      name: 'freehire-tailor-cv',
+      name: 'VC Jobs-tailor-cv',
       slash: '/tailor-cv',
       desc: 'Reframe a CV toward one vacancy — every claim cited, nothing invented.',
     },
     {
-      name: 'freehire-mail-triage',
+      name: 'VC Jobs-mail-triage',
       slash: '/triage-inbox',
       desc: 'Push a mail batch, judge each message, and drain the two link queues.',
     },
   ];
 
-  // Command reference, mirroring the freehire-cli README/SKILL.md (the source of
+  // Command reference, mirroring the VC Jobs-cli README/SKILL.md (the source of
   // truth), one tab per job to be done. Every group stays in the HTML — only the
   // unselected ones are `hidden` — because agents and crawlers read this page
   // without clicking a tab.
@@ -100,7 +100,7 @@
       value: 'mail',
       label: 'Mail',
       intro:
-        'freehire fetches no mail on this tier: your own client does, and inbox push hands it over. Then an agent judges each message and links it to an application.',
+        'VC Jobs fetches no mail on this tier: your own client does, and inbox push hands it over. Then an agent judges each message and links it to an application.',
       commands: [
         { cmd: 'inbox push --file mail.json', desc: 'Upload a batch. Keyed by Message-ID, so a re-sync updates instead of duplicating.' },
         { cmd: 'inbox list --unclassified --body', desc: 'The work queue: unjudged mail with bodies inline.' },
@@ -114,7 +114,7 @@
       label: 'Contribute',
       intro: 'Widen the catalogue. The last two need the moderator role.',
       commands: [
-        { cmd: 'contribute <url>', desc: "Hand freehire a job link; a board we don't track yet gets added and crawled." },
+        { cmd: 'contribute <url>', desc: "Hand VC Jobs a job link; a board we don't track yet gets added and crawled." },
         { cmd: 'contributions', desc: "The boards you've contributed and their state." },
         { cmd: 'submissions', desc: 'Jobs you submitted, and the review queue for moderators.' },
         { cmd: 'jobs add --url <url> --title … --company …', desc: 'Author a posting (moderator).' },
@@ -145,9 +145,9 @@
 
   const mcpConfig = `{
   "mcpServers": {
-    "freehire": {
+    "VC Jobs": {
       "command": "npx",
-      "args": ["-y", "freehire-mcp"]
+      "args": ["-y", "VC Jobs-mcp"]
     }
   }
 }`;
@@ -160,7 +160,7 @@
     {
       url: `${page.url.origin}/api/v1/mcp/account`,
       label: 'Your account',
-      desc: 'Sign in with freehire when the host asks. Search jobs, read your profile, check your skills against the market, and save, mark applied or move the jobs on your board.',
+      desc: 'Sign in with VC Jobs when the host asks. Search jobs, read your profile, check your skills against the market, and save, mark applied or move the jobs on your board.',
     },
     {
       url: `${page.url.origin}/api/v1/mcp`,
@@ -186,7 +186,7 @@
   <section class="grid-bg relative -mx-4 px-4 pb-16 pt-12 sm:pt-16">
     <div class="grid items-center gap-12 lg:grid-cols-2">
       <div>
-        <SectionLabel text="freehire on the command line" class="reveal" style="--d:0ms" />
+        <SectionLabel text="VC Jobs on the command line" class="reveal" style="--d:0ms" />
 
         <h1
           class="reveal mt-6 max-w-2xl text-balance text-4xl font-semibold leading-[0.98] tracking-tighter sm:text-6xl"
@@ -263,8 +263,8 @@
         <p class="mt-4 max-w-md leading-relaxed text-muted-foreground">
           One request — <span class="text-foreground"
             >“find senior remote Golang backend jobs in Europe and pick the 3 best”</span
-          >. Claude Code searches with <code class="font-mono text-foreground">freehire search</code>, reads the
-          postings with <code class="font-mono text-foreground">freehire job</code>, and explains its picks.
+          >. Claude Code searches with <code class="font-mono text-foreground">VC Jobs search</code>, reads the
+          postings with <code class="font-mono text-foreground">VC Jobs job</code>, and explains its picks.
         </p>
         <p class="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">
           A real, unedited session against the live catalogue, sped up 1.5×.
@@ -273,7 +273,7 @@
       <figure class="overflow-hidden rounded-xl border border-border shadow-sm lg:col-span-3">
         <img
           src="/cli-demo-claude-code.gif"
-          alt="Claude Code running freehire search and freehire job, then listing three senior remote Go backend roles in Europe with reasons for each."
+          alt="Claude Code running VC Jobs search and VC Jobs job, then listing three senior remote Go backend roles in Europe with reasons for each."
           width="918"
           height="735"
           loading="lazy"
@@ -312,10 +312,10 @@
             {#each group.commands as row (row.cmd)}
               <div class="grid gap-x-6 gap-y-1 px-4 py-3 sm:grid-cols-5 sm:items-center">
                 <dt class="font-mono text-sm sm:col-span-2">
-                  <span class="text-muted-foreground">freehire</span> {row.cmd}
+                  <span class="text-muted-foreground">VC Jobs</span> {row.cmd}
                 </dt>
                 <dd class="text-sm leading-relaxed text-muted-foreground sm:col-span-2">{row.desc}</dd>
-                <dd class="hidden justify-self-end sm:block">{@render copyButton(`freehire ${row.cmd}`, row.cmd)}</dd>
+                <dd class="hidden justify-self-end sm:block">{@render copyButton(`VC Jobs ${row.cmd}`, row.cmd)}</dd>
               </div>
             {/each}
           </dl>
@@ -331,18 +331,18 @@
       <div>
         <h2 class="text-2xl font-semibold tracking-tight">Same sign-in, any AI host</h2>
         <p class="mt-4 max-w-md leading-relaxed text-muted-foreground">
-          <code class="font-mono text-foreground">freehire-mcp</code> exposes the same search, market-fit and
+          <code class="font-mono text-foreground">VC Jobs-mcp</code> exposes the same search, market-fit and
           tracking tools over the
           <a
             href="https://modelcontextprotocol.io"
             target="_blank"
             rel="noopener noreferrer"
             class="text-foreground underline-offset-4 hover:underline">Model Context Protocol</a
-          >, so Claude Desktop, Claude Code or any MCP host can drive freehire. It runs via
+          >, so Claude Desktop, Claude Code or any MCP host can drive VC Jobs. It runs via
           <code class="font-mono text-foreground">npx</code> — no global install.
         </p>
         <p class="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">
-          It reads the CLI's sign-in from <code class="font-mono text-foreground">~/.freehire/creds.json</code>.
+          It reads the CLI's sign-in from <code class="font-mono text-foreground">~/.VC Jobs/creds.json</code>.
           On a machine without it, add
           <code class="whitespace-nowrap font-mono text-foreground">"env": &lbrace; "FREEHIRE_TOKEN": "fhk_…" &rbrace;</code> with a key
           from <a href={resolve('/my/integrations/api-keys')} class="font-medium text-foreground underline-offset-4 hover:underline"
@@ -405,10 +405,10 @@
         </p>
       </div>
       <div class="flex items-start gap-3 rounded-lg border border-border bg-secondary/60 p-3">
-        <pre class="overflow-x-auto font-mono text-sm leading-relaxed">/plugin marketplace add strelov1/freehire-cli
-/plugin install freehire@freehire-cli</pre>
+        <pre class="overflow-x-auto font-mono text-sm leading-relaxed">/plugin marketplace add strelov1/VC Jobs-cli
+/plugin install VC Jobs@VC Jobs-cli</pre>
         {@render copyButton(
-          '/plugin marketplace add strelov1/freehire-cli\n/plugin install freehire@freehire-cli',
+          '/plugin marketplace add strelov1/VC Jobs-cli\n/plugin install VC Jobs@VC Jobs-cli',
           'plugin install'
         )}
       </div>

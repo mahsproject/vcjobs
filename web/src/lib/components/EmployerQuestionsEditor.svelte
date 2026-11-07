@@ -7,7 +7,7 @@
   import { messages } from './EmployerView.messages';
   import TokenInput from './facets/TokenInput.svelte';
 
-  // The questions an employer asks with a vacancy that takes applications on freehire.
+  // The questions an employer asks with a vacancy that takes applications on VC Jobs.
   // The server validates them (applyform.FreehireForm); the limit here only keeps the add
   // button from offering what the server would refuse.
   const MAX_QUESTIONS = 10;

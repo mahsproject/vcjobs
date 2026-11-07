@@ -2,13 +2,13 @@
   import { page } from '$app/state';
   import Seo from '#lib/components/Seo.svelte';
 
-  const contactEmail = 'hello@freehire.me';
+  const contactEmail = 'Ozadhanvi99@gmail.com';
   const canonical = $derived(`${page.url.origin}/delete-account`);
 </script>
 
 <Seo
-  title="Delete Your Account — freehire"
-  description="How to permanently delete your freehire account and data, on the web or in the mobile app."
+  title="Delete Your Account — VC Jobs"
+  description="How to permanently delete your VC Jobs account and data, on the web or in the mobile app."
   {canonical}
 />
 
@@ -22,7 +22,7 @@
     </header>
 
     <p class="text-base leading-relaxed text-muted-foreground">
-      You can permanently delete your freehire account and its data at any time, from the website
+      You can permanently delete your VC Jobs account and its data at any time, from the website
       or the mobile app. This cannot be undone — there is no grace period and no recovery.
     </p>
 

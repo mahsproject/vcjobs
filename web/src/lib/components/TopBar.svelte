@@ -1,183 +1,183 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import { page } from '$app/state';
   import { resolve } from '$app/paths';
-  import { toPath } from '#lib/pathname.js';
-  import { afterNavigate, goto } from '$app/navigation';
-  import { signinUrl } from '#lib/signin.js';
-  import HeaderSearch from './HeaderSearch.svelte';
-  import { ROLE_PLACEHOLDER } from '#lib/placeholderRoles.js';
-  import HeaderMenu from './HeaderMenu.svelte';
-  import BrandMark from './BrandMark.svelte';
-  import { isApiReferenceRoute, isWideHeaderRoute } from '#lib/shellLayout.js';
-  import { HEADER_LINKS } from '#lib/siteNav.js';
+  import { MessageCircle, Plus, Sun, Moon, Menu, X } from '@lucide/svelte';
+  import { themeStore } from '#lib/theme.svelte.js';
 
-  // The header is three slots — logo | search | menu — identical on every
-  // viewport. Nav links, the account items, the theme toggle, and the auth
-  // action all live in HeaderMenu.
-  //
-  // The middle slot is ONE search box, on every page but one. Where a list has
-  // registered itself (the feed at /jobs, /companies, and a company's or collection's
-  // own scoped jobs list) it filters that list in place and hosts the All-filters
-  // trigger; everywhere else the same box navigates to the feed carrying the same
-  // filter.
-  //
-  // How the box words itself is all the page decides — it asks nothing else. This used
-  // to select between two components that shared everything but that one behaviour and
-  // drifted apart in the parts they shared.
-  //
-  // The companies box rotates nothing: the roles the jobs box cycles through would be
-  // answering a question it does not ask.
-  const searchWording = $derived(
-    page.url.pathname === '/companies'
-      ? { placeholder: 'Search companies…', label: 'Search companies' }
-      : { placeholder: ROLE_PLACEHOLDER, label: 'Search jobs' },
-  );
+  let whatsappUrl = $state('https://chat.whatsapp.com/E7r0xi9u1qOE9v0YjbHcpM?s=cl&p=i&mlu=4');
+  let postJobEmail = $state('Ozadhanvi99@gmail.com');
+  let mobileOpen = $state(false);
 
-  // The homepage is the one exception: its whole content is a large centred copy of
-  // this same box, so the header renders none. Two identical fields on one screen make
-  // the visitor choose between them for no reason, and the hero is the focused one.
-  // The brand and the menu stay — sign-in and notifications live in the menu's own
-  // control strip, and both have to remain reachable.
-  const bareHeader = $derived(page.url.pathname === '/');
-
-  // The API reference is the one page below that has its own search already: Scalar's
-  // sidebar answers Cmd/Ctrl+K over the spec, and it is already mounted the moment the
-  // reference hydrates. HeaderSearch binds those same global hotkeys for job search
-  // (see its own `onWindowKeydown`), so leaving it mounted here would not just be a
-  // search box with nothing to search — it would fight Scalar's for the very keys that
-  // are supposed to open it. The site nav fills the slot instead, the same as the
-  // homepage — see showSiteNav below, which ties the two together.
-  const docsApiHeader = $derived(isApiReferenceRoute(page.url.pathname));
-
-  // Wherever the middle slot has no search box, the row has the room for both the nav
-  // AND the wordmark on a phone (see the wordmark's own comment below) — today that is
-  // bareHeader and docsApiHeader. Named once so the wordmark's visibility and the nav's
-  // own render condition can never drift apart the way they did before this existed: the
-  // nav gained docsApiHeader in one change, the wordmark's identical "is there room"
-  // condition did not, and phones showed the nav beside a bare logo glyph with no name.
-  const showSiteNav = $derived(bareHeader || docsApiHeader);
-
-  /** How many of HEADER_LINKS the bare header carries below `lg`, taken from the FRONT of
-   *  that list — so its order is the contract, and reordering it changes what a narrow
-   *  screen gets. Today that is Jobs and Companies.
-   *
-   *  Two, because that is what fits at the narrow end (33px to spare at 320px, labels
-   *  only — see the nav below). `lg` rather than a width nearer the 800px where the rest
-   *  do begin to fit, because Tailwind's own breakpoints are what the rest of this header
-   *  is written in and one more arbitrary query is a second answer to the same question.
-   *  Under `lg` the burger lists them all anyway, which is where they were until now.
-   *
-   *  Deliberately a count and not a slice of named links: the row IS HEADER_LINKS' own
-   *  order, so a destination added to that list or moved within it changes what a narrow
-   *  screen gets without anything here needing to know. */
-  const LINKS_BELOW_LG = 2;
-
-  // On the full-viewport surfaces (the agent, the tailor workspace) the page below runs
-  // edge to edge under its own icon rail, and on the API reference the columns below
-  // (sidebar, content, request/response examples) are just as wide — so on all of them
-  // the header drops the centered `max-w-6xl` and does the same: brand hard left, menu
-  // hard right. The search keeps a readable width and centers itself in the gap rather
-  // than stretching across the monitor.
-  const wideHeader = $derived(isWideHeaderRoute(page.url.pathname));
-
-  // A failed OAuth callback lands back wherever that attempt's `returnTo` pointed,
-  // carrying `?auth_error` (appended by the backend — see internal/api/handler/oauth.go)
-  // — which could be ANY page, not just one that itself knows about /signin. This is
-  // the one place that catches it regardless of where it landed, and sends the visitor
-  // on to /signin with the failure surfaced there instead of opening the in-place
-  // dialog over whatever page that happened to be. Runs in afterNavigate — not
-  // onMount — because this header lives in the persistent root layout: a redirect
-  // that lands here via client-side navigation never remounts it, so onMount would
-  // fire only on a cold load and miss the in-app bounce. afterNavigate covers both
-  // the initial load and every later navigation, and stays off the SSR path.
-  afterNavigate(({ shallow }) => {
-    if (shallow) return; // SvelteKit 3 fires this for shallow routing too
-    if (!page.url.searchParams.has('auth_error')) return;
-    const query = [...page.url.searchParams]
-      .filter(([key]) => key !== 'auth_error')
-      .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
-      .join('&');
-    const returnTo = page.url.pathname + (query ? `?${query}` : '');
-    // eslint-disable-next-line svelte/no-navigation-without-resolve -- signinUrl() wraps resolve('/signin'); the rule can't see through the appended query
-    void goto(signinUrl({ returnTo, error: 'oauth' }), { replaceState: true });
+  onMount(async () => {
+    try {
+      const res = await fetch('/api/v1/vc-settings');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.whatsapp_url) whatsappUrl = data.whatsapp_url;
+        if (data.post_job_email) postJobEmail = data.post_job_email;
+      }
+    } catch {
+      // Keep default verified settings
+    }
   });
+
+  const navItems = [
+    { href: '/', label: 'Home' },
+    { href: '/jobs', label: 'Open Roles' },
+    { href: '/companies', label: 'VC Funds' },
+    { href: '/collections', label: 'Collections' },
+    { href: '/about', label: 'About' },
+  ] as const;
+
+  const path = $derived(page.url.pathname);
+  const isActive = (href: string) =>
+    href === '/' ? path === '/' : path === href || path.startsWith(`${href}/`);
+  const isDark = $derived(themeStore.isDark);
 </script>
 
-<!-- Solid (not backdrop-blur) on purpose: a backdrop-filter here would become the
-     containing block for the mobile menu's `position: fixed` full-screen drawer,
-     pinning it to the header instead of the viewport and breaking it. -->
-<header class="sticky top-0 z-40 border-b border-border bg-background">
-  <div
-    class={[
-      'mx-auto flex h-14 items-center gap-3 px-4 sm:gap-4',
-      wideHeader ? 'max-w-none' : 'max-w-6xl',
-    ]}
-  >
-    <!-- Wide header only: the two side slots grow from a zero basis, so the free space
-         splits evenly between them and the search sits on the container's axis — the
-         menu cluster is wider than the brand, so centering the middle slot on its own
-         leftover space would push it visibly off-centre. `basis-0` also keeps them from
-         shrinking (shrink scales the basis), so the narrow layout is untouched. -->
-    <div class={['flex shrink-0 items-center', wideHeader && 'flex-1 basis-0']}>
-      <a
-        href={resolve('/')}
-        aria-label="freehire"
-        class="flex items-center gap-2 text-sm font-semibold tracking-tight"
+<header class="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur-md">
+  <div class="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-2 px-4 sm:gap-4 sm:px-6 lg:gap-6">
+    <!-- Left: Official VC Jobs Logo (Always navigates to Homepage `/`) -->
+    <a
+      href={resolve('/')}
+      onclick={() => {
+        mobileOpen = false;
+      }}
+      aria-label="VC Jobs — Go to homepage"
+      class="inline-flex shrink-0 cursor-pointer items-center py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9966CB]"
+    >
+      <img
+        src="/logo-on-light.png"
+        alt="VC Jobs"
+        class="h-6 w-auto shrink-0 object-contain sm:h-8 dark:hidden"
+      />
+      <img
+        src="/logo-on-dark.png"
+        alt="VC Jobs"
+        class="hidden h-6 w-auto shrink-0 object-contain sm:h-8 dark:block"
+      />
+    </a>
+
+    <!-- Center: Single-Line Navigation Links (Century Gothic Bold) -->
+    <nav
+      aria-label="Primary navigation"
+      class="hidden items-center gap-1 lg:flex lg:gap-2"
+    >
+      {#each navItems as item (item.href)}
+        <a
+          href={resolve(item.href)}
+          class={[
+            'relative whitespace-nowrap rounded-lg px-3.5 py-2 text-sm font-bold transition-colors',
+            isActive(item.href)
+              ? 'text-[#9966CB]'
+              : 'text-[#888888] hover:bg-secondary/60 hover:text-foreground',
+          ]}
+        >
+          {item.label}
+          {#if isActive(item.href)}
+            <span
+              class="absolute inset-x-3.5 -bottom-[13px] h-0.5 rounded-full bg-[#9966CB]"
+              aria-hidden="true"
+            ></span>
+          {/if}
+        </a>
+      {/each}
+    </nav>
+
+    <!-- Right: Action Buttons -->
+    <div class="flex shrink-0 items-center gap-1.5 sm:gap-2.5">
+      <button
+        type="button"
+        onclick={() => themeStore.toggle()}
+        aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+        title={isDark ? 'Light mode' : 'Dark mode'}
+        class="inline-flex size-9 shrink-0 items-center justify-center rounded-lg border border-border bg-background text-[#888888] transition-colors hover:border-[#9966CB] hover:text-foreground"
       >
-        <BrandMark />
-        <!-- Dropped on a phone to leave the middle slot its width for the search box —
-             except wherever showSiteNav puts no box there (the homepage's own hero is the
-             box; the API reference's is Scalar's), which has the room. What the row spends
-             that room on instead is the nav below, and the two budgets are the same 358px:
-             they are set together. -->
-        <span class={showSiteNav ? 'inline' : 'hidden sm:inline'} aria-hidden="true">freehire</span>
+        {#if isDark}
+          <Sun class="size-4 text-[#9966CB]" />
+        {:else}
+          <Moon class="size-4" />
+        {/if}
+      </button>
+
+      <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- mailto link -->
+      <a
+        href="mailto:{postJobEmail}?subject=Post%20a%20VC%20job"
+        class="hidden h-9 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg border border-border bg-background px-3.5 text-xs font-bold text-foreground transition-colors hover:border-[#9966CB] hover:text-[#9966CB] lg:inline-flex"
+      >
+        <Plus class="size-3.5 shrink-0" />
+        <span>Post a job</span>
       </a>
-    </div>
 
-    <!-- The slot, not the search component, owns the middle width: each search root is
-         `min-w-0 flex-1`, so it fills whatever this wrapper is given. The wide header gives it
-         a 48rem basis so it lands at that width instead of an even third of the row; the
-         cap then hands the rest back to the side slots, which keeps it on the axis. -->
-    <div class={['flex min-w-0 flex-1', wideHeader && 'max-w-3xl basis-3xl']}>
-      {#if showSiteNav}
-        <!-- All five do not fit beside the brand and the burger on a phone, but the row
-             they share is otherwise EMPTY on these routes — the homepage's search box is
-             its hero, not this slot, and the API reference's own search is Scalar's — so
-             the front of the list rides along and the rest wait for `lg` (see
-             LINKS_BELOW_LG). The cut is by width, not by rank; the burger a thumb away
-             still lists all five with the same glyph and a full label, which is also why
-             bare icons here would trade a legible row for guesses. -->
-        <nav aria-label="Site" class="flex items-center gap-3 sm:gap-5 lg:gap-6">
-          <!-- Divides the nav from the wordmark, the same rule the search box draws
-               between its Location scope and the field. Without it the first link sat
-               one word-gap from "freehire" and read as part of it. -->
-          <div aria-hidden="true" class="h-5 w-px shrink-0 bg-border"></div>
-          {#each HEADER_LINKS as link, i (link.href)}
-            {@const Icon = link.icon}
-            <a
-              href={resolve(toPath(link.href))}
-              class={[
-                'flex items-center gap-1.5 whitespace-nowrap text-sm text-muted-foreground transition-colors hover:text-foreground',
-                i >= LINKS_BELOW_LG && 'hidden lg:flex',
-              ]}
-            >
-              <!-- Label alone on a phone. The glyph is 22px with its gap and both links
-                   carry one, which at 320px pushed "Companies" under the burger; the word
-                   is what names the destination, so the glyph is what gives way. -->
-              <Icon class="hidden size-4 shrink-0 sm:block" aria-hidden="true" />
-              {link.label}
-            </a>
-          {/each}
-        </nav>
-      {:else}
-        <HeaderSearch {...searchWording} />
-      {/if}
-    </div>
+      <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external WhatsApp invite -->
+      <a
+        href={whatsappUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex h-9 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg bg-[#9966CB] px-2.5 text-xs font-bold text-white transition-opacity hover:opacity-90 sm:px-3.5"
+      >
+        <MessageCircle class="size-3.5 shrink-0" />
+        <span>Get job updates</span>
+      </a>
 
-    <!-- One cluster, not two: the bell lives inside HeaderMenu beside the profile it
-         notifies about, so this slot is just the menu. -->
-    <div class={['flex shrink-0 items-center gap-1', wideHeader && 'flex-1 basis-0 justify-end']}>
-      <HeaderMenu />
+      <button
+        type="button"
+        onclick={() => (mobileOpen = !mobileOpen)}
+        aria-label="Toggle navigation menu"
+        aria-expanded={mobileOpen}
+        class="inline-flex size-9 shrink-0 items-center justify-center rounded-lg border border-border text-foreground lg:hidden"
+      >
+        {#if mobileOpen}
+          <X class="size-4" />
+        {:else}
+          <Menu class="size-4" />
+        {/if}
+      </button>
     </div>
   </div>
+
+  <!-- Mobile Navigation Drawer -->
+  {#if mobileOpen}
+    <div class="border-t border-border bg-background px-4 py-4 lg:hidden">
+      <nav class="flex flex-col gap-1" aria-label="Mobile navigation">
+        {#each navItems as item (item.href)}
+          <a
+            href={resolve(item.href)}
+            onclick={() => {
+              mobileOpen = false;
+            }}
+            class={[
+              'rounded-lg px-3.5 py-2.5 text-sm font-bold transition-colors',
+              isActive(item.href)
+                ? 'bg-[#9966CB]/15 text-[#9966CB]'
+                : 'text-[#888888] hover:bg-secondary hover:text-foreground',
+            ]}
+          >
+            {item.label}
+          </a>
+        {/each}
+        <div class="mt-2 flex gap-2 border-t border-border pt-3">
+          <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- mailto link -->
+          <a
+            href="mailto:{postJobEmail}?subject=Post%20a%20VC%20job"
+            class="inline-flex h-9 flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg border border-border px-3 text-xs font-bold text-foreground"
+          >
+            <Plus class="size-3.5 shrink-0" />
+            Post a job
+          </a>
+          <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external WhatsApp invite -->
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex h-9 flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg bg-[#9966CB] px-3 text-xs font-bold text-white"
+          >
+            <MessageCircle class="size-3.5 shrink-0" />
+            Get job updates
+          </a>
+        </div>
+      </nav>
+    </div>
+  {/if}
 </header>

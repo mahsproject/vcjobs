@@ -33,7 +33,7 @@
   };
 
   // The site/API's own status is a separate concern from the ingest fleet above —
-  // one is "is freehire.me itself working", the other is "are the crawlers working".
+  // one is "is vcjobs.io itself working", the other is "are the crawlers working".
   const SITE_HEADLINE: Record<HealthStatus, string> = {
     operational: 'API operational',
     degraded: 'API degraded',

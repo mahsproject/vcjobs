@@ -3,10 +3,10 @@
   import { resolve } from '$app/paths';
   import Seo from '#lib/components/Seo.svelte';
 
-  const repoUrl = 'https://github.com/strelov1/freehire';
-  const issuesUrl = 'https://github.com/strelov1/freehire/issues';
+  const repoUrl = '/about';
+  const issuesUrl = '/support';
   const telegramUrl = 'https://t.me/freehiredev';
-  const contactEmail = 'hello@freehire.me';
+  const contactEmail = 'Ozadhanvi99@gmail.com';
 
   const canonical = $derived(`${page.url.origin}/support`);
 
@@ -14,8 +14,8 @@
 </script>
 
 <Seo
-  title="Support — freehire"
-  description="Help with freehire on the web and in the mobile app: how the profile match works, managing your subscription, deleting your account, and how to reach us."
+  title="Support — VC Jobs"
+  description="Help with VC Jobs on the web and in the mobile app: how the profile match works, managing your subscription, deleting your account, and how to reach us."
   {canonical}
 />
 
@@ -30,7 +30,7 @@
       Something not working, or not behaving the way you expected? Write to
       <a href="mailto:{contactEmail}" class={link}>{contactEmail}</a> — a person reads it. For
       anything that looks like a bug, an issue on
-      <a href={issuesUrl} class={link}>GitHub</a> is even better: freehire is open source, so you can
+      <a href={issuesUrl} class={link}>GitHub</a> is even better: VC Jobs is open source, so you can
       watch the fix happen.
     </p>
 
@@ -88,7 +88,7 @@
       <div class="flex flex-col gap-3 text-sm leading-relaxed text-muted-foreground">
         <p>
           <span class="text-foreground">What does "Open 75d" mean on a card?</span> How long the
-          posting has actually been open, when that is longer than its date suggests. freehire also
+          posting has actually been open, when that is longer than its date suggests. VC Jobs also
           marks a posting that has been reposted, or that has several live copies — the signals that
           usually mean a role is not really being filled.
         </p>
@@ -99,7 +99,7 @@
         </p>
         <p>
           <span class="text-foreground">The apply button opens someone else's site.</span> That is
-          the employer's own application form. freehire aggregates postings; it does not receive
+          the employer's own application form. VC Jobs aggregates postings; it does not receive
           applications, and never applies on your behalf.
         </p>
       </div>
@@ -142,7 +142,7 @@
       <div class="flex flex-col gap-3 text-sm leading-relaxed text-muted-foreground">
         <p>
           <span class="text-foreground">Notifications are not arriving.</span> Check that
-          notifications are allowed for freehire in your device settings, and that the device is
+          notifications are allowed for VC Jobs in your device settings, and that the device is
           listed on your account. Signing out removes that device's registration.
         </p>
         <p>
@@ -163,7 +163,7 @@
           it removes.
         </li>
         <li>
-          <a href={resolve('/how-it-works')} class={link}>How freehire works</a> — where the jobs come
+          <a href={resolve('/how-it-works')} class={link}>How VC Jobs works</a> — where the jobs come
           from and how they are deduplicated.
         </li>
         <li><a href={repoUrl} class={link}>Source code</a> — the honest answer to "what does it do with my data".</li>

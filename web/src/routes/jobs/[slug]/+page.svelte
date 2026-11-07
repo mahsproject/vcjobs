@@ -1,13 +1,19 @@
 <script lang="ts">
-  import { resolve } from '$app/paths';
   import { page } from '$app/state';
-  import JobRelated from '#lib/components/JobRelated.svelte';
-  import JobSeeAlso from '#lib/components/JobSeeAlso.svelte';
-  import JobView from '#lib/components/JobView.svelte';
+  import { resolve } from '$app/paths';
+  import {
+    ArrowLeft,
+    ArrowUpRight,
+    Building2,
+    MapPin,
+    Briefcase,
+    Calendar,
+    Globe,
+    FileSpreadsheet,
+    MessageCircle,
+    Plus,
+  } from '@lucide/svelte';
   import Seo from '#lib/components/Seo.svelte';
-  import { filterHref } from '#lib/enrichment.js';
-  import { categoryLabel } from '#lib/labels.js';
-  import { categoryLandingLink } from '#lib/roleLandings.js';
   import {
     breadcrumbJsonLd,
     jobPageTitle,
@@ -15,115 +21,298 @@
     jsonLdScript,
     metaDescription,
   } from '#lib/seo.js';
-  import { Breadcrumbs } from '#lib/ui/index.js';
   import type { PageData } from './$types';
 
   let { data }: { data: PageData } = $props();
 
-  const marketLink = $derived(categoryLandingLink(data.job.enrichment.category));
   const origin = $derived(page.url.origin);
   const canonical = $derived(`${origin}/jobs/${data.job.public_slug}`);
-  // The per-job OG preview lives beside the canonical URL; og:image must be absolute.
-  const ogImage = $derived(`${canonical}/og.png`);
-  // A blank job body strips to "", which would otherwise suppress the
-  // <meta name="description"> tag entirely (Seo.svelte omits it when empty).
   const description = $derived(
     metaDescription(data.job.description) ||
-      (data.job.company
-        ? `${data.job.title} at ${data.job.company} — apply on freehire.`
-        : `${data.job.title} — apply on freehire.`)
+      `${data.job.title} at ${data.job.company} — apply on VC Jobs.`,
   );
-  // The one breadcrumb trail behind both the visible nav (via visibleBreadcrumbItems below)
-  // and the structured data — a single array so the two can never disagree about what the
-  // trail is. There used to
-  // be no `Jobs` level here: `/jobs` was a 301 to `/`, and a trail step naming a redirect
-  // is a step Google resolves away. That is now backwards — `/jobs` is the real feed and
-  // `/` is the one that redirects (jobs/+page.server.ts's own comment: "The feed used to
-  // live at `/`, which is now the landing page") — so the level belongs back.
-  //
-  // The category level in between is the same facet `/jobs` itself filters on
-  // (search.query_filter's StringFacets["category"]), via filterHref — the same helper
-  // every other facet link in the app builds its /jobs?<facet>= URL through, rather than
-  // a hand-rolled, unencoded string. `categoryLabel` matches what marketLink.label would
-  // say when marketLink exists (categoryLandingLink sets it from the same function) and
-  // also covers a category the market-landing table doesn't publish (marketLink null,
-  // e.g. `other`); a job with no category at all skips the level.
+
   const breadcrumbItems = $derived([
-    { name: 'Jobs', href: '/jobs' },
-    ...(data.job.enrichment.category
-      ? [
-          {
-            name: categoryLabel(data.job.enrichment.category),
-            href: filterHref('category', data.job.enrichment.category),
-          },
-        ]
-      : []),
-    { name: data.job.title },
+    { name: 'Home', url: `${origin}/` },
+    { name: 'Open Roles', url: `${origin}/jobs` },
+    { name: data.job.company, url: `${origin}/companies/${data.job.company_slug}` },
+    { name: data.job.title, url: canonical },
   ]);
-  // Drops the trailing current-page entry for the visible nav: JobView renders the same
-  // title as the <h1> right below it, so repeating it here only wraps a long title onto
-  // a second line. JSON-LD below keeps the full breadcrumbItems — schema.org's
-  // BreadcrumbList is meant to name the page itself.
-  const visibleBreadcrumbItems = $derived(breadcrumbItems.slice(0, -1));
+
   const jsonLd = $derived(
-    jsonLdScript([
-      jobPostingJsonLd(data.job, origin),
-      breadcrumbJsonLd(
-        breadcrumbItems.map((item) => ({
-          name: item.name,
-          url: item.href ? `${origin}${item.href}` : canonical,
-        })),
-      ),
-    ])
+    jsonLdScript([jobPostingJsonLd(data.job, origin), breadcrumbJsonLd(breadcrumbItems)]),
   );
+
+  function formatWorkMode(mode?: string): string {
+    if (mode === 'remote') return 'Remote';
+    if (mode === 'hybrid') return 'Hybrid';
+    return 'On-site';
+  }
+
+  function formatTrackBadge(cat?: string): string {
+    if (cat === 'finance') return 'Investment Team';
+    if (cat === 'operations') return 'Platform & Operations';
+    if (cat === 'product') return 'Portfolio & EIR';
+    if (cat === 'marketing') return 'Marketing & Brand';
+    if (cat === 'recruiting') return 'Talent & People';
+    if (cat === 'legal') return 'Legal & Compliance';
+    return 'Venture Role';
+  }
+
+  function formatSourceLabel(source?: string): string {
+    if (source === 'google_sheets') return 'Google Sheet Sync';
+    if (source === 'consider') return 'VC Talent Network Live';
+    if (source === 'getro') return 'VC Career Board Live';
+    if (source === 'zoho_recruit') return 'Zoho Recruit Live';
+    if (source === 'greenhouse') return 'Greenhouse Live';
+    if (source === 'lever') return 'Lever Live';
+    if (source === 'ashby') return 'Ashby Live';
+    if (source === 'workable') return 'Workable Live';
+    if (source === 'smartrecruiters') return 'SmartRecruiters Live';
+    return 'Live ATS';
+  }
 </script>
 
-<Seo title={jobPageTitle(data.job)} {description} {canonical} image={ogImage} />
+<Seo title={jobPageTitle(data.job)} {description} {canonical} />
 
 <svelte:head>
-  <!-- JobPosting structured data — eligible for Google Jobs. -->
-  <!-- eslint-disable-next-line svelte/no-at-html-tags -- non-executable JSON-LD built by jsonLdScript, which escapes `<`; raw injection is the only way to emit a structured-data <script> -->
+  <!-- eslint-disable-next-line svelte/no-at-html-tags -- non-executable JSON-LD built by jsonLdScript -->
   {@html jsonLd}
 </svelte:head>
 
-<!-- Slightly wider mobile gutter than the site-wide px-4: the description is dense
-     raw text with no card wrapper, so 16px reads tight against the edge; sm+ falls
-     back to the shared px-4 rhythm. -->
-<div class="mx-auto w-full max-w-6xl px-5 py-6 sm:px-4">
-  <JobView job={data.job} applyForm={data.applyForm} hasSimilar={data.similar.length > 0} />
+<div class="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
+  <!-- Breadcrumb & Back Link -->
+  <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
+    <a
+      href={resolve('/jobs')}
+      class="inline-flex items-center gap-1.5 text-xs font-bold text-[#888888] transition-colors hover:text-[#9966CB]"
+    >
+      <ArrowLeft class="size-3.5" />
+      <span>Back to Open Roles</span>
+    </a>
 
-  <!-- `#similar-jobs` is where a closed posting's notice points its reader. JobRelated opens
-       on the Similar tab whenever there are similar postings, which is the only case in
-       which JobView offers the link. -->
-  <div id="similar-jobs">
-    <JobRelated
-      similar={data.similar}
-      copies={data.copies}
-      copiesTotal={data.copiesTotal}
-      slug={data.job.public_slug}
-    />
+    <nav aria-label="Breadcrumb" class="flex items-center gap-2 text-xs font-normal text-[#888888]">
+      <a href={resolve('/')} class="hover:text-foreground">Home</a>
+      <span>/</span>
+      <a href={resolve('/jobs')} class="hover:text-foreground">Open Roles</a>
+      <span>/</span>
+      <a
+        href={resolve('/companies/[slug]', { slug: data.job.company_slug })}
+        class="font-bold text-foreground hover:text-[#9966CB]"
+      >
+        {data.job.company}
+      </a>
+    </nav>
   </div>
 
-  <!-- Below the related postings and right above "See also" on every width: at the top
-       of the page it sat far from the title/apply button on a phone, and it stole space
-       from the match card and provenance line above the title on a wide screen too. -->
-  <Breadcrumbs items={visibleBreadcrumbItems} class="my-4" />
+  <div class="grid gap-8 lg:grid-cols-[1.65fr_0.85fr]">
+    <!-- Main Role Content Card -->
+    <div class="flex flex-col gap-6">
+      <header class="rounded-2xl border border-border bg-card p-6 sm:p-8">
+        <div class="flex flex-wrap items-center gap-2">
+          <span
+            class="rounded-full bg-[#9966CB]/12 px-3 py-1 text-xs font-bold text-[#9966CB]"
+          >
+            {formatTrackBadge(data.job.enrichment?.category)}
+          </span>
+          <span
+            class="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1 text-xs font-normal text-[#888888]"
+          >
+            {#if data.job.source === 'google_sheets'}
+              <FileSpreadsheet class="size-3.5 text-[#9966CB]" />
+            {:else}
+              <Globe class="size-3.5 text-[#9966CB]" />
+            {/if}
+            {formatSourceLabel(data.job.source)}
+          </span>
+        </div>
 
-  <JobSeeAlso cards={data.seeAlso} />
+        <h1 class="mt-4 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+          {data.job.title}
+        </h1>
 
-  <!-- The bridge from a posting to the market pages. Costs nothing to render: the
-       category is already on the job, and the category table needs no gate check
-       (see categoryLandingLink). Without this the /roles tree is reachable only from
-       the footer and the sitemap, which is how a page ends up crawled but not
-       weighted. -->
-  {#if marketLink}
-    <p class="mt-8 text-sm">
-      <a
-        href={resolve('/roles/[category]', { category: marketLink.slug })}
-        class="text-brand-strong hover:underline"
-      >
-        {marketLink.label} jobs by country — openings, pay and top skills →
-      </a>
-    </p>
+        <div class="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-normal text-[#888888] sm:text-sm">
+          <a
+            href={resolve('/companies/[slug]', { slug: data.job.company_slug })}
+            class="inline-flex items-center gap-1.5 font-bold text-foreground hover:text-[#9966CB]"
+          >
+            <Building2 class="size-4 text-[#9966CB]" />
+            {data.job.company}
+          </a>
+          <span class="inline-flex items-center gap-1.5">
+            <MapPin class="size-4 text-[#9966CB]" />
+            {data.job.location}
+          </span>
+          <span class="inline-flex items-center gap-1.5">
+            <Briefcase class="size-4 text-[#9966CB]" />
+            {formatWorkMode(data.job.work_mode)}
+          </span>
+          {#if data.job.posted_at}
+            <span class="inline-flex items-center gap-1.5">
+              <Calendar class="size-4 text-[#9966CB]" />
+              Posted {data.job.posted_at.slice(0, 10)}
+            </span>
+          {/if}
+        </div>
+
+        {#if data.job.skills?.length > 0}
+          <div class="mt-5 flex flex-wrap gap-1.5 border-t border-border pt-4">
+            {#each data.job.skills as skill (skill)}
+              <span
+                class="rounded-lg bg-secondary px-2.5 py-1 text-xs font-normal text-[#888888]"
+              >
+                {skill}
+              </span>
+            {/each}
+          </div>
+        {/if}
+
+        <div class="mt-6 flex flex-wrap items-center gap-3 border-t border-border pt-6">
+          <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external ATS apply URL -->
+          <a
+            href={data.job.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex h-11 items-center gap-2 rounded-xl bg-[#9966CB] px-6 text-sm font-bold text-white transition-opacity hover:opacity-90"
+          >
+            <span>Apply on Official Portal</span>
+            <ArrowUpRight class="size-4" />
+          </a>
+
+          <a
+            href={resolve('/companies/[slug]', { slug: data.job.company_slug })}
+            class="inline-flex h-11 items-center gap-2 rounded-xl border border-border bg-background px-5 text-sm font-bold text-foreground transition-colors hover:border-[#9966CB] hover:text-[#9966CB]"
+          >
+            <span>View {data.job.company} Profile</span>
+          </a>
+        </div>
+      </header>
+
+      <!-- Sanitized Role Description -->
+      <section class="rounded-2xl border border-border bg-card p-6 sm:p-8">
+        <h2 class="text-lg font-bold text-foreground">Role Overview &amp; Requirements</h2>
+        <div
+          class="prose prose-sm dark:prose-invert mt-4 max-w-none font-normal leading-relaxed text-foreground prose-headings:font-bold prose-a:text-[#9966CB]"
+        >
+          <!-- eslint-disable-next-line svelte/no-at-html-tags -- sanitized on server via sanitizeJobHtml() -->
+          {@html data.job.description}
+        </div>
+      </section>
+    </div>
+
+    <!-- Right Sidebar: Fund Info + WhatsApp + Post a Job -->
+    <aside class="flex flex-col gap-6">
+      <div class="rounded-2xl border border-border bg-card p-6">
+        <div class="flex items-center gap-3">
+          <div
+            class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-[#9966CB]/12 text-sm font-bold text-[#9966CB]"
+          >
+            {data.job.company.slice(0, 2).toUpperCase()}
+          </div>
+          <div>
+            <h2 class="text-base font-bold text-foreground">{data.job.company}</h2>
+            <p class="text-xs font-normal text-[#888888]">
+              {data.fund?.hq_country === 'in' ? 'India Venture Capital Fund' : 'Global Venture Capital Fund'}
+            </p>
+          </div>
+        </div>
+
+        {#if data.fund?.tagline}
+          <p class="mt-4 text-xs font-normal leading-relaxed text-[#888888]">
+            {data.fund.tagline}
+          </p>
+        {/if}
+
+        {#if data.fund?.industries?.length}
+          <div class="mt-4 flex flex-wrap gap-1.5">
+            {#each data.fund.industries as ind (ind)}
+              <span class="rounded-md bg-secondary px-2.5 py-1 text-[11px] font-bold text-foreground">
+                {ind}
+              </span>
+            {/each}
+          </div>
+        {/if}
+
+        <div class="mt-5 flex flex-col gap-2.5 border-t border-border pt-4">
+          <a
+            href={resolve('/companies/[slug]', { slug: data.job.company_slug })}
+            class="inline-flex h-10 items-center justify-center rounded-xl border border-border bg-background px-4 text-xs font-bold text-foreground transition-colors hover:border-[#9966CB] hover:text-[#9966CB]"
+          >
+            All roles at {data.job.company}
+          </a>
+          {#if data.fund?.website}
+            <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external website -->
+            <a
+              href={data.fund.website}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex h-10 items-center justify-center gap-1.5 rounded-xl border border-border bg-background px-4 text-xs font-bold text-[#888888] transition-colors hover:border-[#9966CB] hover:text-foreground"
+            >
+              <span>Official Fund Website</span>
+              <ArrowUpRight class="size-3.5" />
+            </a>
+          {/if}
+        </div>
+      </div>
+
+      <!-- Community & Job Submission Card -->
+      <div class="rounded-2xl border border-[#1E1E1E] bg-[#1E1E1E] p-6 text-white">
+        <span class="text-xs font-bold tracking-[0.12em] uppercase text-[#9966CB]">
+          ^ VC Jobs Alerts
+        </span>
+        <h3 class="mt-2 text-base font-bold text-white">
+          Get instant VC role updates on WhatsApp
+        </h3>
+        <p class="mt-1.5 text-xs font-normal leading-relaxed text-[#888888]">
+          Receive real-time alerts whenever new analyst, associate, principal, or platform roles go live.
+        </p>
+        <div class="mt-4 flex flex-col gap-2.5">
+          <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external WhatsApp link -->
+          <a
+            href={data.whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#9966CB] px-4 text-xs font-bold text-white transition-opacity hover:opacity-90"
+          >
+            <MessageCircle class="size-3.5" />
+            <span>Get job updates</span>
+          </a>
+
+          <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- mailto link -->
+          <a
+            href="mailto:{data.postJobEmail}?subject=Post%20a%20VC%20job"
+            class="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/5 px-4 text-xs font-bold text-white transition-colors hover:border-[#9966CB]"
+          >
+            <Plus class="size-3.5" />
+            <span>Post a job</span>
+          </a>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Related VC Roles -->
+  {#if data.similar.length > 0}
+    <section class="mt-12 border-t border-border pt-10">
+      <h2 class="text-xl font-bold text-foreground">Related Venture Capital Roles</h2>
+      <div class="mt-4 grid gap-4 sm:grid-cols-2">
+        {#each data.similar as sim (sim.public_slug)}
+          <a
+            href={resolve('/jobs/[slug]', { slug: sim.public_slug })}
+            class="group flex items-center justify-between gap-4 rounded-2xl border border-border bg-card p-5 transition-colors hover:border-[#9966CB]"
+          >
+            <div class="min-w-0">
+              <p class="truncate text-sm font-bold text-foreground group-hover:text-[#9966CB]">
+                {sim.title}
+              </p>
+              <p class="mt-1 truncate text-xs font-normal text-[#888888]">
+                {sim.company} · {sim.location}
+              </p>
+            </div>
+            <ArrowUpRight class="size-4 shrink-0 text-[#9966CB]" />
+          </a>
+        {/each}
+      </div>
+    </section>
   {/if}
 </div>

@@ -1,7 +1,7 @@
 import { redirect } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
-// The short form of an invite link: `freehire.me/r/<code>`.
+// The short form of an invite link: `vcjobs.io/r/<code>`.
 //
 // It carries no capture logic of its own. The request hook in hooks.server.ts already
 // stores a `ref` parameter arriving on ANY url, so this route's whole job is to turn a

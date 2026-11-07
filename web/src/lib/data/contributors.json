@@ -27,7 +27,7 @@
           "number": 3654,
           "title": "fix(discover-workstream): trim title suffix when it matches at position 0",
           "mergedAt": "2026-10-26T16:11:48Z",
-          "url": "https://github.com/strelov1/freehire/pull/3654"
+          "url": "/about"
         }
       ]
     },
@@ -46,13 +46,13 @@
           "number": 3700,
           "title": "fix: improve stripSQLComments to also strip block comments and prevent false positives",
           "mergedAt": "2026-10-27T23:52:24Z",
-          "url": "https://github.com/strelov1/freehire/pull/3700"
+          "url": "/about"
         },
         {
           "number": 3693,
           "title": "fix: improve stripSQLComments to also strip block comments",
           "mergedAt": "2026-10-27T16:10:38Z",
-          "url": "https://github.com/strelov1/freehire/pull/3693"
+          "url": "/about"
         }
       ]
     },
@@ -83,7 +83,7 @@
           "number": 3445,
           "title": "fix(dedup): never elect a private posting as a role cluster's canon",
           "mergedAt": "2026-10-22T14:24:36Z",
-          "url": "https://github.com/strelov1/freehire/pull/3445"
+          "url": "/about"
         }
       ]
     },
@@ -102,43 +102,43 @@
           "number": 1954,
           "title": "Detect Polish English-level requirements in EnglishLevel",
           "mergedAt": "2026-08-15T11:51:53Z",
-          "url": "https://github.com/strelov1/freehire/pull/1954"
+          "url": "/about"
         },
         {
           "number": 1952,
           "title": "fix feedback for companies. now each user can add only one category of feedback",
           "mergedAt": "2026-08-15T11:36:43Z",
-          "url": "https://github.com/strelov1/freehire/pull/1952"
+          "url": "/about"
         },
         {
           "number": 1953,
           "title": "Fall back to Corporate/OrganizationDescriptionStr when Oracle's External* fields are blank",
           "mergedAt": "2026-08-15T11:36:36Z",
-          "url": "https://github.com/strelov1/freehire/pull/1953"
+          "url": "/about"
         },
         {
           "number": 1832,
           "title": "add feedback for companies.",
           "mergedAt": "2026-08-12T17:34:51Z",
-          "url": "https://github.com/strelov1/freehire/pull/1832"
+          "url": "/about"
         },
         {
           "number": 1808,
           "title": "fix(sources): resolve lever 404 block from issue #1529",
           "mergedAt": "2026-08-11T22:18:28Z",
-          "url": "https://github.com/strelov1/freehire/pull/1808"
+          "url": "/about"
         },
         {
           "number": 1755,
           "title": "add pwa support",
           "mergedAt": "2026-08-11T17:41:46Z",
-          "url": "https://github.com/strelov1/freehire/pull/1755"
+          "url": "/about"
         },
         {
           "number": 1621,
           "title": "fixes and tool for vacancies filtering",
           "mergedAt": "2026-08-07T22:14:38Z",
-          "url": "https://github.com/strelov1/freehire/pull/1621"
+          "url": "/about"
         }
       ]
     },
@@ -169,7 +169,7 @@
           "number": 3249,
           "title": "docs: add host dependencies section to CONTRIBUTING.md",
           "mergedAt": "2026-10-18T14:36:39Z",
-          "url": "https://github.com/strelov1/freehire/pull/3249"
+          "url": "/about"
         }
       ]
     },
@@ -188,7 +188,7 @@
           "number": 3396,
           "title": "feat(ingest): add devglobaljobs source adapter",
           "mergedAt": "2026-10-21T23:15:44Z",
-          "url": "https://github.com/strelov1/freehire/pull/3396"
+          "url": "/about"
         }
       ]
     },
@@ -207,121 +207,121 @@
           "number": 3658,
           "title": "Bump github.com/valyala/fasthttp from 1.74.0 to 1.76.0",
           "mergedAt": "2026-10-26T19:30:12Z",
-          "url": "https://github.com/strelov1/freehire/pull/3658"
+          "url": "/about"
         },
         {
           "number": 3661,
           "title": "Bump satori from 0.62.0 to 0.63.0 in /web",
           "mergedAt": "2026-10-26T19:30:04Z",
-          "url": "https://github.com/strelov1/freehire/pull/3661"
+          "url": "/about"
         },
         {
           "number": 3662,
           "title": "Bump eslint from 10.12.0 to 10.13.0 in /design-system",
           "mergedAt": "2026-10-26T19:29:57Z",
-          "url": "https://github.com/strelov1/freehire/pull/3662"
+          "url": "/about"
         },
         {
           "number": 3659,
           "title": "Bump typescript-eslint from 8.71.2 to 8.72.0 in /design-system",
           "mergedAt": "2026-10-26T18:11:28Z",
-          "url": "https://github.com/strelov1/freehire/pull/3659"
+          "url": "/about"
         },
         {
           "number": 3657,
           "title": "Bump github.com/alicebob/miniredis/v2 from 2.39.0 to 2.40.0",
           "mergedAt": "2026-10-26T18:09:39Z",
-          "url": "https://github.com/strelov1/freehire/pull/3657"
+          "url": "/about"
         },
         {
           "number": 3660,
           "title": "Bump @scalar/api-reference from 1.69.2 to 1.75.0 in /web",
           "mergedAt": "2026-10-26T18:09:26Z",
-          "url": "https://github.com/strelov1/freehire/pull/3660"
+          "url": "/about"
         },
         {
           "number": 3532,
           "title": "Bump svelte-dnd-action from 0.9.79 to 0.9.80 in /web",
           "mergedAt": "2026-10-25T13:26:32Z",
-          "url": "https://github.com/strelov1/freehire/pull/3532"
+          "url": "/about"
         },
         {
           "number": 3528,
           "title": "Bump github.com/prometheus/common from 0.72.0 to 0.72.1",
           "mergedAt": "2026-10-25T13:02:53Z",
-          "url": "https://github.com/strelov1/freehire/pull/3528"
+          "url": "/about"
         },
         {
           "number": 3529,
           "title": "Bump github.com/gowebpki/jcs from 1.0.0 to 1.0.2",
           "mergedAt": "2026-10-25T13:02:45Z",
-          "url": "https://github.com/strelov1/freehire/pull/3529"
+          "url": "/about"
         },
         {
           "number": 3531,
           "title": "Bump github.com/minio/minio-go/v7 from 7.3.0 to 7.4.1",
           "mergedAt": "2026-10-25T13:02:36Z",
-          "url": "https://github.com/strelov1/freehire/pull/3531"
+          "url": "/about"
         },
         {
           "number": 3533,
           "title": "Bump flag-icons from 7.5.0 to 7.6.0 in /design-system",
           "mergedAt": "2026-10-25T13:02:21Z",
-          "url": "https://github.com/strelov1/freehire/pull/3533"
+          "url": "/about"
         },
         {
           "number": 3534,
           "title": "Bump jsdom from 30.1.1 to 30.1.3 in /design-system",
           "mergedAt": "2026-10-25T13:02:12Z",
-          "url": "https://github.com/strelov1/freehire/pull/3534"
+          "url": "/about"
         },
         {
           "number": 3535,
           "title": "Bump github.com/aws/aws-sdk-go-v2/service/sqs from 1.52.1 to 1.52.4",
           "mergedAt": "2026-10-25T13:02:03Z",
-          "url": "https://github.com/strelov1/freehire/pull/3535"
+          "url": "/about"
         },
         {
           "number": 3536,
           "title": "Bump isomorphic-dompurify from 4.4.0 to 4.6.0 in /web",
           "mergedAt": "2026-10-25T13:01:54Z",
-          "url": "https://github.com/strelov1/freehire/pull/3536"
+          "url": "/about"
         },
         {
           "number": 3537,
           "title": "Bump posthog-js from 1.435.7 to 1.438.12 in /web",
           "mergedAt": "2026-10-25T13:01:46Z",
-          "url": "https://github.com/strelov1/freehire/pull/3537"
+          "url": "/about"
         },
         {
           "number": 3539,
           "title": "Bump @scalar/types from 0.22.4 to 0.24.0 in /web",
           "mergedAt": "2026-10-25T13:01:38Z",
-          "url": "https://github.com/strelov1/freehire/pull/3539"
+          "url": "/about"
         },
         {
           "number": 3540,
           "title": "Bump svelte-check from 4.7.6 to 4.7.7 in /design-system",
           "mergedAt": "2026-10-25T13:01:29Z",
-          "url": "https://github.com/strelov1/freehire/pull/3540"
+          "url": "/about"
         },
         {
           "number": 3541,
           "title": "Bump actions/setup-python from 6.3.0 to 7.0.0",
           "mergedAt": "2026-10-25T13:01:22Z",
-          "url": "https://github.com/strelov1/freehire/pull/3541"
+          "url": "/about"
         },
         {
           "number": 3542,
           "title": "Bump simple-icons from 16.30.0 to 16.35.0 in /web",
           "mergedAt": "2026-10-25T13:01:14Z",
-          "url": "https://github.com/strelov1/freehire/pull/3542"
+          "url": "/about"
         },
         {
           "number": 3549,
           "title": "Bump happy-dom from 21.0.3 to 21.0.4 in /extension",
           "mergedAt": "2026-10-25T13:01:06Z",
-          "url": "https://github.com/strelov1/freehire/pull/3549"
+          "url": "/about"
         }
       ]
     },
@@ -340,49 +340,49 @@
           "number": 1100,
           "title": "DS Phase 6: Documentation",
           "mergedAt": "2026-07-30T15:45:58Z",
-          "url": "https://github.com/strelov1/freehire/pull/1100"
+          "url": "/about"
         },
         {
           "number": 1099,
           "title": "ds: phase 5 — Storybook",
           "mergedAt": "2026-07-30T14:33:20Z",
-          "url": "https://github.com/strelov1/freehire/pull/1099"
+          "url": "/about"
         },
         {
           "number": 1098,
           "title": "ds: phase 4 — component primitives",
           "mergedAt": "2026-07-25T14:48:03Z",
-          "url": "https://github.com/strelov1/freehire/pull/1098"
+          "url": "/about"
         },
         {
           "number": 1116,
           "title": "ds: remove orphan sd.config.mjs",
           "mergedAt": "2026-07-25T11:50:02Z",
-          "url": "https://github.com/strelov1/freehire/pull/1116"
+          "url": "/about"
         },
         {
           "number": 1114,
           "title": "DS Phase 3: Design tokens",
           "mergedAt": "2026-07-24T20:17:10Z",
-          "url": "https://github.com/strelov1/freehire/pull/1114"
+          "url": "/about"
         },
         {
           "number": 1088,
           "title": "DS Phase 2: Package boundary and tooling migration",
           "mergedAt": "2026-07-24T02:09:07Z",
-          "url": "https://github.com/strelov1/freehire/pull/1088"
+          "url": "/about"
         },
         {
           "number": 1087,
           "title": "DS Phase 1: Investigate and inventory",
           "mergedAt": "2026-07-23T22:30:41Z",
-          "url": "https://github.com/strelov1/freehire/pull/1087"
+          "url": "/about"
         },
         {
           "number": 708,
           "title": "(enhancement): Adopt AGENTS.md open standard",
           "mergedAt": "2026-07-15T03:02:19Z",
-          "url": "https://github.com/strelov1/freehire/pull/708"
+          "url": "/about"
         }
       ]
     },
@@ -413,7 +413,7 @@
           "number": 3265,
           "title": "fix(compose): make s3-init bucket creation idempotent",
           "mergedAt": "2026-10-19T02:37:06Z",
-          "url": "https://github.com/strelov1/freehire/pull/3265"
+          "url": "/about"
         }
       ]
     },
@@ -432,7 +432,7 @@
           "number": 2765,
           "title": "#2755: add a direct-apply shortcut to job list cards",
           "mergedAt": "2026-09-13T12:35:14Z",
-          "url": "https://github.com/strelov1/freehire/pull/2765"
+          "url": "/about"
         }
       ]
     },
@@ -451,31 +451,31 @@
           "number": 1719,
           "title": "feat(sources): add Remotli source adapter",
           "mergedAt": "2026-08-11T03:38:51Z",
-          "url": "https://github.com/strelov1/freehire/pull/1719"
+          "url": "/about"
         },
         {
           "number": 1717,
           "title": "feat(sources): add NoDesk source adapter",
           "mergedAt": "2026-08-11T02:39:00Z",
-          "url": "https://github.com/strelov1/freehire/pull/1717"
+          "url": "/about"
         },
         {
           "number": 1720,
           "title": "feat(sources): add The Muse source adapter",
           "mergedAt": "2026-08-11T02:38:50Z",
-          "url": "https://github.com/strelov1/freehire/pull/1720"
+          "url": "/about"
         },
         {
           "number": 1724,
           "title": "feat(sources): add SolidJobs source adapter (IT division)",
           "mergedAt": "2026-08-11T02:38:47Z",
-          "url": "https://github.com/strelov1/freehire/pull/1724"
+          "url": "/about"
         },
         {
           "number": 1718,
           "title": "feat(sources): add Cryptocurrency Jobs source adapter",
           "mergedAt": "2026-08-11T02:05:14Z",
-          "url": "https://github.com/strelov1/freehire/pull/1718"
+          "url": "/about"
         }
       ]
     },
@@ -506,13 +506,13 @@
           "number": 3725,
           "title": "Give form Save buttons the brand fill and keep dialog titles clear of the close button",
           "mergedAt": "2026-10-27T23:51:03Z",
-          "url": "https://github.com/strelov1/freehire/pull/3725"
+          "url": "/about"
         },
         {
           "number": 3591,
           "title": "Accept an uploaded résumé at auto-apply's start gate",
           "mergedAt": "2026-10-25T18:07:44Z",
-          "url": "https://github.com/strelov1/freehire/pull/3591"
+          "url": "/about"
         }
       ]
     },
@@ -579,7 +579,7 @@
           "number": 3237,
           "title": "Respect seniority preferences in profile-derived searches",
           "mergedAt": "2026-10-17T02:40:53Z",
-          "url": "https://github.com/strelov1/freehire/pull/3237"
+          "url": "/about"
         }
       ]
     },
@@ -598,7 +598,7 @@
           "number": 3407,
           "title": "fix(web): drop a swipe card whose job is gone instead of restoring it",
           "mergedAt": "2026-10-21T15:07:39Z",
-          "url": "https://github.com/strelov1/freehire/pull/3407"
+          "url": "/about"
         }
       ]
     },
@@ -629,13 +629,13 @@
           "number": 1748,
           "title": "feat(auth): add mobile auth v2 (verifier-bound OAuth, native Apple, recent auth & connected identities)",
           "mergedAt": "2026-08-11T11:56:36Z",
-          "url": "https://github.com/strelov1/freehire/pull/1748"
+          "url": "/about"
         },
         {
           "number": 1657,
           "title": "feat(auth): harden session contracts, recovery atomicity & throttling for mobile foundation",
           "mergedAt": "2026-08-08T22:48:59Z",
-          "url": "https://github.com/strelov1/freehire/pull/1657"
+          "url": "/about"
         }
       ]
     },
@@ -666,37 +666,37 @@
           "number": 1818,
           "title": "Align tailored CVs to JD skill wording and stop reset from wiping résumé sections",
           "mergedAt": "2026-08-12T03:09:33Z",
-          "url": "https://github.com/strelov1/freehire/pull/1818"
+          "url": "/about"
         },
         {
           "number": 1817,
           "title": "Require gofmt, vet, and unit tests before committing Go",
           "mergedAt": "2026-08-12T00:47:00Z",
-          "url": "https://github.com/strelov1/freehire/pull/1817"
+          "url": "/about"
         },
         {
           "number": 1754,
           "title": "Put tailored vacancies on the Tracking Kanban",
           "mergedAt": "2026-08-11T21:21:45Z",
-          "url": "https://github.com/strelov1/freehire/pull/1754"
+          "url": "/about"
         },
         {
           "number": 1737,
           "title": "Profile contacts, experience projects, and coverage tooling",
           "mergedAt": "2026-08-11T16:05:16Z",
-          "url": "https://github.com/strelov1/freehire/pull/1737"
+          "url": "/about"
         },
         {
           "number": 1622,
           "title": "feat(cv): freshen tailor bootstrap, experience order, and profile skills",
           "mergedAt": "2026-08-07T22:26:18Z",
-          "url": "https://github.com/strelov1/freehire/pull/1622"
+          "url": "/about"
         },
         {
           "number": 1604,
           "title": "fix(assistant): close dangling tool_use when replaying history",
           "mergedAt": "2026-08-07T01:31:07Z",
-          "url": "https://github.com/strelov1/freehire/pull/1604"
+          "url": "/about"
         }
       ]
     },
@@ -715,13 +715,13 @@
           "number": 3651,
           "title": "Search: resolve city filter values through the location dictionary",
           "mergedAt": "2026-10-26T15:44:25Z",
-          "url": "https://github.com/strelov1/freehire/pull/3651"
+          "url": "/about"
         },
         {
           "number": 3652,
           "title": "Autofill: test the filler against captured German Personio and softgarden forms",
           "mergedAt": "2026-10-26T13:37:54Z",
-          "url": "https://github.com/strelov1/freehire/pull/3652"
+          "url": "/about"
         }
       ]
     },
@@ -776,7 +776,7 @@
           "number": 3101,
           "title": "Let the salary filter take a ceiling as well as a floor",
           "mergedAt": "2026-10-03T13:13:08Z",
-          "url": "https://github.com/strelov1/freehire/pull/3101"
+          "url": "/about"
         }
       ]
     },
@@ -795,7 +795,7 @@
           "number": 1617,
           "title": "feat(skilltag): add sales and support vocabulary",
           "mergedAt": "2026-08-07T17:32:49Z",
-          "url": "https://github.com/strelov1/freehire/pull/1617"
+          "url": "/about"
         }
       ]
     },
@@ -814,121 +814,121 @@
           "number": 3803,
           "title": "List each EURES country's whole catalogue, not a three-day window",
           "mergedAt": "2026-10-29T02:06:01Z",
-          "url": "https://github.com/strelov1/freehire/pull/3803"
+          "url": "/about"
         },
         {
           "number": 3795,
           "title": "Read a country named after a preposition in a location line",
           "mergedAt": "2026-10-29T01:27:33Z",
-          "url": "https://github.com/strelov1/freehire/pull/3795"
+          "url": "/about"
         },
         {
           "number": 3802,
           "title": "Close stale whatjobs postings per keyword board on the grace window",
           "mergedAt": "2026-10-29T01:18:06Z",
-          "url": "https://github.com/strelov1/freehire/pull/3802"
+          "url": "/about"
         },
         {
           "number": 3799,
           "title": "Retry a failed infojobs listing page",
           "mergedAt": "2026-10-29T01:15:52Z",
-          "url": "https://github.com/strelov1/freehire/pull/3799"
+          "url": "/about"
         },
         {
           "number": 3794,
           "title": "Read a closing ISO code as the country and drop a US town's foreign namesake",
           "mergedAt": "2026-10-29T01:02:40Z",
-          "url": "https://github.com/strelov1/freehire/pull/3794"
+          "url": "/about"
         },
         {
           "number": 3800,
           "title": "Fetch a SuccessFactors page only for postings not yet stored",
           "mergedAt": "2026-10-29T01:02:29Z",
-          "url": "https://github.com/strelov1/freehire/pull/3800"
+          "url": "/about"
         },
         {
           "number": 3796,
           "title": "Hide postings their source stopped showing from search",
           "mergedAt": "2026-10-29T00:24:54Z",
-          "url": "https://github.com/strelov1/freehire/pull/3796"
+          "url": "/about"
         },
         {
           "number": 3769,
           "title": "Add the France Travail adapter (keyed Offres d'emploi v2 API)",
           "mergedAt": "2026-10-29T00:19:23Z",
-          "url": "https://github.com/strelov1/freehire/pull/3769"
+          "url": "/about"
         },
         {
           "number": 3797,
           "title": "Read Croatian and Serbian job titles for category",
           "mergedAt": "2026-10-29T00:09:44Z",
-          "url": "https://github.com/strelov1/freehire/pull/3797"
+          "url": "/about"
         },
         {
           "number": 3793,
           "title": "Let a full-scope API key into the signed-in MCP server",
           "mergedAt": "2026-10-28T23:48:04Z",
-          "url": "https://github.com/strelov1/freehire/pull/3793"
+          "url": "/about"
         },
         {
           "number": 3792,
           "title": "Harden and typeset the tailoring and interview buddies landings",
           "mergedAt": "2026-10-28T22:59:35Z",
-          "url": "https://github.com/strelov1/freehire/pull/3792"
+          "url": "/about"
         },
         {
           "number": 3790,
           "title": "Run the fuzzy dedup pass concurrently and resume it across runs",
           "mergedAt": "2026-10-28T21:30:24Z",
-          "url": "https://github.com/strelov1/freehire/pull/3790"
+          "url": "/about"
         },
         {
           "number": 3791,
           "title": "Answer why a buddy would help, on the landing and in the onboarding letter",
           "mergedAt": "2026-10-28T21:08:28Z",
-          "url": "https://github.com/strelov1/freehire/pull/3791"
+          "url": "/about"
         },
         {
           "number": 3789,
           "title": "Skip an empty DigitalRecruiters ad instead of failing its site",
           "mergedAt": "2026-10-28T21:00:09Z",
-          "url": "https://github.com/strelov1/freehire/pull/3789"
+          "url": "/about"
         },
         {
           "number": 3788,
           "title": "Forbid framing and switch off unused browser features",
           "mergedAt": "2026-10-28T19:19:51Z",
-          "url": "https://github.com/strelov1/freehire/pull/3788"
+          "url": "/about"
         },
         {
           "number": 3787,
           "title": "Announce interview buddies by email: onboarding letter and a one-off campaign",
           "mergedAt": "2026-10-28T19:04:34Z",
-          "url": "https://github.com/strelov1/freehire/pull/3787"
+          "url": "/about"
         },
         {
           "number": 3786,
           "title": "Budget DigitalRecruiters posting reads across the whole run",
           "mergedAt": "2026-10-28T19:03:36Z",
-          "url": "https://github.com/strelov1/freehire/pull/3786"
+          "url": "/about"
         },
         {
           "number": 3785,
           "title": "Read a US/CA code before another country as that country's subdivision",
           "mergedAt": "2026-10-28T18:17:51Z",
-          "url": "https://github.com/strelov1/freehire/pull/3785"
+          "url": "/about"
         },
         {
           "number": 3784,
           "title": "Read a hardware front end as hardware, not web frontend",
           "mergedAt": "2026-10-28T17:49:52Z",
-          "url": "https://github.com/strelov1/freehire/pull/3784"
+          "url": "/about"
         },
         {
           "number": 3783,
           "title": "Resolve Zoho Recruit placeholder company names",
           "mergedAt": "2026-10-28T17:44:15Z",
-          "url": "https://github.com/strelov1/freehire/pull/3783"
+          "url": "/about"
         }
       ]
     },
@@ -959,19 +959,19 @@
           "number": 1886,
           "title": "feat(sources): add the Landing.jobs adapter",
           "mergedAt": "2026-08-14T18:20:15Z",
-          "url": "https://github.com/strelov1/freehire/pull/1886"
+          "url": "/about"
         },
         {
           "number": 1881,
           "title": "docs(architecture): add system architecture documentation with mermaid diagrams",
           "mergedAt": "2026-08-13T19:59:54Z",
-          "url": "https://github.com/strelov1/freehire/pull/1881"
+          "url": "/about"
         },
         {
           "number": 1880,
           "title": "Generate the ghost criterion vocabulary from internal/ghost",
           "mergedAt": "2026-08-13T19:50:25Z",
-          "url": "https://github.com/strelov1/freehire/pull/1880"
+          "url": "/about"
         }
       ]
     },
@@ -990,7 +990,7 @@
           "number": 3688,
           "title": "feat(dict): add odoo, duckdb, deepseek, dspy, litellm, sglang, and mastra skills",
           "mergedAt": "2026-10-27T16:34:22Z",
-          "url": "https://github.com/strelov1/freehire/pull/3688"
+          "url": "/about"
         }
       ]
     },

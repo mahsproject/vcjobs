@@ -27,7 +27,7 @@ const COUNTRY_ALIASES: Record<string, string[]> = {
 /**
  * The part of a posting's location line the browse card has not already said. The card
  * names the country beside its flag and the arrangement in a chip, so seven postings of
- * one employer in seven cities all read "Croatia" until opened (freehire#3894) — the city
+ * one employer in seven cities all read "Croatia" until opened (VC Jobs#3894) — the city
  * is the only part missing. Strips the segments that repeat a shown country (by name,
  * code or common alias) or an arrangement word — including inside a trailing
  * parenthetical, so "Remote (US)" says nothing new while "Zagreb (Sesvete)" stays whole —

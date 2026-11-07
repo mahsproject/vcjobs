@@ -1,41 +1,49 @@
-import { error } from '@sveltejs/kit';
 import { serverApi } from '#lib/server/api.js';
-import { pageExists, pageOffset, pageWithinWindow, parsePage } from '#lib/pagination.js';
+import { getVcCatalog, VC_JOBS_SETTINGS } from '#lib/server/vcJobsEngine.js';
+import { parsePage } from '#lib/pagination.js';
 import type { PageServerLoad } from './$types';
 
-const LIMIT = 20;
-
-// /jobs IS the job feed. Server-render the first page of search results for the
-// current URL filters, so the job rows are in the initial HTML. The URL query
-// already carries the search params (q, facets, sort) in the shape the search API
-// reads; `searchJobs` adds pagination. Filters/sort/"load more" then run
-// client-side over the same client.
-//
-// The feed used to live at `/`, which is now the landing page. Every filter and
-// pagination URL shared while it did still resolves — the homepage loader 301s them
-// here — so this route inherits an audience that has been linking to it under the
-// other path for a year.
-export const load: PageServerLoad = async ({ url, fetch, request }) => {
-  const params = new URLSearchParams(url.searchParams);
-  // `page` addresses the feed rather than filtering it; the API would ignore it,
-  // and leaving it in would make it part of what the client seeds its filters from.
-  params.delete('page');
-
-  // Serve the page the URL asks for, so the <a href> pagination under the feed
-  // leads somewhere: each of those links has to render its own rows.
+export const load: PageServerLoad = async ({ url, fetch }) => {
+  const api = serverApi(fetch);
   const pageNumber = parsePage(url.searchParams);
-  // Before the search, not after: a page past the window is the most expensive one
-  // the URL could name, and refusing it afterwards would mean paying for it first.
-  if (!pageWithinWindow(pageNumber)) error(404, 'Page not found');
-  // Personal filters read the caller's history or experience bank. The cache hook
-  // keeps requests carrying a session private (see #lib/httpCache).
-  const personal = params.get('former_employers') === 'true' || params.get('hide_seen') === 'true';
-  const cookie = personal ? request.headers.get('cookie') : null;
-  const initial = await serverApi(fetch, cookie).searchJobs(params, LIMIT, pageOffset(pageNumber));
-  // See the collections loader: a page past the last one the matches fill is an
-  // empty, self-canonical 200 — a soft 404 dressed as a listing. Page 1 always
-  // stands, so a filter combination nothing matches still renders the feed's own
-  // empty state rather than the site's 404.
-  if (!pageExists(pageNumber, initial.total)) error(404, 'Page not found');
-  return { initial, filterParams: params.toString(), pageNumber };
+
+  const [catalog, companiesRes] = await Promise.all([
+    getVcCatalog(),
+    api.listCompanies('', 500, 0).catch(() => ({ items: [], total: 0 })),
+  ]);
+
+  const seenSlugs = new Set<string>();
+  const lightweightJobs = catalog.jobs
+    .filter((j) => {
+      if (!j.public_slug || seenSlugs.has(j.public_slug)) return false;
+      seenSlugs.add(j.public_slug);
+      return true;
+    })
+    .map((j) => ({
+      ...j,
+      description: j.description
+        ? j.description.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 320)
+        : '',
+    }));
+
+  return {
+    jobs: lightweightJobs,
+    companies: companiesRes.items,
+    whatsappUrl: catalog.updatesUrl || VC_JOBS_SETTINGS.defaultUpdatesUrl,
+    postJobEmail: VC_JOBS_SETTINGS.postJobEmail,
+    sheetId: VC_JOBS_SETTINGS.sheetId,
+    lastSyncedAt: new Date(catalog.fetchedAt).toISOString(),
+    pageNumber,
+    initialQuery: {
+      q: url.searchParams.get('q') ?? '',
+      track: url.searchParams.get('track') ?? '',
+      category: url.searchParams.get('category') ?? '',
+      countries: url.searchParams.get('countries') ?? '',
+      regions: url.searchParams.get('regions') ?? '',
+      work_mode: url.searchParams.get('work_mode') ?? '',
+      company_slug: url.searchParams.get('company_slug') ?? '',
+      source: url.searchParams.get('source') ?? '',
+      collections: url.searchParams.get('collections') ?? '',
+    },
+  };
 };

@@ -70,7 +70,7 @@
 </script>
 
 <svelte:head>
-  <title>Talent Network — freehire</title>
+  <title>Talent Network — VC Jobs</title>
 </svelte:head>
 
 <!-- The account shell (my/+layout) owns the container, auth gate, and noindex;

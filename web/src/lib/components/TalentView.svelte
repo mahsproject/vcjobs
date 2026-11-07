@@ -37,7 +37,7 @@
 
   // The recruiter side of the catalogue — seeing who is behind a card — is not built
   // yet, so asking for it is a mail to a person rather than a form with nowhere to land.
-  const recruiterAccessHref = `mailto:hello@freehire.me?subject=${encodeURIComponent(
+  const recruiterAccessHref = `mailto:hello@vcjobs.io?subject=${encodeURIComponent(
     'Talent Network: recruiter access request'
   )}&body=${encodeURIComponent('Company:\nRoles I am hiring for:\n')}`;
 

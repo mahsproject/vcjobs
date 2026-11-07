@@ -1,42 +1,25 @@
-// Presentation groupings for the filter modal.
-//
-// - RAIL_SECTIONS: the three headings the modal's left rail groups facets under.
-// - CATEGORY_GROUP / CATEGORY_GROUPS: the Specialization (category) facet's values
-//   grouped into collapsible sections — the modal's "Departments"-style hierarchy.
-//
-// CATEGORY_GROUP is a Record keyed by every Category value, so a category missing a
-// group is a compile error (svelte-check): a newly added backend category can't
-// silently fall out of the modal.
-
 import { CATEGORY_VALUES, FACET_ALIASES, type Category } from './generated/contracts';
 import { optionMatches } from './facets';
 import { categoryLabel } from './labels';
 
-// `SAVED` heads the job modal's "My filters" tab; `FILTERS` heads the (single-section)
-// company modal rail. Both ride the same shell as the job sections below.
 export type RailSection = 'SAVED' | 'ROLE' | 'PAY & BENEFITS' | 'REQUIREMENTS & ELIGIBILITY' | 'FILTERS';
 
-/** Display order of the specialization section headings. */
+/** Display order of the specialization section headings — VC core functions first. */
 const CATEGORY_GROUP_ORDER = [
-  'Engineering',
-  'Data & AI',
-  'Quality & Security',
-  'Design & Creative',
-  'Product & Management',
+  'Business & Legal',
   'Go-to-market & Support',
   'People',
-  'Business & Legal',
-  // The consumer industries a broad multi-industry crawl carries in. None of the
-  // groups above fits a nurse or a line cook, and a category with no group is
-  // generated into the contracts but unreachable in the picker.
+  'Product & Management',
+  'Data & AI',
+  'Engineering',
+  'Design & Creative',
+  'Quality & Security',
   'Consumer & Services',
   'Other',
 ] as const;
 
 type CategoryGroup = (typeof CATEGORY_GROUP_ORDER)[number];
 
-/** Each category → its section. Keyed by the full Category union: a missing key
- *  fails the type-check, keeping the grouping exhaustive as the vocabulary grows. */
 const CATEGORY_GROUP: Record<Category, CategoryGroup> = {
   software_engineering: 'Engineering',
   backend: 'Engineering',
@@ -46,8 +29,6 @@ const CATEGORY_GROUP: Record<Category, CategoryGroup> = {
   devops: 'Engineering',
   sre: 'Engineering',
   network_engineering: 'Engineering',
-  // The help desk runs the IT estate beside devops and the network, so it sits with
-  // them rather than with customer `support` in the go-to-market group.
   it_support: 'Engineering',
   hardware: 'Engineering',
   embedded: 'Engineering',
@@ -63,14 +44,7 @@ const CATEGORY_GROUP: Record<Category, CategoryGroup> = {
   design: 'Design & Creative',
   creative: 'Design & Creative',
   engineering_design: 'Design & Creative',
-  // Not a craft in the design sense — it sits with the engineering disciplines, since
-  // that is where a plant or process engineer looks first.
   industrial_engineering: 'Engineering',
-  // Not with the engineering disciplines, though it shares their employers. The group
-  // already holds `qa` and `security`, and the profession bundles itself with quality in
-  // its own acronyms — QHSE, HSEQ, SHEQ — so this is where it says it belongs. Grouping
-  // it under Engineering would repeat the fold this category exists to undo: an HSE
-  // Officer audits the plant, they do not run it.
   occupational_safety: 'Quality & Security',
   healthcare: 'Consumer & Services',
   skilled_trades: 'Consumer & Services',
@@ -83,8 +57,6 @@ const CATEGORY_GROUP: Record<Category, CategoryGroup> = {
   social_services: 'Consumer & Services',
   manufacturing: 'Consumer & Services',
   public_safety: 'Consumer & Services',
-  // The laboratory sits with the engineering disciplines, as industrial_engineering
-  // does: a chemist or a lab technician looks there before the consumer trades.
   science: 'Engineering',
   product: 'Product & Management',
   project_management: 'Product & Management',
@@ -114,8 +86,6 @@ export interface CategorySection {
   options: CategorySectionOption[];
 }
 
-/** The category options grouped into ordered, non-empty sections — the source the
- *  Specialization pane renders. Order within a section follows CATEGORY_VALUES. */
 export const CATEGORY_GROUPS: CategorySection[] = CATEGORY_GROUP_ORDER.map((name) => ({
   name,
   options: CATEGORY_VALUES.filter((v) => CATEGORY_GROUP[v] === name).map((value) => ({
@@ -124,9 +94,6 @@ export const CATEGORY_GROUPS: CategorySection[] = CATEGORY_GROUP_ORDER.map((name
   })),
 })).filter((s) => s.options.length > 0);
 
-/** CATEGORY_GROUPS narrowed to the specializations a search matches — by label with
- *  typo tolerance, or by any curated alias ("react developer", "фронтенд"), the same
- *  match the select facets use. Empty groups drop out; an empty search keeps them all. */
 export function searchCategoryGroups(query: string): CategorySection[] {
   if (!query.trim()) return CATEGORY_GROUPS;
   return CATEGORY_GROUPS.map((g) => ({
@@ -134,14 +101,6 @@ export function searchCategoryGroups(query: string): CategorySection[] {
     options: g.options.filter((o) => optionMatches(o, query, FACET_ALIASES)),
   })).filter((g) => g.options.length > 0);
 }
-
-// ---- Rail registry ----------------------------------------------------------
-//
-// The modal's left rail is a presentation grouping over the underlying param
-// facets, not 1:1 with them. Composite entries fold several params or specials into
-// one pane: `location` covers regions+countries+cities as a tree; `salary` covers
-// the currency facet + the min-salary special (so there's no standalone Currency
-// entry — that is the salary/currency merge). `kind` selects which pane renders.
 
 export const RAIL_SECTIONS: RailSection[] = ['ROLE', 'PAY & BENEFITS', 'REQUIREMENTS & ELIGIBILITY'];
 
@@ -156,42 +115,22 @@ type RailKind =
   | 'relocation'
   | 'posted'
   | 'experience'
-  // The job modal's "My filters" (saved searches) tab — renders SavedSearches, not a facet control.
   | 'saved';
 
 export interface RailEntry {
-  /** Stable pane id (also the URL-hashable key). */
   key: string;
   label: string;
   section: RailSection;
   kind: RailKind;
-  /** For kind 'facet': the FacetDef param whose control this entry renders. */
   facetParam?: string;
 }
 
-/** One pane of a filter modal's rail: the FacetSections it stacks, in order. Named for the
- *  shape rather than for its first caller — the company and Talent Network rails are both
- *  built from it, and a third consumer of a type called CompanyRailGroup reads as a
- *  mistake. */
 export interface RailGroup {
   key: string;
   label: string;
   params: string[];
 }
 
-// The company modal's rail. Unlike RAIL every pane is plain facet controls, so a
-// group is just its params — related facets fold into one pane so the geography,
-// company-shape and YC-directory facets read as three panes instead of nine rows.
-//
-// A COMPANY_FACETS param missing here is unreachable in the UI, not merely
-// ungrouped, so companyRailGroups.test.ts asserts the two sets match.
-/** The Talent Network catalogue's rail. Same shape as the company one — a presentation
- *  grouping over TALENT_FACETS, with each param staying a distinct query param.
- *
- *  Specialization leads because it is the question a recruiter arrives with; the derived
- *  category sits beside it in its own pane rather than folded in, because the two ask
- *  different things of the same vocabulary and one pane would suggest they are the same
- *  filter spelled twice. */
 export const TALENT_RAIL_GROUPS: RailGroup[] = [
   { key: 'specializations', label: 'Open to', params: ['specializations'] },
   { key: 'skills', label: 'Skills', params: ['skills'] },
@@ -205,39 +144,21 @@ export const COMPANY_RAIL_GROUPS: RailGroup[] = [
   { key: 'region', label: 'Region', params: ['regions', 'remote_regions'] },
   { key: 'countries', label: 'Country', params: ['countries'] },
   { key: 'industries', label: 'Industry', params: ['industries'] },
-  { key: 'company', label: 'Company', params: ['company_type', 'company_size', 'maturity'] },
+  { key: 'company', label: 'Fund Profile', params: ['company_type', 'company_size', 'maturity'] },
   { key: 'yc', label: 'Y Combinator', params: ['yc_status', 'yc_stage', 'yc_flags', 'yc_batch'] },
 ];
 
 export const RAIL: RailEntry[] = [
-  // One pane holds the whole "what job" concept: the specialization chips and
-  // the AI Specialization facet. It once also held a `role` picker, whose values were
-  // specialization × seniority; that facet is retired and its two axes are these.
-  //
-  // Seniority sits under Experience rather than here: a grade states how much
-  // experience a posting wants, which is the question that pane answers, and it sits
-  // next to the years ceiling that qualifies it.
-  // Labelled "Specialization", the word its pane heading and its summary chip already use.
-  { key: 'category', label: 'Specialization', section: 'ROLE', kind: 'category' },
-  { key: 'experience', label: 'Experience', section: 'ROLE', kind: 'experience' },
-  // How old a posting is, and whether it looks permanently open, both describe the
-  // POSTING rather than anything asked of the candidate — so neither belongs under
-  // REQUIREMENTS & ELIGIBILITY, where `posted` sat as the rail's last row. They sit
-  // beside Experience, the other "how does this posting stand relative to me" question.
-  //
-  // ONE pane holds both: the age bound and the `reality` classes answer the same
-  // question, and the age is most of what makes a posting read as evergreen in the
-  // first place. `reality` was once reachable only by hand-editing the URL — declared
-  // in FACETS, filterable on the index, absent from the rail. filterSections.test.ts
-  // asserts the cover so the next facet cannot go the same way.
+  { key: 'category', label: 'Role Category', section: 'ROLE', kind: 'category' },
+  { key: 'experience', label: 'Seniority & Experience', section: 'ROLE', kind: 'experience' },
   { key: 'posted', label: 'Posted', section: 'ROLE', kind: 'posted' },
   { key: 'location', label: 'Location', section: 'ROLE', kind: 'location' },
-  { key: 'work', label: 'Work & employment', section: 'ROLE', kind: 'work' },
-  { key: 'skills', label: 'Skills', section: 'ROLE', kind: 'facet', facetParam: 'skills' },
-  { key: 'industry', label: 'Industry & collection', section: 'ROLE', kind: 'industry' },
-  { key: 'company_slug', label: 'Company', section: 'ROLE', kind: 'facet', facetParam: 'company_slug' },
+  { key: 'work', label: 'Work Mode & Type', section: 'ROLE', kind: 'work' },
+  { key: 'skills', label: 'Focus & Skills', section: 'ROLE', kind: 'facet', facetParam: 'skills' },
+  { key: 'industry', label: 'Sector & Collection', section: 'ROLE', kind: 'industry' },
+  { key: 'company_slug', label: 'VC Fund', section: 'ROLE', kind: 'facet', facetParam: 'company_slug' },
   { key: 'source', label: 'Source', section: 'ROLE', kind: 'facet', facetParam: 'source' },
-  { key: 'salary', label: 'Salary', section: 'PAY & BENEFITS', kind: 'salary' },
+  { key: 'salary', label: 'Compensation', section: 'PAY & BENEFITS', kind: 'salary' },
   { key: 'perks', label: 'Benefits & Perks', section: 'PAY & BENEFITS', kind: 'facet', facetParam: 'perks' },
   { key: 'language', label: 'Language', section: 'REQUIREMENTS & ELIGIBILITY', kind: 'language' },
   { key: 'relocation', label: 'Relocation', section: 'REQUIREMENTS & ELIGIBILITY', kind: 'relocation' },

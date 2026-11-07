@@ -1,6 +1,6 @@
 <script lang="ts">
   // "What's hardest about your job search?" — several answers, and beside them what on
-  // freehire helps with each (the table lives in onboardingSteps.ts).
+  // VC Jobs helps with each (the table lives in onboardingSteps.ts).
   //
   // The free-text box appears only while "Something else" is picked, because the server
   // accepts a note only then: a note beside coded answers alone could contradict them.
@@ -91,7 +91,7 @@
 </script>
 
 <h2 class="text-xl font-semibold tracking-tight text-balance">What's hardest about your job search right now?</h2>
-<p class="mt-1 text-sm text-muted-foreground text-pretty">Pick all that apply — we'll show you what on freehire helps.</p>
+<p class="mt-1 text-sm text-muted-foreground text-pretty">Pick all that apply — we'll show you what on VC Jobs helps.</p>
 
 <div class="mt-6 grid items-start gap-5 md:grid-cols-2">
   <div role="group" aria-label="The hardest parts of your job search" class="flex flex-col gap-1.5">

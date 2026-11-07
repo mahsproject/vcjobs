@@ -38,7 +38,7 @@ export const accountNav = [
   { href: '/my/profile', label: 'Profile', workspace: 'seeker', group: 'main' },
   { href: '/my/activity', label: 'Activity', workspace: 'seeker', group: 'main' },
   { href: '/my/tracking', label: 'Tracking', workspace: 'seeker', group: 'main' },
-  // Mail inbox: connect Gmail and/or claim a freehire mailbox to track application
+  // Mail inbox: connect Gmail and/or claim a VC Jobs mailbox to track application
   // replies. Open to every signed-in user.
   { href: '/my/inbox', label: 'Inbox', workspace: 'seeker', group: 'main' },
   // Named lists of specific jobs — independent of the "Save" star — optionally

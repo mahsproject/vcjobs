@@ -878,7 +878,7 @@
                        nothing else (internal/application/autoapply/preview.go), and an ATS
                        form is free to ask "Location" twice — so a key on the label is one
                        repeated question away from each_key_duplicate taking the drawer
-                       down, the same way the tag row did (FREEHIRE-WEB-20). This list is a
+                       down, the same way the tag row did (VC Jobs-WEB-20). This list is a
                        read-only snapshot that nothing reorders, so position IS its
                        identity. -->
                   {#each autoApply.resolved_preview.fields as f, i (i)}

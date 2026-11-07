@@ -1,41 +1,34 @@
-// The site's FAQ content — the single source for both the visible section
-// (HomeView.svelte) and the FAQPage JSON-LD. Google requires the schema's answers to
-// match the on-page text, so they share this. Both now render on /about, which is
-// where HomeView moved when the homepage became the job feed; the schema has to
-// follow the visible copy, so it must not be emitted from a page that no longer
-// shows it. Answers are written answer-first and stay honest to what the product does.
-
 import type { FaqItem } from './seo';
 
 export const HOME_FAQ: FaqItem[] = [
   {
-    question: 'What is freehire?',
+    question: 'What is VC Jobs?',
     answer:
-      'freehire is a free, open-source IT job aggregator. It pulls tech job postings straight from company career boards — Greenhouse, Lever, Ashby, Teamtailor and more — removes duplicates, and tags each role with its stack, seniority, salary and location, so you search jobs, not job boards.',
+      'VC Jobs is a curated career platform dedicated to opportunities in venture capital. It aggregates live investment, platform, operations, and portfolio talent roles directly from VC fund career boards and our community sheet.',
   },
   {
-    question: 'Is freehire free to use?',
+    question: 'Where do the venture capital job listings come from?',
     answer:
-      'Yes. freehire is completely free and open source under the MIT license. There are no paywalls, no sponsored listings, and no résumé harvesting — it works for job seekers, not recruiters.',
+      'Listings are sourced directly from VC funds’ official career boards (including Greenhouse, Lever, and Ashby feeds) as well as verified submissions added to the VC Jobs community sheet.',
   },
   {
-    question: 'Where do the job listings come from?',
+    question: 'What types of roles are listed on VC Jobs?',
     answer:
-      'Listings come directly from companies’ public applicant tracking systems (ATS), such as Greenhouse, Lever, Ashby, Teamtailor and SuccessFactors. Every posting is normalized to one schema and deduplicated, so the same role never appears twice across boards.',
+      'We cover all four venture career tracks: Investment Team (Intern, Fellow, Analyst, Associate, Principal, Partner), Platform & Value Creation, Fund Operations & Investor Relations, and Portfolio Talent / Entrepreneur-in-Residence (EIR).',
   },
   {
-    question: 'How is freehire different from other job boards?',
+    question: 'How can our VC fund post an open role?',
     answer:
-      'Unlike traditional job boards, freehire sources jobs directly from company career pages instead of paid listings. There are no sponsored posts and no paywalls, and because it is open source, anyone can add a new company or ATS source.',
+      'Click the "Post a job" button in the navigation bar to send us your role details via email, or add it to our curated Google Sheet. Verified roles appear on the board automatically.',
   },
   {
-    question: 'Can I use freehire from the command line or with AI agents?',
+    question: 'How do I receive instant alerts for new VC openings?',
     answer:
-      'Yes. freehire offers a CLI and an HTTP API, so a script or an AI agent can search, open and track jobs over the same interface — no browser needed. Create an API key and add --json for machine-readable output.',
+      'Click "Get job updates" in the top bar or banner to join the official VC Jobs WhatsApp community channel, where new venture roles are shared as soon as they open.',
   },
   {
-    question: 'How do I get notified about new jobs?',
+    question: 'Is VC Jobs free for candidates?',
     answer:
-      'Save a search — your stack, seniority, region and salary — and subscribe to it. When a matching job is added, freehire sends it to you on Telegram as a tidy digest, so the openings come to you.',
+      'Yes. Browsing roles, filtering by fund or hub, and applying directly to venture capital firms on VC Jobs is completely free.',
   },
 ];

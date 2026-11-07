@@ -103,7 +103,7 @@ export function freshnessBadges(
  *  So a card that cannot verify freshness claims nothing. An absent badge costs less
  *  than a false one. "Be an early applicant" stays on the job's own page: on a card it
  *  repeated "New" on almost every fresh posting and crowded out the facts that tell
- *  one posting from the next, such as where it is (freehire#3894). Everything else —
+ *  one posting from the next, such as where it is (VC Jobs#3894). Everything else —
  *  the thresholds, the tooltip — is the shared rule's, deliberately not restated here. */
 export function cardFreshnessBadges(
   postedAt?: string | null,

@@ -1,9 +1,9 @@
 {
-  "$description": "Typography tokens. Font families ported from web/src/app.css @theme inline. Size/weight/line-height scales fill the gap.",
+  "$description": "Typography tokens. Official VC Jobs Typeface per Brand Guidelines: Century Gothic Std (fallback: Century Gothic, Arial, sans-serif).",
   "font-sans": {
     "$type": "fontFamily",
-    "$value": "ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
-    "$description": "Default body font. System font stack for instant paint."
+    "$value": "\"Century Gothic Std\", \"Century Gothic\", Arial, sans-serif",
+    "$description": "Primary typeface for VC Jobs. Use Bold for headlines and buttons, and Regular for body text and captions."
   },
   "font-mono": {
     "$type": "fontFamily",
@@ -20,7 +20,7 @@
   "font-size-4xl": { "$type": "dimension", "$value": "2.25rem", "$description": "36px — hero heading." },
   "font-weight-normal": { "$type": "fontWeight", "$value": 400, "$description": "Body text." },
   "font-weight-medium": { "$type": "fontWeight", "$value": 500, "$description": "Emphasized labels, nav items." },
-  "font-weight-semibold": { "$type": "fontWeight", "$value": 600, "$description": "Card titles, buttons." },
+  "font-weight-semibold": { "$type": "fontWeight", "$value": 700, "$description": "Card titles, buttons (Century Gothic Bold per Brand Guidelines)." },
   "font-weight-bold": { "$type": "fontWeight", "$value": 700, "$description": "Headings, strong emphasis." },
   "line-height-tight": { "$type": "number", "$value": 1.25, "$description": "Headings." },
   "line-height-normal": { "$type": "number", "$value": 1.5, "$description": "Body text." },

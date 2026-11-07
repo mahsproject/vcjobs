@@ -12,7 +12,7 @@
 /** A link recognised in the search box.
  *
  *  `ownSlug` is set only when the URL is one of OUR OWN posting pages. Pasting a
- *  freehire link back into freehire is a thing people do — from a chat, from their own
+ *  VC Jobs link back into VC Jobs is a thing people do — from a chat, from their own
  *  bookmarks — and there is nothing to look up in that case: the slug is in the path,
  *  so the box can navigate straight there without asking the API whether we carry a
  *  posting we are literally serving. */

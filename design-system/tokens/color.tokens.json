@@ -1,60 +1,60 @@
 {
-  "$description": "Semantic color tokens. Light-mode values; dark overrides in color-dark.tokens.json. Ported from web/src/app.css :root block — do not drop or rename without reason.",
+  "$description": "Semantic color tokens. Light-mode values; dark overrides in color-dark.tokens.json. Official VC Jobs Brand Palette (#9966CB Amethyst, #1E1E1E Black Charcoal, #888888 Grey, #FFFFFF White).",
   "$type": "color",
   "background": {
-    "$value": "oklch(0.997 0.003 130)",
-    "$description": "Page background. One fill for the whole canvas; separation comes from spacing and thin borders."
+    "$value": "#ffffff",
+    "$description": "Page background. Official VC Jobs White (#FFFFFF)."
   },
   "foreground": {
-    "$value": "oklch(0.13 0 0)",
-    "$description": "Default text color."
+    "$value": "#1e1e1e",
+    "$description": "Default text color. Official VC Jobs Black Charcoal (#1E1E1E)."
   },
   "card": {
-    "$value": "oklch(1 0 0)",
+    "$value": "#ffffff",
     "$description": "Card surface fill."
   },
   "card-foreground": {
-    "$value": "oklch(0.13 0 0)",
+    "$value": "#1e1e1e",
     "$description": "Text on card surface."
   },
   "popover": {
-    "$value": "oklch(1 0 0)",
+    "$value": "#ffffff",
     "$description": "Popover/dropdown surface fill."
   },
   "popover-foreground": {
-    "$value": "oklch(0.13 0 0)",
+    "$value": "#1e1e1e",
     "$description": "Text on popover surface."
   },
   "primary": {
-    "$value": "oklch(0.13 0 0)",
-    "$description": "Primary action color (high-contrast neutral)."
+    "$value": "#1e1e1e",
+    "$description": "Primary action color (Black Charcoal #1E1E1E)."
   },
   "primary-foreground": {
-    "$value": "oklch(1 0 0)",
+    "$value": "#ffffff",
     "$description": "Text/icon on primary surface."
   },
   "secondary": {
-    "$value": "oklch(0.955 0 0)",
+    "$value": "#f5f3f8",
     "$description": "Secondary surface fill."
   },
   "secondary-foreground": {
-    "$value": "oklch(0.13 0 0)",
+    "$value": "#1e1e1e",
     "$description": "Text on secondary surface."
   },
   "muted": {
-    "$value": "oklch(0.955 0 0)",
+    "$value": "#f5f3f8",
     "$description": "Muted surface fill (same as secondary in light)."
   },
   "muted-foreground": {
-    "$value": "oklch(0.43 0 0)",
+    "$value": "#626262",
     "$description": "Low-emphasis text (captions, placeholders)."
   },
   "accent": {
-    "$value": "oklch(0.93 0 0)",
+    "$value": "#f0eaf8",
     "$description": "Accent surface fill (hover states, highlights)."
   },
   "accent-foreground": {
-    "$value": "oklch(0.13 0 0)",
+    "$value": "#1e1e1e",
     "$description": "Text on accent surface."
   },
   "destructive": {
@@ -70,35 +70,35 @@
     "$description": "Destructive text on the page background or a destructive tint, where the action color falls short of 4.5:1."
   },
   "border": {
-    "$value": "oklch(0.92 0 0)",
+    "$value": "#e6e6e6",
     "$description": "Default border color."
   },
   "input": {
-    "$value": "oklch(0.66 0 0)",
-    "$description": "Input border/fill color. Dark enough (3.1:1 on the page and on cards) that a field's edge identifies it as a control (WCAG 1.4.11); at 0.93 it measured 1.2:1 and empty fields vanished into the page."
+    "$value": "#888888",
+    "$description": "Input border/fill color. Official VC Jobs Grey (#888888)."
   },
   "ring": {
     "$value": "{brand}",
-    "$description": "Focus ring color: the brand fill, which clears 3:1 against every light surface (WCAG 1.4.11). brand-ring is too pale for a focus indicator on the page background (1.9:1)."
+    "$description": "Focus ring color: the brand fill (#9966CB)."
   },
   "brand": {
-    "$value": "#5b6f00",
-    "$description": "Brand CTA fill — oats green, dark olive (Granola palette)."
+    "$value": "#9966cb",
+    "$description": "Brand CTA fill — Official VC Jobs Amethyst (#9966CB)."
   },
   "brand-foreground": {
-    "$value": "#f3f6e2",
+    "$value": "#ffffff",
     "$description": "Text/icon on brand surface."
   },
   "brand-strong": {
-    "$value": "#4c5c00",
-    "$description": "Darker brand tone for readable text/links."
+    "$value": "#7b4bb3",
+    "$description": "Darker amethyst tone for readable text/links."
   },
   "brand-muted": {
-    "$value": "#e5eacd",
-    "$description": "Soft brand tint for chips/badges."
+    "$value": "#efe8f8",
+    "$description": "Soft amethyst tint for chips/badges."
   },
   "brand-ring": {
-    "$value": "#b2c248",
+    "$value": "#9966cb",
     "$description": "Focus outline color on brand surfaces."
   },
   "warning": {

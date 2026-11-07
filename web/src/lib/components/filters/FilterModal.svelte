@@ -737,7 +737,7 @@
         />
         <span>Include postings that don't state experience</span>
       </label>
-      <!-- The entry-level profile seeds this (freehire#3655): a posting labelled with a
+      <!-- The entry-level profile seeds this (VC Jobs#3655): a posting labelled with a
            picked level is answered by the level, so the limit reads only the postings
            with no level. Shown beside the other modifier so a profile applied to /jobs
            does not narrow the list through a switch nobody can see. -->

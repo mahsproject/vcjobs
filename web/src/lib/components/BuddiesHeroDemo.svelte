@@ -71,7 +71,7 @@
   <figcaption
     class="flex items-center justify-between border-b border-border px-4 py-2.5 text-xs text-muted-foreground"
   >
-    <span>freehire · Interview buddies</span>
+    <span>VC Jobs · Interview buddies</span>
     <span class="flex items-center gap-2">
       <span class="relative flex size-2">
         <span class="absolute inline-flex size-full motion-safe:animate-ping rounded-full bg-brand opacity-75"></span>

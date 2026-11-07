@@ -10,7 +10,7 @@ export const ALL_COUNTRIES = '';
 export const GROWTH_MIN_BASE = 50;
 
 /** A column whose open total is at least this multiple of its total a window ago is a
- *  country freehire started covering, not one whose market grew: on prod on 2026-10-31
+ *  country VC Jobs started covering, not one whose market grew: on prod on 2026-10-31
  *  Taiwan's cells read +300% to +800% across every role the month its boards were added.
  *  No per-posting rule can tell the two apart (publication dates were tried and made it
  *  worse), so the grid prints no change for such a column at all. The figure sits in the

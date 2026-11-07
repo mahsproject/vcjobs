@@ -1,5 +1,5 @@
 // Builds the HTML for the static brand Open Graph card (light, 1200×630): a
-// prominent freehire lockup, the product headline, and a stat-strip of catalogue
+// prominent VC Jobs lockup, the product headline, and a stat-strip of catalogue
 // scale. Pure and synchronous — rendered once by scripts/gen-og.mjs into the
 // committed web/static/og.png, which is the default og:image for every page
 // without its own preview.
@@ -32,9 +32,9 @@ export function buildBrandCard(opts: { stats: BrandStat[] }): string {
   <div style="display:flex;align-items:center;justify-content:space-between;width:${OG_WIDTH - 144}px">
     <div style="display:flex;align-items:center;gap:18px">
       <img src="${MARK_DATA_URI}" style="width:52px;height:52px" />
-      <div style="display:flex;font-size:44px;font-weight:700;letter-spacing:-0.03em">freehire</div>
+      <div style="display:flex;font-size:44px;font-weight:700;letter-spacing:-0.03em">VC Jobs</div>
     </div>
-    <div style="display:flex;font-size:22px;color:#a3a3a3">freehire.me</div>
+    <div style="display:flex;font-size:22px;color:#a3a3a3">vcjobs.io</div>
   </div>
   <div style="display:flex;max-width:940px;font-size:64px;font-weight:700;letter-spacing:-0.03em;line-height:1.05">${esc(HEADLINE)}</div>
   <div style="display:flex;gap:64px">${statStrip}</div>

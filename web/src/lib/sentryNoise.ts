@@ -58,7 +58,7 @@ const TRANSIENT_MESSAGES = [
   'dynamically imported module',
   'importing a module script failed',
   // Cancellation. The suggestion box aborts its own in-flight requests on every settled
-  // keystroke by design (FREEHIRE-WEB-1R), and a visitor leaving a page aborts the rest.
+  // keystroke by design (VC Jobs-WEB-1R), and a visitor leaving a page aborts the rest.
   //
   // The first is Chrome's wording for a bare `AbortController.abort()`; the second is the
   // DOMException's own default text. Both name the condition TRANSIENT_NAMES already

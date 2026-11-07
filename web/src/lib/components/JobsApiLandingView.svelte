@@ -57,7 +57,7 @@
     ['Lifecycle', 'posted, first and last seen, and closed — a closed posting says so'],
   ];
 
-  const curl = `curl "https://freehire.me/api/v1/jobs/search?countries=de&category=software_engineering&limit=100" \\
+  const curl = `curl "https://vcjobs.io/api/v1/jobs/search?countries=de&category=software_engineering&limit=100" \\
   -H "Authorization: Bearer $FREEHIRE_API_KEY"`;
 
   const sample = `{
@@ -170,7 +170,7 @@
         </p>
       </div>
       <div class="rounded-xl border-2 border-primary p-6">
-        <h3 class="font-semibold">Flat on freehire</h3>
+        <h3 class="font-semibold">Flat on VC Jobs</h3>
         <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
           One monthly price and a per-minute request rate with no daily cap. A page returns up
           to 100 full postings, so how much of the catalogue you read never changes the bill.

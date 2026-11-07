@@ -27,7 +27,7 @@ export function buildContributorCard(
   entry: ContributorEntry,
   opts: { avatar: string | null },
 ): string {
-  const role = entry.role === 'maintainer' ? 'Maintains freehire' : 'Contributes to freehire';
+  const role = entry.role === 'maintainer' ? 'Maintains VC Jobs' : 'Contributes to VC Jobs';
 
   return `
 <div style="display:flex;flex-direction:column;justify-content:space-between;width:${OG_WIDTH}px;height:${OG_HEIGHT}px;padding:64px 72px;background:#ffffff;color:#0a0a0a;font-family:Inter">

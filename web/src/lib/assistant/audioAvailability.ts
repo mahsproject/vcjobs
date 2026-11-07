@@ -20,7 +20,7 @@ export const DICTATION_ENABLED = true;
  *  WebRTC media itself and, as shipped, advertised its container's private address
  *  as the only ICE candidate, so no browser could ever connect. The gateway now runs
  *  a local build that advertises the host's public address on one UDP port (see
- *  `provision/bifrost/WEBRTC-PATCH.md` in freehire-ops); a call minted and opened
+ *  `provision/bifrost/WEBRTC-PATCH.md` in VC Jobs-ops); a call minted and opened
  *  through it was verified end to end (data channel open, `session.created`, a full
  *  response). If the gateway goes back to the upstream image, this must go off too. */
 export const VOICE_CALL_ENABLED = true;

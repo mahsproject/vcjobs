@@ -14,7 +14,7 @@
     jsonLdScript([
       faqPageJsonLd(JOBS_API_FAQ),
       breadcrumbJsonLd([
-        { name: 'freehire', url: `${origin}/` },
+        { name: 'VC Jobs', url: `${origin}/` },
         { name: 'Jobs API', url: canonical },
       ]),
     ]),
@@ -22,7 +22,7 @@
 </script>
 
 <Seo
-  title="Jobs API for commercial use — freehire"
+  title="Jobs API for commercial use — VC Jobs"
   description="Millions of open job postings read from employers’ own ATS, de-duplicated and structured, behind one API. Flat monthly price, no per-job metering, a plain licence to show them in your product."
   {canonical}
 />

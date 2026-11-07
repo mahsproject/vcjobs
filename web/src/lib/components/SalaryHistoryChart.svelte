@@ -222,7 +222,7 @@
       to be shown; a missing month is a gap, not a guess. A dashed step means the month had at
       least {MIX_SHIFT_RATIO}× the postings of the one before, so part of that change is which
       postings are counted. The hollow point is the current month, still filling up. These are
-      postings on freehire, not the whole job market.
+      postings on VC Jobs, not the whole job market.
     </p>
   </section>
 {/if}

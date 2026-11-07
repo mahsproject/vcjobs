@@ -6,7 +6,7 @@
   import type { DirectApplyForm } from '#lib/types.js';
   import { Button, Dialog, FormField } from '#lib/ui/index.js';
 
-  // Applying to a vacancy its employer published on freehire. The parent mounts this to
+  // Applying to a vacancy its employer published on VC Jobs. The parent mounts this to
   // open it and unmounts it on onClose; it owns the form. What it sends reaches the
   // employer by email (internal/ingest/directapply), so the consent line before the
   // button names who receives it.

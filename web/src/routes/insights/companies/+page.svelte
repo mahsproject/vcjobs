@@ -11,9 +11,9 @@
 
   const origin = $derived(page.url.origin);
   const canonical = $derived(`${origin}/insights/companies`);
-  const title = 'Company Hiring Signal · freehire';
+  const title = 'Company Hiring Signal · VC Jobs';
   const description =
-    'Which companies are ramping up or slowing down hiring — ranked by the 30-day change in their number of open jobs across the freehire catalogue.';
+    'Which companies are ramping up or slowing down hiring — ranked by the 30-day change in their number of open jobs across the VC Jobs catalogue.';
   const updated = $derived(
     new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
   );
@@ -21,7 +21,7 @@
     jsonLdScript([
       datasetJsonLd('Company hiring signal', description, canonical, origin),
       breadcrumbJsonLd([
-        { name: 'freehire', url: `${origin}/` },
+        { name: 'VC Jobs', url: `${origin}/` },
         { name: 'Insights', url: `${origin}/insights` },
         { name: 'Companies', url: canonical },
       ]),

@@ -11,7 +11,7 @@
     formatRate,
   } from '#lib/embedProgress.js';
 
-  const REPO_URL = 'https://github.com/strelov1/freehire-volunteer-embed';
+  const REPO_URL = '/status';
   const GUIDE_URL = `${REPO_URL}/blob/main/HOW_TO_RUN_THE_CLIENT.md`;
 
   // `initial` is the server-rendered document; the stream replaces it on every sample.

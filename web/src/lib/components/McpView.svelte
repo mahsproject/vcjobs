@@ -36,7 +36,7 @@
       Search jobs right inside your AI assistant.
     </h1>
     <p class="mt-7 max-w-xl text-lg leading-relaxed text-muted-foreground">
-      Free. No freehire account needed to search — sign in only if you want the assistant to save and track jobs for
+      Free. No VC Jobs account needed to search — sign in only if you want the assistant to save and track jobs for
       you.
     </p>
   </div>

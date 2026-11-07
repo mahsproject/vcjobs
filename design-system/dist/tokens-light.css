@@ -1,29 +1,29 @@
 :root {
-  --background: oklch(0.997 0.003 130); /** Page background. One fill for the whole canvas; separation comes from spacing and thin borders. */
-  --foreground: oklch(0.13 0 0); /** Default text color. */
-  --card: oklch(1 0 0); /** Card surface fill. */
-  --card-foreground: oklch(0.13 0 0); /** Text on card surface. */
-  --popover: oklch(1 0 0); /** Popover/dropdown surface fill. */
-  --popover-foreground: oklch(0.13 0 0); /** Text on popover surface. */
-  --primary: oklch(0.13 0 0); /** Primary action color (high-contrast neutral). */
-  --primary-foreground: oklch(1 0 0); /** Text/icon on primary surface. */
-  --secondary: oklch(0.955 0 0); /** Secondary surface fill. */
-  --secondary-foreground: oklch(0.13 0 0); /** Text on secondary surface. */
-  --muted: oklch(0.955 0 0); /** Muted surface fill (same as secondary in light). */
-  --muted-foreground: oklch(0.43 0 0); /** Low-emphasis text (captions, placeholders). */
-  --accent: oklch(0.93 0 0); /** Accent surface fill (hover states, highlights). */
-  --accent-foreground: oklch(0.13 0 0); /** Text on accent surface. */
+  --background: #ffffff; /** Page background. Official VC Jobs White (#FFFFFF). */
+  --foreground: #1e1e1e; /** Default text color. Official VC Jobs Black Charcoal (#1E1E1E). */
+  --card: #ffffff; /** Card surface fill. */
+  --card-foreground: #1e1e1e; /** Text on card surface. */
+  --popover: #ffffff; /** Popover/dropdown surface fill. */
+  --popover-foreground: #1e1e1e; /** Text on popover surface. */
+  --primary: #1e1e1e; /** Primary action color (Black Charcoal #1E1E1E). */
+  --primary-foreground: #ffffff; /** Text/icon on primary surface. */
+  --secondary: #f5f3f8; /** Secondary surface fill. */
+  --secondary-foreground: #1e1e1e; /** Text on secondary surface. */
+  --muted: #f5f3f8; /** Muted surface fill (same as secondary in light). */
+  --muted-foreground: #888888; /** Low-emphasis text (captions, placeholders). Official VC Jobs Grey (#888888). */
+  --accent: #f0eaf8; /** Accent surface fill (hover states, highlights). */
+  --accent-foreground: #1e1e1e; /** Text on accent surface. */
   --destructive: oklch(0.577 0.245 27.325); /** Destructive action color (delete, remove, error). */
   --destructive-foreground: oklch(0.985 0 0); /** Text/icon on a filled destructive surface. */
   --destructive-strong: oklch(0.52 0.22 27.325); /** Destructive text on the page background or a destructive tint, where the action color falls short of 4.5:1. */
-  --border: oklch(0.92 0 0); /** Default border color. */
-  --input: oklch(0.66 0 0); /** Input border/fill color. Dark enough (3.1:1 on the page and on cards) that a field's edge identifies it as a control (WCAG 1.4.11); at 0.93 it measured 1.2:1 and empty fields vanished into the page. */
-  --ring: #5b6f00; /** Focus ring color: the brand fill, which clears 3:1 against every light surface (WCAG 1.4.11). brand-ring is too pale for a focus indicator on the page background (1.9:1). */
-  --brand: #5b6f00; /** Brand CTA fill — oats green, dark olive (Granola palette). */
-  --brand-foreground: #f3f6e2; /** Text/icon on brand surface. */
-  --brand-strong: #4c5c00; /** Darker brand tone for readable text/links. */
-  --brand-muted: #e5eacd; /** Soft brand tint for chips/badges. */
-  --brand-ring: #b2c248; /** Focus outline color on brand surfaces. */
+  --border: #e6e6e6; /** Default border color. */
+  --input: #888888; /** Input border/fill color. Official VC Jobs Grey (#888888). */
+  --ring: #9966cb; /** Focus ring color: the brand fill (#9966CB). */
+  --brand: #9966cb; /** Brand CTA fill — Official VC Jobs Amethyst (#9966CB). */
+  --brand-foreground: #ffffff; /** Text/icon on brand surface. */
+  --brand-strong: #7b4bb3; /** Darker amethyst tone for readable text/links. */
+  --brand-muted: #efe8f8; /** Soft amethyst tint for chips/badges. */
+  --brand-ring: #9966cb; /** Focus outline color on brand surfaces. */
   --warning: oklch(0.769 0.188 70.08); /** Caution fill. The solid block that marks something as needing attention. */
   --warning-foreground: oklch(0.279 0.077 45.635); /** Text on the caution fill. */
   --warning-strong: oklch(0.555 0.163 48.998); /** Caution text and borders on the page background, where the fill is not legible. */
@@ -45,7 +45,7 @@
   --spacing-16: 4rem; /** 64px — large vertical rhythm. */
   --spacing-20: 5rem; /** 80px. */
   --spacing-24: 6rem; /** 96px — hero spacing. */
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; /** Default body font. System font stack for instant paint. */
+  --font-sans: "Century Gothic Std", "Century Gothic", Arial, sans-serif; /** Primary typeface for VC Jobs. Use Bold for headlines and buttons, and Regular for body text and captions. */
   --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace; /** Code blocks, inline code, monospace data. */
   --font-size-xs: 0.75rem; /** 12px — captions, fine print. */
   --font-size-sm: 0.875rem; /** 14px — secondary text, input text on sm+. */
@@ -55,10 +55,10 @@
   --font-size-2xl: 1.5rem; /** 24px — page headings. */
   --font-size-3xl: 1.875rem; /** 30px — hero subheading. */
   --font-size-4xl: 2.25rem; /** 36px — hero heading. */
-  --font-weight-normal: 400; /** Body text. */
-  --font-weight-medium: 500; /** Emphasized labels, nav items. */
-  --font-weight-semibold: 600; /** Card titles, buttons. */
-  --font-weight-bold: 700; /** Headings, strong emphasis. */
+  --font-weight-normal: 400; /** Body text (Century Gothic Regular per Brand Guidelines). */
+  --font-weight-medium: 400; /** Regular weight per Brand Guidelines (only Regular 400 and Bold 700 are used). */
+  --font-weight-semibold: 700; /** Card titles, buttons (Century Gothic Bold per Brand Guidelines). */
+  --font-weight-bold: 700; /** Headings, strong emphasis (Century Gothic Bold per Brand Guidelines). */
   --line-height-tight: 1.25; /** Headings. */
   --line-height-normal: 1.5; /** Body text. */
   --line-height-relaxed: 1.75; /** Long-form reading. */

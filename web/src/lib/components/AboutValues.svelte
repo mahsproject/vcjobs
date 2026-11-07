@@ -1,51 +1,35 @@
 <script lang="ts">
-  import { SectionLabel } from '#lib/ui/index.js';
-
-  // The About page's values block — the promises behind the mission, shown only
-  // on /about (HomeView carries the mission and renders on / too, so these live
-  // in a standalone component to keep them off the landing page).
   const values = [
     {
       n: '01',
-      title: 'For candidates, not recruiters.',
-      body: "When interests collide, the candidate wins — every time. No sponsored listings, no pay-to-rank, no selling your data to whoever pays. If a choice is good for us but bad for the person job-hunting, we don't make it.",
+      title: 'Built for the venture ecosystem.',
+      body: 'Breaking into venture capital traditionally depended on closed networks and fragmented LinkedIn posts. VC Jobs brings every active Analyst, Associate, Principal, Platform, and EIR role into one transparent directory.',
     },
     {
       n: '02',
-      title: 'The whole market, not a slice.',
-      body: "We pull from as many sources as we can — company boards, ATS platforms, niche feeds — so you see the full set of options, not a hand-picked subset. Nothing is hidden because it didn't pay to be shown.",
+      title: 'Curated & verified listings.',
+      body: 'We combine automated feeds from leading venture funds with direct community submissions so candidates can apply directly to the hiring firm.',
     },
     {
       n: '03',
-      title: 'From board to you, in minutes.',
-      body: "Fast everywhere it touches you — a site that responds instantly, and new postings that land in your feed while they're still fresh. We measure speed from the company's board all the way to the notification in your pocket.",
-    },
-    {
-      n: '04',
-      title: 'Open, so you can check.',
-      body: "freehire is open source and free to fork. You don't have to take our word that there's no catch — the code is right there. Transparency is how we keep the other promises honest.",
-    },
-    {
-      n: '05',
-      title: 'Built to last, not to flip.',
-      body: "We're not chasing an exit or a data sale. freehire is built to keep serving candidates for years — each improvement compounds instead of being a one-off, so it gets better the longer it runs.",
+      title: 'Zero noise, high signal.',
+      body: 'Every listing is categorized by VC career track, seniority level, work mode, and geographic hub so you can focus on roles that match your background.',
     },
   ];
 </script>
 
-<!-- Each value is a heading, so the five promises are reachable by heading navigation; a
-     <dl> could not carry that, since a <dt> may not contain one. -->
-<section class="border-t border-border py-16 sm:py-20">
-  <SectionLabel as="h2" text="values" />
-  <ol class="mt-10 divide-y divide-border border-y border-border">
-    {#each values as v (v.n)}
-      <li class="grid gap-2 py-6 sm:grid-cols-[auto_1fr] sm:gap-8">
-        <span class="font-mono text-sm text-muted-foreground" aria-hidden="true">{v.n}</span>
-        <div>
-          <h3 class="text-lg font-semibold tracking-tight">{v.title}</h3>
-          <p class="mt-2 max-w-3xl text-sm leading-relaxed text-muted-foreground">{v.body}</p>
-        </div>
-      </li>
-    {/each}
-  </ol>
+<section class="pb-12">
+  <div class="rounded-3xl border border-border bg-[#1E1E1E] p-8 text-white sm:p-10">
+    <p class="text-xs font-bold uppercase tracking-[0.16em] text-[#9966CB]">^ Our Principles</p>
+    <h2 class="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">Why VC Jobs Exists</h2>
+    <ol class="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-3">
+      {#each values as v (v.n)}
+        <li class="rounded-2xl border border-white/10 bg-white/[0.04] p-5">
+          <span class="text-xs font-bold text-[#9966CB]">{v.n}</span>
+          <h3 class="mt-2 text-base font-bold tracking-tight text-white">{v.title}</h3>
+          <p class="mt-2 text-xs leading-relaxed text-[#CCCCCC]">{v.body}</p>
+        </li>
+      {/each}
+    </ol>
+  </div>
 </section>
