@@ -58,7 +58,7 @@ if (fs.existsSync(configPath) && fs.existsSync(functionsDir)) {
   // Direct all remaining requests to the single index.func serverless function,
   // passing __pathname so SvelteKit's serverless handler restores the exact requested URL.
   newRoutes.push({
-    src: '^/(.*)$',
+    src: '/(.*)',
     dest: '/index?__pathname=/$1',
   });
 
