@@ -67,6 +67,7 @@
     "@scalar/server-side-rendering": "0.1.62",
     "@scalar/types": "0.25.0",
     "@sentry/sveltekit": "^11.9.0",
+    "clsx": "^2.1.1",
     "easymde": "^2.21.0",
     "flag-icons": "^7.5.0",
     "freehire-design-system": "link:../design-system",
@@ -77,6 +78,8 @@
     "satori-html": "^0.3.2",
     "simple-icons": "^16.35.0",
     "svelte-dnd-action": "^0.9.80",
+    "tailwind-merge": "^3.7.0",
+    "tailwind-variants": "^4.0.1",
     "three": "^0.186.1"
   },
   "imports": {
