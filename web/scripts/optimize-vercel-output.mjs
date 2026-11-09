@@ -6,46 +6,66 @@ const functionsDir = path.join(outputDir, 'functions');
 const configPath = path.join(outputDir, 'config.json');
 
 if (fs.existsSync(configPath) && fs.existsSync(functionsDir)) {
-  console.log('Optimizing Vercel Build Output for single-function deployment...');
+  console.log('Optimizing Vercel Build Output for single index.func serverless deployment...');
 
-  // 1. Update config.json routes so all dynamic routes point to /![-]/catchall
-  const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-  if (Array.isArray(config.routes)) {
-    config.routes = config.routes.map((r) => {
-      if (r.dest && !r.dest.startsWith('/![-]')) {
-        return { ...r, dest: '/![-]/catchall' };
-      }
-      return r;
-    });
-    fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
-    console.log('Updated config.json routes to catchall function.');
+  // 1. Locate the compiled SvelteKit serverless function bundle
+  let sourceCatchall = path.join(functionsDir, '![-]', 'catchall.func');
+  if (!fs.existsSync(sourceCatchall)) {
+    sourceCatchall = path.join(functionsDir, 'catchall.func');
   }
 
-  // 2. Remove all redundant .func symlinks/directories except '![-]'
-  let removed = 0;
-  function cleanFunctions(dir) {
-    if (!fs.existsSync(dir)) return;
-    for (const item of fs.readdirSync(dir, { withFileTypes: true })) {
-      const fullPath = path.join(dir, item.name);
-      if (item.name === '![-]') {
-        continue; // Preserve the real SvelteKit serverless catchall function
-      }
-      if (item.name.endsWith('.func') || item.name.endsWith('.prerender-config.json')) {
-        fs.rmSync(fullPath, { recursive: true, force: true });
-        removed++;
-      } else if (item.isDirectory()) {
-        cleanFunctions(fullPath);
-        try {
-          if (fs.readdirSync(fullPath).length === 0) {
-            fs.rmdirSync(fullPath);
-          }
-        } catch {}
-      }
+  const targetIndexFunc = path.join(functionsDir, 'index.func');
+  const tempDir = path.join(outputDir, '__catchall_temp.func');
+
+  if (fs.existsSync(sourceCatchall)) {
+    // Move catchall.func out to tempDir
+    fs.rmSync(tempDir, { recursive: true, force: true });
+    fs.renameSync(sourceCatchall, tempDir);
+
+    // Remove all 268 symlinks and empty folders
+    fs.rmSync(functionsDir, { recursive: true, force: true });
+    fs.mkdirSync(functionsDir, { recursive: true });
+
+    // Move to canonical functions/index.func
+    fs.renameSync(tempDir, targetIndexFunc);
+    console.log('Moved SvelteKit serverless bundle to functions/index.func');
+  } else if (!fs.existsSync(targetIndexFunc)) {
+    console.error('Warning: could not locate catchall function in', functionsDir);
+  }
+
+  // 2. Configure config.json routes
+  const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+  const originalRoutes = Array.isArray(config.routes) ? config.routes : [];
+
+  // Retain filesystem and static/prerendered redirects, but route all server traffic to index.func with __pathname
+  const newRoutes = [];
+  for (const r of originalRoutes) {
+    if (r.handle === 'filesystem') {
+      newRoutes.push(r);
+      break;
+    }
+    // Keep redirects, header rules, and immutable caching rules
+    if (!r.dest || r.status || r.continue) {
+      newRoutes.push(r);
     }
   }
 
-  cleanFunctions(functionsDir);
-  console.log(`Cleaned up ${removed} redundant function symlinks. Exactly 1 serverless function remains.`);
+  // If handle: filesystem was not found, add it
+  if (!newRoutes.some((r) => r.handle === 'filesystem')) {
+    newRoutes.push({ handle: 'filesystem' });
+  }
+
+  // Direct all remaining requests to the single index.func serverless function,
+  // passing __pathname so SvelteKit's serverless handler restores the exact requested URL.
+  newRoutes.push({
+    src: '^/(.*)$',
+    dest: '/index?__pathname=/$1',
+  });
+
+  config.routes = newRoutes;
+  fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+  console.log('Updated config.json routes to route via /index?__pathname=/$1');
+  console.log('Optimization complete: 1 serverless function (index.func) ready.');
 } else {
   console.log('No .vercel/output found, skipping optimization.');
 }
