@@ -6,7 +6,7 @@ import { sentrySvelteKit } from '@sentry/sveltekit/vite';
 import tailwindcss from '@tailwindcss/vite';
 import { svelteOptions } from './svelte.options.ts';
 
-const selectedAdapter = process.env.VERCEL ? vercelAdapter() : nodeAdapter();
+const selectedAdapter = process.env.VERCEL ? vercelAdapter({ split: false }) : nodeAdapter();
 
 export default defineConfig({
   define: {
@@ -14,16 +14,20 @@ export default defineConfig({
     __SENTRY_TRACING__: false,
   },
   build: {
-    sourcemap: 'hidden',
+    sourcemap: process.env.VERCEL ? false : 'hidden',
     assetsInlineLimit: (filePath) => (filePath.includes('flag-icons/flags/') ? false : undefined),
   },
   plugins: [
-    sentrySvelteKit({
-      sourcemaps: { filesToDeleteAfterUpload: [] },
-      org: process.env.SENTRY_ORG,
-      project: process.env.SENTRY_PROJECT,
-      authToken: process.env.SENTRY_AUTH_TOKEN,
-    }),
+    ...(process.env.SENTRY_AUTH_TOKEN
+      ? [
+          sentrySvelteKit({
+            sourcemaps: { filesToDeleteAfterUpload: [] },
+            org: process.env.SENTRY_ORG,
+            project: process.env.SENTRY_PROJECT,
+            authToken: process.env.SENTRY_AUTH_TOKEN,
+          }),
+        ]
+      : []),
     tailwindcss(),
     sveltekit({
       ...svelteOptions,
