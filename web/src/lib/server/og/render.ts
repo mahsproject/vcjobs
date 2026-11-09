@@ -23,12 +23,6 @@ export type OgFont = {
 /** Renders a card's HTML markup string to a 1200×630 PNG. The single render path
  *  shared by every card (job, company, brand). */
 export async function renderMarkupPng(markup: string, fonts: OgFont[]): Promise<Uint8Array<ArrayBuffer>> {
-  if (process.env.VERCEL) {
-    const png = new Resvg().render().asPng();
-    const out = new Uint8Array(png.byteLength);
-    out.set(png);
-    return out;
-  }
   const svg = await satori(html(markup), { width: OG_WIDTH, height: OG_HEIGHT, fonts });
   const png = new Resvg(svg, { fitTo: { mode: 'width', value: OG_WIDTH } }).render().asPng();
   // resvg returns a Node Buffer (Uint8Array<ArrayBufferLike>); copy into a plain

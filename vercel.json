@@ -2,6 +2,5 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "sveltekit",
   "installCommand": "pnpm --dir design-system install && pnpm --dir web install",
-  "buildCommand": "NODE_OPTIONS=--max-old-space-size=4096 pnpm --dir web build && node web/scripts/optimize-vercel-output.mjs",
-  "outputDirectory": "web/.vercel/output"
+  "buildCommand": "NODE_OPTIONS=--max-old-space-size=4096 pnpm --dir web build && rm -rf .vercel/output && mkdir -p .vercel && mv web/.vercel/output .vercel/output"
 }
