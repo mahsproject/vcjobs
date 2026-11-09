@@ -4,11 +4,23 @@ import { defineConfig } from 'vite';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { sentrySvelteKit } from '@sentry/sveltekit/vite';
 import tailwindcss from '@tailwindcss/vite';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { svelteOptions } from './svelte.options.ts';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const selectedAdapter = process.env.VERCEL ? vercelAdapter({ split: false }) : nodeAdapter();
 
 export default defineConfig({
+  resolve: {
+    alias: process.env.VERCEL
+      ? {
+          '@scalar/server-side-rendering': path.resolve(__dirname, 'src/lib/docs/scalarSsrStub.ts'),
+          '@resvg/resvg-js': path.resolve(__dirname, 'src/lib/server/og/resvgStub.ts'),
+        }
+      : {},
+  },
   define: {
     __SENTRY_DEBUG__: false,
     __SENTRY_TRACING__: false,
