@@ -1,152 +1,196 @@
 <script lang="ts">
-  import { page } from '$app/state';
   import { resolve } from '$app/paths';
   import {
     ArrowLeft,
     ArrowUpRight,
+    Building2,
+    Globe,
     MapPin,
     Briefcase,
-    Globe,
+    Users,
+    Calendar,
     MessageCircle,
-    Plus,
   } from '@lucide/svelte';
-  import Seo from '#lib/components/Seo.svelte';
-  import { breadcrumbJsonLd, companyPageTitle, jsonLdScript } from '#lib/seo.js';
   import type { PageData } from './$types';
+  import type { Job } from '#lib/types.js';
 
   let { data }: { data: PageData } = $props();
 
-  const origin = $derived(page.url.origin);
-  const canonical = $derived(`${origin}/companies/${data.slug}`);
-  const title = $derived(companyPageTitle(data.fund.name, data.jobs.length));
+  const company = $derived(
+    (data as unknown as {
+      fund?: {
+        slug: string;
+        name: string;
+        tagline?: string | null;
+        hq_country?: string | null;
+        website?: string | null;
+        careersUrl?: string | null;
+        linkedin_url?: string | null;
+        industries?: string[];
+        year_founded?: number | null;
+        employee_count?: number | null;
+      };
+      company?: {
+        slug: string;
+        name: string;
+        tagline?: string | null;
+        hq_country?: string | null;
+        website?: string | null;
+        careersUrl?: string | null;
+        linkedin_url?: string | null;
+        industries?: string[];
+        year_founded?: number | null;
+        employee_count?: number | null;
+      };
+    }).fund ??
+      (data as unknown as { company: { slug: string; name: string; tagline?: string | null; hq_country?: string | null; website?: string | null; careersUrl?: string | null; linkedin_url?: string | null; industries?: string[]; year_founded?: number | null; employee_count?: number | null } }).company,
+  );
+  const jobs = $derived<Job[]>(data.jobs ?? []);
 
-  const breadcrumbItems = $derived([
-    { name: 'Home', url: `${origin}/` },
-    { name: 'VC Funds', url: `${origin}/companies` },
-    { name: data.fund.name, url: canonical },
-  ]);
-
-  const jsonLd = $derived(jsonLdScript([breadcrumbJsonLd(breadcrumbItems)]));
-
-  function formatWorkMode(mode?: string): string {
-    if (mode === 'remote') return 'Remote';
-    if (mode === 'hybrid') return 'Hybrid';
-    return 'On-site';
+  function formatCategory(cat?: string | null): string {
+    switch ((cat ?? '').toLowerCase()) {
+      case 'finance':
+        return 'Investment Team';
+      case 'operations':
+        return 'Platform & Value Creation';
+      case 'product':
+        return 'Portfolio & EIR';
+      case 'marketing':
+        return 'Marketing & IR';
+      case 'recruiting':
+        return 'Talent & HR';
+      default:
+        return 'Venture Role';
+    }
   }
 
-  function formatTrackBadge(cat?: string): string {
-    if (cat === 'finance') return 'Investment Team';
-    if (cat === 'operations') return 'Platform & Ops';
-    if (cat === 'product') return 'Portfolio & EIR';
-    if (cat === 'marketing') return 'Marketing & Brand';
-    if (cat === 'recruiting') return 'Talent & People';
-    return 'Venture Role';
+  function formatWorkMode(mode?: string | null): string {
+    if (!mode) return 'On-site';
+    if (mode === 'onsite') return 'On-site';
+    return mode.charAt(0).toUpperCase() + mode.slice(1);
   }
 </script>
 
-<Seo
-  {title}
-  description="{data.fund.tagline} Browse open roles at {data.fund.name} on VC Jobs."
-  {canonical}
-/>
-
 <svelte:head>
-  <!-- eslint-disable-next-line svelte/no-at-html-tags -- non-executable JSON-LD built by jsonLdScript -->
-  {@html jsonLd}
+  <title>{company.name} — Venture Capital Fund Profile &amp; Open Roles — VC Jobs</title>
+  <meta
+    name="description"
+    content="{company.tagline || `Explore open venture capital roles and fund profile for ${company.name} on VC Jobs.`}"
+  />
 </svelte:head>
 
-<div class="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
-  <!-- Breadcrumb & Back Link -->
-  <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
-    <a
-      href={resolve('/companies')}
-      class="inline-flex items-center gap-1.5 text-xs font-bold text-[#888888] transition-colors hover:text-[#9966CB]"
-    >
-      <ArrowLeft class="size-3.5" />
-      <span>Back to All VC Funds</span>
-    </a>
-
-    <nav aria-label="Breadcrumb" class="flex items-center gap-2 text-xs font-normal text-[#888888]">
-      <a href={resolve('/')} class="hover:text-foreground">Home</a>
-      <span>/</span>
-      <a href={resolve('/companies')} class="hover:text-foreground">VC Funds</a>
-      <span>/</span>
-      <span class="font-bold text-foreground">{data.fund.name}</span>
-    </nav>
-  </div>
-
-  <!-- Fund Header Card -->
-  <header
-    class="dot-grid relative overflow-hidden rounded-2xl border border-border bg-card p-6 sm:p-8"
-  >
-    <div class="flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
-      <div class="flex items-start gap-4">
-        <div
-          class="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-[#9966CB]/12 text-lg font-bold text-[#9966CB]"
+<div class="flex flex-col">
+  <!-- FUND DOSSIER HEADER -->
+  <section class="vc-caret-light border-b border-border bg-card">
+    <div class="relative z-10 mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
+      <div class="mb-5">
+        <a
+          href={resolve('/companies')}
+          class="inline-flex items-center gap-1.5 text-xs font-bold text-[#888888] transition-colors hover:text-[#9966CB]"
         >
-          {data.fund.name.slice(0, 2).toUpperCase()}
-        </div>
-        <div>
-          <div class="flex flex-wrap items-center gap-2">
-            <span
-              class="rounded-full bg-[#9966CB]/12 px-3 py-0.5 text-xs font-bold text-[#9966CB]"
-            >
-              {data.fund.hq_country === 'in' ? 'India Venture Fund' : 'Global Venture Fund'}
-            </span>
-            {#each data.fund.industries as ind (ind)}
-              <span
-                class="rounded-full border border-border px-2.5 py-0.5 text-xs font-normal text-[#888888]"
-              >
-                {ind}
-              </span>
-            {/each}
-          </div>
-
-          <h1 class="mt-2.5 text-2xl font-bold tracking-tight text-foreground sm:text-4xl">
-            {data.fund.name}
-          </h1>
-          <p class="mt-2 max-w-2xl text-sm font-normal leading-relaxed text-[#888888] sm:text-base">
-            {data.fund.tagline}
-          </p>
-        </div>
+          <ArrowLeft class="size-3.5" />
+          <span>Back to VC Funds Directory</span>
+        </a>
       </div>
 
-      <div class="flex flex-wrap items-center gap-2.5">
-        {#if data.fund.careersUrl}
-          <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external careers URL -->
-          <a
-            href={data.fund.careersUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex h-10 items-center gap-1.5 rounded-xl bg-[#9966CB] px-4 text-xs font-bold text-white transition-opacity hover:opacity-90"
-          >
-            <span>Official Career Portal</span>
-            <ArrowUpRight class="size-3.5" />
-          </a>
-        {/if}
+      <div class="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
+        <div class="flex items-start gap-4">
+          <div class="flex size-14 shrink-0 items-center justify-center rounded-xl border border-border bg-secondary/60 text-xl font-bold text-[#9966CB]">
+            {company.name.charAt(0)}
+          </div>
+          <div class="flex flex-col gap-2">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="rounded-md bg-[#9966CB]/12 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-[0.12em] text-[#9966CB]">
+                Venture Capital Fund
+              </span>
+              {#if company.hq_country}
+                <span class="rounded-md border border-border bg-background px-2 py-0.5 text-[11px] font-bold uppercase text-foreground">
+                  {company.hq_country}
+                </span>
+              {/if}
+              {#if company.industries && company.industries.length > 0}
+                {#each company.industries as ind (ind)}
+                  <span class="rounded-md bg-secondary px-2 py-0.5 text-[11px] text-[#888888]">
+                    {ind}
+                  </span>
+                {/each}
+              {/if}
+            </div>
 
-        {#if data.fund.website}
-          <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external website -->
-          <a
-            href={data.fund.website}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex h-10 items-center gap-1.5 rounded-xl border border-border bg-background px-4 text-xs font-bold text-foreground transition-colors hover:border-[#9966CB] hover:text-[#9966CB]"
-          >
-            <Globe class="size-3.5" />
-            <span>Website</span>
-          </a>
-        {/if}
+            <h1 class="text-2xl font-bold tracking-tight text-foreground sm:text-3xl lg:text-4xl">
+              {company.name}
+            </h1>
+
+            {#if company.tagline}
+              <p class="max-w-2xl text-sm leading-relaxed text-[#888888]">
+                {company.tagline}
+              </p>
+            {/if}
+
+            <div class="mt-1 flex flex-wrap items-center gap-4 text-xs text-[#888888]">
+              {#if company.year_founded}
+                <span class="inline-flex items-center gap-1.5">
+                  <Calendar class="size-3.5 text-[#9966CB]" />
+                  <span>Founded {company.year_founded}</span>
+                </span>
+              {/if}
+              {#if company.employee_count}
+                <span class="inline-flex items-center gap-1.5">
+                  <Users class="size-3.5 text-[#9966CB]" />
+                  <span>~{company.employee_count} team members</span>
+                </span>
+              {/if}
+              <span class="inline-flex items-center gap-1.5 font-bold text-[#9966CB]">
+                <Briefcase class="size-3.5" />
+                <span>{jobs.length} {jobs.length === 1 ? 'active mandate' : 'active mandates'}</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex shrink-0 flex-wrap items-center gap-2.5">
+          {#if company.website}
+            <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external website -->
+            <a
+              href={company.website}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex h-9 items-center gap-1.5 rounded-lg border border-border bg-background px-4 text-xs font-bold text-foreground transition-colors hover:border-[#9966CB] hover:text-[#9966CB]"
+            >
+              <Globe class="size-3.5" />
+              <span>Official Website</span>
+              <ArrowUpRight class="size-3.5" />
+            </a>
+          {/if}
+
+          {#if company.linkedin_url}
+            <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external LinkedIn -->
+            <a
+              href={company.linkedin_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex h-9 items-center gap-1.5 rounded-lg bg-[#9966CB] px-4 text-xs font-bold text-white transition-colors hover:bg-[#8652B8]"
+            >
+              <span>LinkedIn</span>
+              <ArrowUpRight class="size-3.5" />
+            </a>
+          {/if}
+        </div>
       </div>
     </div>
-  </header>
+  </section>
 
-  <!-- Open Roles at this VC Fund -->
-  <section class="mt-8">
-    <div class="flex items-center justify-between gap-4">
-      <h2 class="text-xl font-bold text-foreground">
-        Open Roles at {data.fund.name} ({data.jobs.length})
-      </h2>
+  <!-- OPEN ROLES LEDGER -->
+  <div class="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-8 sm:px-6 sm:py-10">
+    <div class="flex items-center justify-between">
+      <div>
+        <span class="text-[11px] font-bold uppercase tracking-[0.14em] text-[#9966CB]">
+          Career Feed
+        </span>
+        <h2 class="text-xl font-bold text-foreground">
+          Open Roles at {company.name} ({jobs.length})
+        </h2>
+      </div>
       <a
         href={resolve('/jobs')}
         class="text-xs font-bold text-[#9966CB] hover:underline"
@@ -155,98 +199,101 @@
       </a>
     </div>
 
-    {#if data.jobs.length === 0}
-      <div class="mt-4 rounded-2xl border border-border bg-card p-10 text-center">
-        <p class="text-base font-bold text-foreground">
-          No open roles currently indexed in the live feed for {data.fund.name}
-        </p>
-        <p class="mx-auto mt-1.5 max-w-lg text-xs font-normal leading-relaxed text-[#888888]">
-          Many venture capital funds hire opportunistically or post roles directly on their portal or via
-          our community sheet. Check their official career page or join WhatsApp alerts below.
-        </p>
-        <div class="mt-6 flex flex-wrap justify-center gap-3">
-          {#if data.fund.careersUrl}
-            <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external careers URL -->
-            <a
-              href={data.fund.careersUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex h-10 items-center gap-2 rounded-xl bg-[#9966CB] px-5 text-xs font-bold text-white"
-            >
-              <span>Check {data.fund.name} Career Page</span>
-              <ArrowUpRight class="size-3.5" />
-            </a>
-          {/if}
-          <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external WhatsApp link -->
-          <a
-            href={data.whatsappUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex h-10 items-center gap-2 rounded-xl border border-border bg-background px-5 text-xs font-bold text-foreground hover:border-[#9966CB]"
-          >
-            <MessageCircle class="size-3.5 text-[#9966CB]" />
-            <span>Get job updates</span>
-          </a>
-          <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- mailto link -->
-          <a
-            href="mailto:{data.postJobEmail}?subject=Post%20a%20VC%20job%20at%20{encodeURIComponent(data.fund.name)}"
-            class="inline-flex h-10 items-center gap-2 rounded-xl border border-border bg-background px-5 text-xs font-bold text-foreground hover:border-[#9966CB]"
-          >
-            <Plus class="size-3.5" />
-            <span>Post a role for this fund</span>
-          </a>
+    {#if jobs.length > 0}
+      <div class="overflow-hidden rounded-xl border border-border bg-card">
+        <div class="hidden border-b border-border bg-secondary/40 px-5 py-3 text-[11px] font-bold uppercase tracking-[0.12em] text-[#888888] lg:grid lg:grid-cols-[2.2fr_1.2fr_1fr_auto] lg:items-center lg:gap-4">
+          <span>Role Title &amp; Focus</span>
+          <span>Location &amp; Mode</span>
+          <span>Venture Track</span>
+          <span class="text-right">Action</span>
+        </div>
+
+        <div class="divide-y divide-border">
+          {#each jobs as job (job.public_slug)}
+            <article class="group flex flex-col justify-between gap-3 px-5 py-4 transition-colors hover:bg-secondary/30 lg:grid lg:grid-cols-[2.2fr_1.2fr_1fr_auto] lg:items-center lg:gap-4">
+              <div class="flex min-w-0 flex-col gap-1">
+                <a
+                  href={resolve('/jobs/[slug]', { slug: job.public_slug })}
+                  class="truncate text-sm font-bold text-foreground group-hover:text-[#9966CB]"
+                >
+                  {job.title}
+                </a>
+                {#if job.skills && job.skills.length > 0}
+                  <div class="flex flex-wrap gap-1.5">
+                    {#each job.skills.slice(0, 4) as skill (skill)}
+                      <span class="rounded bg-secondary px-1.5 py-0.5 text-[11px] text-[#888888]">
+                        {skill}
+                      </span>
+                    {/each}
+                  </div>
+                {/if}
+              </div>
+
+              <div class="flex min-w-0 items-center gap-2 text-xs text-[#888888]">
+                <MapPin class="size-3.5 shrink-0 text-[#9966CB]" />
+                <span class="truncate">{job.location || 'India / Global'}</span>
+                <span class="shrink-0">·</span>
+                <span class="shrink-0 whitespace-nowrap font-bold text-foreground">{formatWorkMode(job.work_mode)}</span>
+              </div>
+
+              <div>
+                <span class="rounded-md bg-[#9966CB]/10 px-2 py-0.5 text-[11px] font-bold text-[#9966CB]">
+                  {formatCategory(job.enrichment?.category)}
+                </span>
+              </div>
+
+              <div class="flex items-center justify-end gap-2">
+                <a
+                  href={resolve('/jobs/[slug]', { slug: job.public_slug })}
+                  class="inline-flex h-8 items-center rounded-lg border border-border bg-background px-3 text-xs font-bold text-foreground hover:border-[#9966CB] hover:text-[#9966CB]"
+                >
+                  Details
+                </a>
+                {#if job.url}
+                  <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external ATS link -->
+                  <a
+                    href={job.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex h-8 items-center gap-1 rounded-lg bg-[#9966CB] px-3 text-xs font-bold text-white hover:bg-[#8652B8]"
+                  >
+                    <span>Apply</span>
+                    <ArrowUpRight class="size-3.5" />
+                  </a>
+                {/if}
+              </div>
+            </article>
+          {/each}
         </div>
       </div>
     {:else}
-      <div class="mt-4 grid gap-4">
-        {#each data.jobs as job (job.public_slug)}
-          <article
-            class="group flex flex-col justify-between gap-4 rounded-2xl border border-border bg-card p-5 transition-colors hover:border-[#9966CB] sm:flex-row sm:items-center"
+      <div class="flex flex-col items-center justify-center gap-3 rounded-xl border border-border bg-card p-10 text-center">
+        <Building2 class="size-7 text-[#9966CB]" />
+        <p class="text-sm font-bold text-foreground">
+          No active public job postings at {company.name} right now
+        </p>
+        <p class="max-w-md text-xs text-[#888888]">
+          Many venture capital firms hire opportunistically through warm networks. Join our WhatsApp community to get alerted the moment {company.name} posts a new mandate.
+        </p>
+        <div class="mt-2 flex flex-wrap justify-center gap-2.5">
+          <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external WhatsApp link -->
+          <a
+            href="https://chat.whatsapp.com/E7r0xi9u1qOE9v0YjbHcpM?s=cl&p=i&mlu=4"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex h-9 items-center gap-1.5 rounded-lg bg-[#9966CB] px-4 text-xs font-bold text-white hover:bg-[#8652B8]"
           >
-            <div>
-              <span
-                class="rounded-full bg-[#9966CB]/12 px-2.5 py-0.5 text-[11px] font-bold text-[#9966CB]"
-              >
-                {formatTrackBadge(job.enrichment?.category)}
-              </span>
-              <h3 class="mt-2 text-base font-bold text-foreground group-hover:text-[#9966CB]">
-                <a href={resolve('/jobs/[slug]', { slug: job.public_slug })} class="hover:underline">
-                  {job.title}
-                </a>
-              </h3>
-              <div class="mt-1.5 flex flex-wrap items-center gap-4 text-xs font-normal text-[#888888]">
-                <span class="inline-flex items-center gap-1">
-                  <MapPin class="size-3.5" />
-                  {job.location}
-                </span>
-                <span class="inline-flex items-center gap-1">
-                  <Briefcase class="size-3.5" />
-                  {formatWorkMode(job.work_mode)}
-                </span>
-              </div>
-            </div>
-
-            <div class="flex shrink-0 items-center gap-2.5">
-              <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external ATS link -->
-              <a
-                href={job.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex h-9 items-center gap-1.5 rounded-xl bg-[#9966CB] px-4 text-xs font-bold text-white transition-opacity hover:opacity-90"
-              >
-                <span>Apply</span>
-                <ArrowUpRight class="size-3.5" />
-              </a>
-              <a
-                href={resolve('/jobs/[slug]', { slug: job.public_slug })}
-                class="inline-flex h-9 items-center rounded-xl border border-border px-3.5 text-xs font-bold text-foreground hover:border-[#9966CB]"
-              >
-                Details
-              </a>
-            </div>
-          </article>
-        {/each}
+            <MessageCircle class="size-3.5" />
+            <span>Get job updates</span>
+          </a>
+          <a
+            href={resolve('/jobs')}
+            class="inline-flex h-9 items-center rounded-lg border border-border bg-background px-4 text-xs font-bold text-foreground hover:border-[#9966CB]"
+          >
+            Browse other VC roles
+          </a>
+        </div>
       </div>
     {/if}
-  </section>
+  </div>
 </div>

@@ -1,9 +1,12 @@
-import adapter from '@sveltejs/adapter-node';
+import nodeAdapter from '@sveltejs/adapter-node';
+import vercelAdapter from '@sveltejs/adapter-vercel';
 import { defineConfig } from 'vite';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { sentrySvelteKit } from '@sentry/sveltekit/vite';
 import tailwindcss from '@tailwindcss/vite';
 import { svelteOptions } from './svelte.options.ts';
+
+const selectedAdapter = process.env.VERCEL ? vercelAdapter() : nodeAdapter();
 
 export default defineConfig({
   define: {
@@ -24,7 +27,7 @@ export default defineConfig({
     tailwindcss(),
     sveltekit({
       ...svelteOptions,
-      adapter: adapter(),
+      adapter: selectedAdapter,
       version: { pollInterval: 300_000 },
       paths: { relative: false, origin: process.env.ORIGIN || undefined },
       csrf: {

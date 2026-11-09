@@ -10,19 +10,29 @@
 </script>
 
 <Seo
-  title="Status — VC Jobs"
-  description="Live status of VC Jobs: whether the site and API are up, and the health of every source adapter crawling job boards."
+  title="System Status — VC Jobs"
+  description="Live status of VC Jobs: platform availability, API telemetry, and the health of every ATS and Google Sheet source adapter crawling venture capital job boards."
   {canonical}
 />
 
-<div class="mx-auto w-full max-w-4xl px-4 py-10 sm:py-14">
-  <header class="mb-10">
-    <p class="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">// system status</p>
-    <h1 class="mt-4 text-4xl font-semibold tracking-tighter sm:text-5xl">Status.</h1>
-    <p class="mt-4 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-      The site's own health, and the crawl fleet behind it — pick a tab below.
-    </p>
-  </header>
+<div class="flex flex-col">
+  <section class="vc-caret-light border-b border-border bg-card">
+    <div class="relative z-10 mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
+      <div class="flex flex-col gap-2">
+        <span class="text-[11px] font-bold uppercase tracking-[0.14em] text-[#9966CB]">
+          Platform Telemetry
+        </span>
+        <h1 class="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+          System &amp; Ingestion Status
+        </h1>
+        <p class="max-w-2xl text-sm text-[#888888]">
+          Live operational health of the VC Jobs platform and the automated ATS / Google Sheet crawl adapters behind the directory.
+        </p>
+      </div>
+    </div>
+  </section>
 
-  <StatusBoard status={data.status} />
+  <div class="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
+    <StatusBoard status={data.status} />
+  </div>
 </div>

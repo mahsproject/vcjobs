@@ -1,528 +1,719 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import { page } from '$app/state';
+  import { goto } from '$app/navigation';
   import { resolve } from '$app/paths';
   import {
     Search,
     MapPin,
-    Briefcase,
     Building2,
+    Briefcase,
     ArrowUpRight,
-    RefreshCw,
+    SlidersHorizontal,
+    X,
     MessageCircle,
     Plus,
-    X,
-    FileSpreadsheet,
-    Globe,
+    RefreshCw,
+    LayoutList,
+    LayoutGrid,
+    CheckCircle2,
   } from '@lucide/svelte';
-  import Seo from '#lib/components/Seo.svelte';
-  import { jsonLdScript, siteOrganizationJsonLd } from '#lib/seo.js';
-  import type { Job } from '#lib/types.js';
   import type { PageData } from './$types';
+  import type { Job } from '#lib/types.js';
 
   let { data }: { data: PageData } = $props();
 
-  let liveJobs = $state<Job[] | null>(null);
+  let searchInput = $state(page.url.searchParams.get('q') ?? '');
+  let selectedCategory = $state(page.url.searchParams.get('category') ?? '');
+  let selectedCountry = $state(page.url.searchParams.get('countries') ?? '');
+  let selectedRegion = $state(page.url.searchParams.get('regions') ?? '');
+  let selectedWorkMode = $state(page.url.searchParams.get('work_mode') ?? '');
+  let selectedCompany = $state(page.url.searchParams.get('company_slug') ?? '');
+  let selectedSource = $state(page.url.searchParams.get('source') ?? '');
+  let selectedCollection = $state(page.url.searchParams.get('collections') ?? '');
+  let viewMode = $state<'ledger' | 'cards'>('ledger');
+
+  let whatsappUrl = $state('https://chat.whatsapp.com/E7r0xi9u1qOE9v0YjbHcpM?s=cl&p=i&mlu=4');
+  let postJobEmail = $state('Ozadhanvi99@gmail.com');
+  let liveFetchedJobs = $state<Job[] | null>(null);
   let syncing = $state(false);
-  let lastSyncedText = $state('');
+  let lastSyncedLabel = $state('Live auto-sync (5m)');
 
-  const jobs = $derived(liveJobs ?? data.jobs ?? []);
-  const companies = $derived(data.companies ?? []);
-
-  // Initialize filter state from URL query params
-  let searchQuery = $state('');
-  let selectedTrack = $state('all');
-  let selectedGeo = $state('all');
-  let selectedWorkMode = $state('all');
-  let selectedFund = $state('all');
-  let selectedSource = $state('all');
-  let selectedCollection = $state('all');
-
-  $effect(() => {
-    const sp = page.url.searchParams;
-    searchQuery = sp.get('q') ?? '';
-
-    const trackParam = sp.get('track') ?? '';
-    const catParam = sp.get('category') ?? '';
-    if (trackParam) {
-      selectedTrack = trackParam;
-    } else if (catParam === 'finance') {
-      selectedTrack = 'investment';
-    } else if (catParam === 'operations') {
-      selectedTrack = 'platform';
-    } else if (catParam === 'product') {
-      selectedTrack = 'portfolio';
-    } else if (catParam === 'marketing' || catParam === 'recruiting') {
-      selectedTrack = 'talent';
-    } else {
-      selectedTrack = 'all';
-    }
-
-    const countryParam = sp.get('countries') ?? '';
-    const regionParam = sp.get('regions') ?? '';
-    if (countryParam === 'in') {
-      selectedGeo = 'india';
-    } else if (countryParam || regionParam) {
-      selectedGeo = 'global';
-    } else {
-      selectedGeo = 'all';
-    }
-
-    selectedWorkMode = sp.get('work_mode') || 'all';
-    selectedFund = sp.get('company_slug') || 'all';
-    selectedSource = sp.get('source') || 'all';
-    selectedCollection = sp.get('collections') || 'all';
-  });
-
-  const filteredJobs = $derived.by(() => {
-    const q = searchQuery.trim().toLowerCase();
-    return jobs.filter((job) => {
-      if (q) {
-        const hay = `${job.title} ${job.company} ${job.location} ${job.skills.join(' ')} ${job.description}`.toLowerCase();
-        const terms = q.split(/\s+/).filter(Boolean);
-        if (!terms.every((t) => hay.includes(t))) return false;
-      }
-
-      if (selectedTrack !== 'all') {
-        const cat = job.enrichment?.category ?? '';
-        if (selectedTrack === 'investment' && cat !== 'finance') return false;
-        if (selectedTrack === 'platform' && cat !== 'operations') return false;
-        if (
-          selectedTrack === 'portfolio' &&
-          !['product', 'software_engineering', 'data_science'].includes(cat)
-        )
-          return false;
-        if (
-          selectedTrack === 'talent' &&
-          !['recruiting', 'marketing', 'legal'].includes(cat)
-        )
-          return false;
-      }
-
-      if (selectedGeo === 'india' && !job.countries.includes('in')) return false;
-      if (selectedGeo === 'global' && job.countries.includes('in') && job.countries.length === 1)
-        return false;
-
-      if (selectedWorkMode !== 'all' && job.work_mode !== selectedWorkMode) return false;
-      if (selectedFund !== 'all' && job.company_slug !== selectedFund) return false;
-      if (selectedSource !== 'all' && job.source !== selectedSource) return false;
-      if (selectedCollection !== 'all' && !job.collections.includes(selectedCollection))
-        return false;
-
-      return true;
-    });
-  });
-
-  const activeFiltersCount = $derived(
-    (searchQuery.trim() ? 1 : 0) +
-      (selectedTrack !== 'all' ? 1 : 0) +
-      (selectedGeo !== 'all' ? 1 : 0) +
-      (selectedWorkMode !== 'all' ? 1 : 0) +
-      (selectedFund !== 'all' ? 1 : 0) +
-      (selectedSource !== 'all' ? 1 : 0) +
-      (selectedCollection !== 'all' ? 1 : 0),
-  );
-
-  function resetAllFilters() {
-    searchQuery = '';
-    selectedTrack = 'all';
-    selectedGeo = 'all';
-    selectedWorkMode = 'all';
-    selectedFund = 'all';
-    selectedSource = 'all';
-    selectedCollection = 'all';
-  }
-
-  async function triggerLiveSync() {
-    if (syncing) return;
+  async function refreshJobsFromApi(force = false) {
     syncing = true;
     try {
-      await fetch('/api/v1/vc-sync?force=1', { method: 'POST' });
-      const res = await fetch('/api/v1/jobs?limit=500');
-      if (res.ok) {
-        const payload = await res.json();
-        if (Array.isArray(payload.data)) {
-          liveJobs = payload.data;
-          lastSyncedText = 'Synced just now';
+      if (force) {
+        await fetch('/api/v1/vc-sync?force=1', { method: 'POST' });
+      }
+      const [settingsRes, jobsRes] = await Promise.all([
+        fetch('/api/v1/vc-settings'),
+        fetch('/api/v1/jobs?limit=500'),
+      ]);
+      if (settingsRes.ok) {
+        const s = await settingsRes.json();
+        if (s.whatsapp_url) whatsappUrl = s.whatsapp_url;
+        if (s.post_job_email) postJobEmail = s.post_job_email;
+      }
+      if (jobsRes.ok) {
+        const j = await jobsRes.json();
+        if (Array.isArray(j.data)) {
+          liveFetchedJobs = j.data;
+          lastSyncedLabel = force ? 'Synced just now' : 'Live auto-sync (5m)';
         }
       }
+    } catch {
+      // Retain SSR jobs
     } finally {
       syncing = false;
     }
   }
 
-  function formatWorkMode(mode?: string): string {
-    if (mode === 'remote') return 'Remote';
-    if (mode === 'hybrid') return 'Hybrid';
-    return 'On-site';
+  onMount(() => {
+    void refreshJobsFromApi(false);
+  });
+
+  $effect(() => {
+    searchInput = page.url.searchParams.get('q') ?? '';
+    selectedCategory = page.url.searchParams.get('category') ?? '';
+    selectedCountry = page.url.searchParams.get('countries') ?? '';
+    selectedRegion = page.url.searchParams.get('regions') ?? '';
+    selectedWorkMode = page.url.searchParams.get('work_mode') ?? '';
+    selectedCompany = page.url.searchParams.get('company_slug') ?? '';
+    selectedSource = page.url.searchParams.get('source') ?? '';
+    selectedCollection = page.url.searchParams.get('collections') ?? '';
+  });
+
+  const allJobs = $derived<Job[]>(
+    liveFetchedJobs && liveFetchedJobs.length > 0 ? liveFetchedJobs : (data.jobs ?? []),
+  );
+
+  const uniqueFundsInJobs = $derived.by(() => {
+    const map = new Map<string, { slug: string; name: string; count: number }>();
+    for (const j of allJobs) {
+      const slug = j.company_slug || j.company.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      const existing = map.get(slug);
+      if (existing) {
+        existing.count += 1;
+      } else {
+        map.set(slug, { slug, name: j.company, count: 1 });
+      }
+    }
+    return Array.from(map.values()).sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+  });
+
+  const filteredJobs = $derived.by(() => {
+    const q = searchInput.trim().toLowerCase();
+    const cat = selectedCategory.trim().toLowerCase();
+    const country = selectedCountry.trim().toLowerCase();
+    const region = selectedRegion.trim().toLowerCase();
+    const mode = selectedWorkMode.trim().toLowerCase();
+    const comp = selectedCompany.trim().toLowerCase();
+    const src = selectedSource.trim().toLowerCase();
+    const col = selectedCollection.trim().toLowerCase();
+
+    return allJobs.filter((job) => {
+      if (q) {
+        const hay = `${job.title} ${job.company} ${job.location} ${job.enrichment?.category ?? ''} ${(job.skills ?? []).join(' ')} ${job.description ?? ''}`.toLowerCase();
+        const terms = q.split(/\s+/).filter(Boolean);
+        if (!terms.every((t) => hay.includes(t))) return false;
+      }
+      if (cat && (job.enrichment?.category ?? '').toLowerCase() !== cat) {
+        return false;
+      }
+      if (country && !(job.countries ?? []).some((c) => c.toLowerCase() === country)) {
+        return false;
+      }
+      if (region && !(job.regions ?? []).some((r) => r.toLowerCase() === region)) {
+        return false;
+      }
+      if (mode && (job.work_mode ?? '').toLowerCase() !== mode) {
+        return false;
+      }
+      if (comp && (job.company_slug ?? '').toLowerCase() !== comp) {
+        return false;
+      }
+      if (src && (job.source ?? '').toLowerCase() !== src) {
+        return false;
+      }
+      if (col && !(job.collections ?? []).some((c) => c.toLowerCase() === col)) {
+        return false;
+      }
+      return true;
+    });
+  });
+
+  const hasFilters = $derived(
+    Boolean(
+      searchInput.trim() ||
+        selectedCategory ||
+        selectedCountry ||
+        selectedRegion ||
+        selectedWorkMode ||
+        selectedCompany ||
+        selectedSource ||
+        selectedCollection,
+    ),
+  );
+
+  function syncUrl() {
+    const next = new URLSearchParams();
+    if (searchInput.trim()) next.set('q', searchInput.trim());
+    if (selectedCategory) next.set('category', selectedCategory);
+    if (selectedCountry) next.set('countries', selectedCountry);
+    if (selectedRegion) next.set('regions', selectedRegion);
+    if (selectedWorkMode) next.set('work_mode', selectedWorkMode);
+    if (selectedCompany) next.set('company_slug', selectedCompany);
+    if (selectedSource) next.set('source', selectedSource);
+    if (selectedCollection) next.set('collections', selectedCollection);
+    const qs = next.toString();
+    // eslint-disable-next-line svelte/no-navigation-without-resolve -- query string update on /jobs
+    void goto(qs ? `${resolve('/jobs')}?${qs}` : resolve('/jobs'), {
+      replaceState: true,
+    });
   }
 
-  function formatTrackBadge(cat?: string): string {
-    if (cat === 'finance') return 'Investment Team';
-    if (cat === 'operations') return 'Platform & Ops';
-    if (cat === 'product') return 'Portfolio & EIR';
-    if (cat === 'marketing') return 'Marketing & Brand';
-    if (cat === 'recruiting') return 'Talent & People';
-    if (cat === 'legal') return 'Legal & Compliance';
-    return 'Venture Role';
+  function clearFilters() {
+    searchInput = '';
+    selectedCategory = '';
+    selectedCountry = '';
+    selectedRegion = '';
+    selectedWorkMode = '';
+    selectedCompany = '';
+    selectedSource = '';
+    selectedCollection = '';
+    // eslint-disable-next-line svelte/no-navigation-without-resolve -- resolved above
+    void goto(resolve('/jobs'), { replaceState: true });
   }
 
-  function formatSourceLabel(source?: string): string {
-    if (source === 'google_sheets') return 'Google Sheet Sync';
-    if (source === 'consider') return 'VC Talent Network Live';
-    if (source === 'getro') return 'VC Career Board Live';
-    if (source === 'zoho_recruit') return 'Zoho Recruit Live';
-    if (source === 'greenhouse') return 'Greenhouse Live';
-    if (source === 'lever') return 'Lever Live';
-    if (source === 'ashby') return 'Ashby Live';
-    if (source === 'workable') return 'Workable Live';
-    if (source === 'smartrecruiters') return 'SmartRecruiters Live';
-    return 'Live ATS';
+  const categories = [
+    { id: '', label: 'All Tracks' },
+    { id: 'finance', label: 'Investment Team' },
+    { id: 'operations', label: 'Platform & Ops' },
+    { id: 'product', label: 'Portfolio & EIR' },
+    { id: 'marketing', label: 'Marketing & IR' },
+    { id: 'recruiting', label: 'Talent & HR' },
+  ];
+
+  const workModes = [
+    { id: '', label: 'All Modes' },
+    { id: 'onsite', label: 'On-site' },
+    { id: 'hybrid', label: 'Hybrid' },
+    { id: 'remote', label: 'Remote' },
+  ];
+
+  function formatTrackLabel(category?: string | null): string {
+    switch ((category ?? '').toLowerCase()) {
+      case 'finance':
+        return 'Investment Team';
+      case 'operations':
+        return 'Platform & Ops';
+      case 'product':
+        return 'Portfolio & EIR';
+      case 'marketing':
+        return 'Marketing & IR';
+      case 'recruiting':
+        return 'Talent & HR';
+      default:
+        return 'Venture Role';
+    }
   }
 
-  const origin = $derived(page.url.origin);
-  const canonical = $derived(`${origin}/jobs`);
-  const jsonLd = $derived(jsonLdScript([siteOrganizationJsonLd(origin)]));
+  function formatWorkMode(mode?: string | null): string {
+    if (!mode) return 'On-site';
+    if (mode === 'onsite') return 'On-site';
+    return mode.charAt(0).toUpperCase() + mode.slice(1);
+  }
+
+  function formatSourceLabel(source?: string | null): string {
+    switch ((source ?? '').toLowerCase()) {
+      case 'google_sheets':
+        return 'Sheet Sync';
+      case 'getro':
+        return 'Getro';
+      case 'consider':
+        return 'Consider';
+      case 'greenhouse':
+        return 'Greenhouse';
+      case 'lever':
+        return 'Lever';
+      case 'ashby':
+        return 'Ashby';
+      case 'workable':
+        return 'Workable';
+      case 'smartrecruiters':
+        return 'SmartRecruiters';
+      case 'zoho_recruit':
+        return 'Zoho Recruit';
+      default:
+        return 'Verified ATS';
+    }
+  }
+
+  function formatDateShort(iso?: string | null): string {
+    if (!iso) return 'Recent';
+    try {
+      const d = new Date(iso);
+      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    } catch {
+      return 'Recent';
+    }
+  }
 </script>
 
-<Seo
-  title="Open Venture Capital Roles ({jobs.length}) · VC Jobs"
-  description="Browse live investment, platform, operations, and portfolio roles across 221 Indian and global venture capital funds, synced with Google Sheets and live ATS portals."
-  {canonical}
-/>
-
 <svelte:head>
-  <!-- eslint-disable-next-line svelte/no-at-html-tags -- non-executable JSON-LD built by jsonLdScript -->
-  {@html jsonLd}
+  <title>Open Venture Capital Roles ({filteredJobs.length}) — VC Jobs</title>
+  <meta
+    name="description"
+    content="Browse verified open roles across India and global venture capital firms: Analyst, Associate, Principal, Platform, Operations, and Founders' Office."
+  />
 </svelte:head>
 
-<div class="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
-  <!-- ===================================================================== -->
-  <!-- PAGE HEADER WITH GOOGLE SHEET SYNC, POST A JOB & WHATSAPP UPDATES     -->
-  <!-- ===================================================================== -->
-  <header
-    class="dot-grid relative overflow-hidden rounded-2xl border border-border bg-card p-6 sm:p-8"
-  >
-    <div class="flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
-      <div>
-        <div class="inline-flex items-center gap-2 rounded-full bg-[#9966CB]/12 px-3 py-1">
-          <span class="text-xs font-bold leading-none text-[#9966CB]">^</span>
-          <span class="text-xs font-bold tracking-[0.12em] uppercase text-[#9966CB]">
-            Open Roles Directory
-          </span>
+<div class="flex flex-col">
+  <!-- PAGE HEADER -->
+  <section class="vc-caret-light border-b border-border bg-card">
+    <div class="relative z-10 mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
+      <div class="flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center gap-2">
+            <span class="text-[11px] font-bold uppercase tracking-[0.14em] text-[#9966CB]">
+              Open Roles Directory
+            </span>
+            <span class="inline-flex items-center gap-1 text-xs text-[#888888]">
+              · <CheckCircle2 class="size-3.5 text-emerald-500" /> {lastSyncedLabel}
+            </span>
+          </div>
+          <h1 class="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+            Venture Capital Mandates
+          </h1>
+          <p class="max-w-2xl text-sm text-[#888888]">
+            Showing <strong class="font-bold text-foreground">{filteredJobs.length}</strong> matching roles across
+            <strong class="font-bold text-foreground">{allJobs.length}</strong> live openings from
+            <strong class="font-bold text-foreground">{uniqueFundsInJobs.length}</strong> actively hiring venture capital funds.
+          </p>
         </div>
-        <h1 class="mt-3 text-2xl font-bold tracking-tight text-foreground sm:text-4xl">
-          Venture Capital Role Board
-        </h1>
-        <p class="mt-2 max-w-2xl text-sm font-normal leading-relaxed text-[#888888] sm:text-base">
-          Showing <strong class="font-bold text-foreground">{filteredJobs.length}</strong> of
-          <strong class="font-bold text-foreground">{jobs.length}</strong> live roles synced automatically
-          from VC career portals (Greenhouse, Lever, Ashby, Workable, SmartRecruiters) and our live Google
-          Sheet.
-        </p>
-      </div>
 
-      <!-- Original Core Actions: Sync Google Sheet & ATS + Post a Job + WhatsApp Updates -->
-      <div class="flex flex-wrap items-center gap-2.5">
-        <button
-          type="button"
-          onclick={triggerLiveSync}
-          disabled={syncing}
-          class="inline-flex h-10 cursor-pointer items-center gap-2 rounded-xl border border-border bg-background px-4 text-xs font-bold text-foreground transition-colors hover:border-[#9966CB] hover:text-[#9966CB] disabled:opacity-60"
-        >
-          <RefreshCw class={['size-3.5 text-[#9966CB]', syncing && 'animate-spin']} />
-          <span>{syncing ? 'Syncing Sheet & ATS...' : lastSyncedText || 'Sync Sheet & ATS'}</span>
-        </button>
+        <div class="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onclick={() => refreshJobsFromApi(true)}
+            disabled={syncing}
+            class="inline-flex h-9 items-center gap-1.5 rounded-lg border border-border bg-background px-3.5 text-xs font-bold text-foreground transition-colors hover:border-[#9966CB] hover:text-[#9966CB] disabled:opacity-50"
+          >
+            <RefreshCw class={['size-3.5 text-[#9966CB]', syncing && 'animate-spin']} />
+            <span>{syncing ? 'Syncing...' : 'Sync Sheet & ATS'}</span>
+          </button>
 
-        <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- mailto link -->
-        <a
-          href="mailto:{data.postJobEmail}?subject=Post%20a%20VC%20job"
-          class="inline-flex h-10 items-center gap-1.5 rounded-xl border border-border bg-background px-4 text-xs font-bold text-foreground transition-colors hover:border-[#9966CB] hover:text-[#9966CB]"
-        >
-          <Plus class="size-3.5" />
-          <span>Post a job</span>
-        </a>
+          <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- mailto link -->
+          <a
+            href="mailto:{postJobEmail}?subject=Post%20a%20VC%20job"
+            class="inline-flex h-9 items-center gap-1.5 rounded-lg border border-border bg-background px-3.5 text-xs font-bold text-foreground transition-colors hover:border-[#9966CB] hover:text-[#9966CB]"
+          >
+            <Plus class="size-3.5" />
+            <span>Post a job</span>
+          </a>
 
-        <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external WhatsApp link -->
-        <a
-          href={data.whatsappUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-flex h-10 items-center gap-1.5 rounded-xl bg-[#9966CB] px-4 text-xs font-bold text-white transition-opacity hover:opacity-90"
-        >
-          <MessageCircle class="size-3.5" />
-          <span>Get job updates</span>
-        </a>
+          <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external WhatsApp link -->
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex h-9 items-center gap-1.5 rounded-lg bg-[#9966CB] px-4 text-xs font-bold text-white transition-colors hover:bg-[#8652B8]"
+          >
+            <MessageCircle class="size-3.5" />
+            <span>Get job updates</span>
+          </a>
+        </div>
       </div>
     </div>
+  </section>
 
-    <!-- =================================================================== -->
-    <!-- FILTER WORKBENCH                                                    -->
-    <!-- =================================================================== -->
-    <div class="mt-6 border-t border-border pt-6">
-      <div class="grid gap-3 md:grid-cols-[1.5fr_1fr_1fr_1fr]">
-        <!-- Search Input -->
+  <!-- WORKSPACE BODY -->
+  <div class="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-8 sm:px-6 sm:py-10">
+    <!-- UNIFIED FILTER & SEARCH WORKBENCH -->
+    <section
+      aria-label="Role filters"
+      class="flex flex-col gap-4 rounded-xl border border-border bg-card p-4 sm:p-5"
+    >
+      <!-- Row 1: Search + Structured Selects -->
+      <div class="grid grid-cols-1 gap-2.5 md:grid-cols-[1.6fr_1fr_1fr_1fr]">
         <div class="relative">
-          <Search
-            class="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-[#888888]"
-          />
+          <Search class="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-[#888888]" />
           <input
             type="search"
-            bind:value={searchQuery}
-            placeholder="Search role, skill, city, or VC fund..."
-            aria-label="Search open roles"
-            class="h-10 w-full rounded-xl border border-border bg-background pr-3 pl-10 text-sm font-normal text-foreground focus:border-[#9966CB] focus:outline-none"
+            bind:value={searchInput}
+            oninput={syncUrl}
+            placeholder="Search role title, VC fund, skill, or city..."
+            aria-label="Filter VC jobs by keyword"
+            class="h-10 w-full rounded-lg border border-border bg-background pr-4 pl-10 text-sm text-foreground placeholder:text-[#888888] focus:border-[#9966CB] focus:outline-none focus:ring-2 focus:ring-[#9966CB]/20"
           />
         </div>
 
-        <!-- Geography Selector -->
         <select
-          bind:value={selectedGeo}
-          aria-label="Filter by geography"
-          class="h-10 rounded-xl border border-border bg-background px-3 text-xs font-bold text-foreground focus:border-[#9966CB] focus:outline-none"
+          aria-label="Filter by Geography"
+          value={selectedCountry || (selectedRegion ? `region:${selectedRegion}` : '')}
+          onchange={(e) => {
+            const val = (e.currentTarget as HTMLSelectElement).value;
+            if (val.startsWith('region:')) {
+              selectedCountry = '';
+              selectedRegion = val.replace('region:', '');
+            } else {
+              selectedRegion = '';
+              selectedCountry = val;
+            }
+            syncUrl();
+          }}
+          class="h-10 rounded-lg border border-border bg-background px-3 text-xs font-bold text-foreground focus:border-[#9966CB] focus:outline-none"
         >
-          <option value="all">All Geographies ({jobs.length})</option>
-          <option value="india">
-            India VCs ({jobs.filter((j) => j.countries.includes('in')).length})
-          </option>
-          <option value="global">
-            Global VCs ({jobs.filter((j) => !j.countries.includes('in') || j.countries.length > 1).length})
-          </option>
+          <option value="">All Geographies</option>
+          <option value="in">India (Bengaluru / Mumbai / NCR)</option>
+          <option value="us">United States (SF / NYC / Boston)</option>
+          <option value="gb">United Kingdom (London)</option>
+          <option value="sg">Singapore</option>
+          <option value="region:eu">Europe</option>
+          <option value="region:apac">APAC</option>
         </select>
 
-        <!-- VC Fund Selector -->
         <select
-          bind:value={selectedFund}
-          aria-label="Filter by VC fund"
-          class="h-10 rounded-xl border border-border bg-background px-3 text-xs font-bold text-foreground focus:border-[#9966CB] focus:outline-none"
+          aria-label="Filter by Venture Fund"
+          bind:value={selectedCompany}
+          onchange={syncUrl}
+          class="h-10 rounded-lg border border-border bg-background px-3 text-xs font-bold text-foreground focus:border-[#9966CB] focus:outline-none"
         >
-          <option value="all">All Venture Funds ({companies.length})</option>
-          {#each companies as c (c.slug)}
-            <option value={c.slug}>
-              {c.name} {c.job_count > 0 ? `(${c.job_count})` : ''}
-            </option>
+          <option value="">All Hiring Funds ({uniqueFundsInJobs.length})</option>
+          {#each uniqueFundsInJobs as fund (fund.slug)}
+            <option value={fund.slug}>{fund.name} ({fund.count})</option>
           {/each}
         </select>
 
-        <!-- Source / Sync Channel Selector (Includes Google Sheet!) -->
         <select
+          aria-label="Filter by Sync Source"
           bind:value={selectedSource}
-          aria-label="Filter by sync source"
-          class="h-10 rounded-xl border border-border bg-background px-3 text-xs font-bold text-foreground focus:border-[#9966CB] focus:outline-none"
+          onchange={syncUrl}
+          class="h-10 rounded-lg border border-border bg-background px-3 text-xs font-bold text-foreground focus:border-[#9966CB] focus:outline-none"
         >
-          <option value="all">All Sync Sources</option>
-          <option value="google_sheets">
-            Google Sheet ({jobs.filter((j) => j.source === 'google_sheets').length})
-          </option>
-          <option value="consider">
-            Peak XV / Lightspeed / BVP Live ({jobs.filter((j) => j.source === 'consider').length})
-          </option>
-          <option value="getro">
-            3one4 / Accel / Antler Live ({jobs.filter((j) => j.source === 'getro').length})
-          </option>
-          <option value="zoho_recruit">
-            Chiratae Zoho Live ({jobs.filter((j) => j.source === 'zoho_recruit').length})
-          </option>
-          <option value="greenhouse">
-            Greenhouse Live ({jobs.filter((j) => j.source === 'greenhouse').length})
-          </option>
-          <option value="ashby">
-            Ashby Live ({jobs.filter((j) => j.source === 'ashby').length})
-          </option>
-          <option value="lever">
-            Lever Live ({jobs.filter((j) => j.source === 'lever').length})
-          </option>
-          <option value="smartrecruiters">
-            SmartRecruiters Live ({jobs.filter((j) => j.source === 'smartrecruiters').length})
-          </option>
-          <option value="workable">
-            Workable Live ({jobs.filter((j) => j.source === 'workable').length})
-          </option>
+          <option value="">All Sync Sources</option>
+          <option value="google_sheets">Curated Google Sheet</option>
+          <option value="greenhouse">Greenhouse ATS</option>
+          <option value="getro">Getro VC Portals</option>
+          <option value="consider">Consider VC Portals</option>
+          <option value="lever">Lever ATS</option>
+          <option value="ashby">Ashby ATS</option>
+          <option value="workable">Workable ATS</option>
         </select>
       </div>
 
-      <!-- Track Pills & Work Mode Pills -->
-      <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
+      <!-- Row 2: Track Tabs, Work Mode Pills & View Toggle -->
+      <div class="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-3.5">
         <div class="flex flex-wrap items-center gap-1.5">
-          {#each [
-            { id: 'all', label: 'All Tracks' },
-            { id: 'investment', label: 'Investment Team' },
-            { id: 'platform', label: 'Platform & Ops' },
-            { id: 'portfolio', label: 'Portfolio & EIR' },
-            { id: 'talent', label: 'Talent & Brand' },
-          ] as tab (tab.id)}
+          {#each categories as cat (cat.id)}
             <button
               type="button"
-              onclick={() => (selectedTrack = tab.id)}
+              onclick={() => {
+                selectedCategory = cat.id;
+                syncUrl();
+              }}
               class={[
-                'cursor-pointer rounded-full px-3.5 py-1.5 text-xs font-bold transition-colors',
-                selectedTrack === tab.id
+                'rounded-md px-3 py-1.5 text-xs font-bold transition-colors',
+                selectedCategory === cat.id
                   ? 'bg-[#9966CB] text-white'
-                  : 'border border-border bg-background text-[#888888] hover:border-[#9966CB] hover:text-foreground',
+                  : 'border border-border bg-background text-[#888888] hover:border-[#9966CB]/50 hover:text-foreground',
               ]}
             >
-              {tab.label}
+              {cat.label}
             </button>
           {/each}
         </div>
 
-        <div class="flex flex-wrap items-center gap-1.5">
-          {#each [
-            { id: 'all', label: 'All Modes' },
-            { id: 'onsite', label: 'On-site' },
-            { id: 'hybrid', label: 'Hybrid' },
-            { id: 'remote', label: 'Remote' },
-          ] as mode (mode.id)}
+        <div class="flex flex-wrap items-center gap-2">
+          <!-- Work Mode Segmented Group -->
+          <div class="inline-flex items-center gap-0.5 rounded-lg border border-border bg-background p-0.5">
+            {#each workModes as mode (mode.id)}
+              <button
+                type="button"
+                onclick={() => {
+                  selectedWorkMode = mode.id;
+                  syncUrl();
+                }}
+                class={[
+                  'rounded-md px-2.5 py-1 text-xs font-bold transition-colors',
+                  selectedWorkMode === mode.id
+                    ? 'bg-[#1E1E1E] text-white dark:bg-white dark:text-[#1E1E1E]'
+                    : 'text-[#888888] hover:text-foreground',
+                ]}
+              >
+                {mode.label}
+              </button>
+            {/each}
+          </div>
+
+          <!-- View Mode Toggle -->
+          <div class="hidden items-center gap-0.5 rounded-lg border border-border bg-background p-0.5 sm:inline-flex">
             <button
               type="button"
-              onclick={() => (selectedWorkMode = mode.id)}
+              onclick={() => (viewMode = 'ledger')}
+              aria-label="Ledger table view"
+              title="Ledger view"
               class={[
-                'cursor-pointer rounded-full px-3 py-1 text-xs font-bold transition-colors',
-                selectedWorkMode === mode.id
-                  ? 'bg-[#1E1E1E] text-white dark:bg-white dark:text-[#1E1E1E]'
-                  : 'border border-border bg-background text-[#888888] hover:border-[#9966CB] hover:text-foreground',
+                'inline-flex size-7 items-center justify-center rounded-md transition-colors',
+                viewMode === 'ledger'
+                  ? 'bg-[#9966CB] text-white'
+                  : 'text-[#888888] hover:text-foreground',
               ]}
             >
-              {mode.label}
+              <LayoutList class="size-3.5" />
             </button>
-          {/each}
-
-          {#if activeFiltersCount > 0}
             <button
               type="button"
-              onclick={resetAllFilters}
-              class="inline-flex cursor-pointer items-center gap-1 rounded-full border border-[#9966CB]/40 bg-[#9966CB]/10 px-3 py-1 text-xs font-bold text-[#9966CB] hover:bg-[#9966CB]/20"
+              onclick={() => (viewMode = 'cards')}
+              aria-label="Detailed card view"
+              title="Detailed view"
+              class={[
+                'inline-flex size-7 items-center justify-center rounded-md transition-colors',
+                viewMode === 'cards'
+                  ? 'bg-[#9966CB] text-white'
+                  : 'text-[#888888] hover:text-foreground',
+              ]}
             >
-              <X class="size-3" />
-              <span>Clear filters ({activeFiltersCount})</span>
+              <LayoutGrid class="size-3.5" />
+            </button>
+          </div>
+
+          {#if hasFilters}
+            <button
+              type="button"
+              onclick={clearFilters}
+              class="inline-flex h-8 items-center gap-1 rounded-lg border border-[#9966CB]/40 bg-[#9966CB]/10 px-3 text-xs font-bold text-[#9966CB] transition-colors hover:bg-[#9966CB]/20"
+            >
+              <X class="size-3.5" />
+              <span>Reset</span>
             </button>
           {/if}
         </div>
       </div>
-    </div>
-  </header>
+    </section>
 
-  <!-- ===================================================================== -->
-  <!-- ROLE LISTINGS                                                         -->
-  <!-- ===================================================================== -->
-  {#if filteredJobs.length === 0}
-    <div class="mt-8 rounded-2xl border border-border bg-card p-12 text-center">
-      <p class="text-lg font-bold text-foreground">No matching VC roles found</p>
-      <p class="mx-auto mt-2 max-w-md text-sm font-normal text-[#888888]">
-        Try clearing your active filters, or add a new role to the live Google Sheet or via email.
-      </p>
-      <div class="mt-6 flex flex-wrap justify-center gap-3">
+    <!-- RESULTS LEDGER / GRID -->
+    {#if filteredJobs.length > 0}
+      {#if viewMode === 'ledger'}
+        <div class="overflow-hidden rounded-xl border border-border bg-card shadow-xs">
+          <!-- Table Header -->
+          <div class="hidden border-b border-border bg-secondary/50 px-5 py-3 text-[11px] font-bold uppercase tracking-wider text-muted-foreground lg:grid lg:grid-cols-[minmax(0,2.3fr)_minmax(0,1.35fr)_minmax(0,1.25fr)_minmax(0,1.1fr)_160px] lg:items-center lg:gap-4">
+            <span>Role &amp; Focus</span>
+            <span>Venture Fund</span>
+            <span>Location &amp; Work Mode</span>
+            <span>Track &amp; Source</span>
+            <span class="text-right">Actions</span>
+          </div>
+
+          <div class="divide-y divide-border/60">
+            {#each filteredJobs as job (job.public_slug)}
+              <article class="group px-4 py-3.5 transition-colors hover:bg-secondary/40 sm:px-5 lg:grid lg:grid-cols-[minmax(0,2.3fr)_minmax(0,1.35fr)_minmax(0,1.25fr)_minmax(0,1.1fr)_160px] lg:items-center lg:gap-4">
+                <!-- Col 1: Title & Skills -->
+                <div class="flex min-w-0 flex-col gap-1 pr-2">
+                  <a
+                    href={resolve('/jobs/[slug]', { slug: job.public_slug })}
+                    class="truncate text-sm font-semibold text-foreground transition-colors group-hover:text-[#9966CB]"
+                  >
+                    {job.title}
+                  </a>
+                  <div class="flex items-center gap-1.5 overflow-hidden">
+                    {#if job.skills && job.skills.length > 0}
+                      {#each job.skills.slice(0, 3) as skill (skill)}
+                        <span class="inline-flex shrink-0 items-center rounded border border-border/60 bg-secondary/80 px-1.5 py-0.5 text-[10px] font-medium text-foreground/75">
+                          {skill}
+                        </span>
+                      {/each}
+                    {:else}
+                      <span class="text-[11px] text-muted-foreground">General VC Mandate</span>
+                    {/if}
+                    <span class="truncate text-[11px] text-muted-foreground lg:hidden">
+                      · {job.company} · {job.location || 'India / Global'}
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Col 2: Fund -->
+                <div class="mt-2 flex min-w-0 items-center gap-2.5 lg:mt-0">
+                  <div class="flex size-7 shrink-0 items-center justify-center rounded-md border border-[#9966CB]/25 bg-[#9966CB]/10 text-xs font-bold text-[#9966CB]">
+                    {job.company.charAt(0)}
+                  </div>
+                  {#if job.company_slug}
+                    <a
+                      href={resolve('/companies/[slug]', { slug: job.company_slug })}
+                      class="truncate text-xs font-semibold text-foreground transition-colors hover:text-[#9966CB]"
+                    >
+                      {job.company}
+                    </a>
+                  {:else}
+                    <span class="truncate text-xs font-semibold text-foreground">
+                      {job.company}
+                    </span>
+                  {/if}
+                </div>
+
+                <!-- Col 3: Location & Work Mode (Structured 2-Line Stack) -->
+                <div class="mt-2 flex min-w-0 flex-col gap-1 lg:mt-0">
+                  <div class="flex items-center gap-1 text-xs font-medium text-foreground/85">
+                    <MapPin class="size-3.5 shrink-0 text-[#9966CB]" />
+                    <span class="truncate">{job.location || 'India / Global'}</span>
+                  </div>
+                  <div>
+                    <span class="inline-flex items-center rounded border border-border/80 bg-secondary/70 px-2 py-0.5 text-[10px] font-semibold text-foreground/90">
+                      {formatWorkMode(job.work_mode)}
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Col 4: Track & Source (Structured 2-Line Stack) -->
+                <div class="mt-2 flex min-w-0 flex-col gap-1 lg:mt-0">
+                  <div>
+                    <span class="inline-flex items-center rounded-md border border-[#9966CB]/25 bg-[#9966CB]/10 px-2 py-0.5 text-[11px] font-semibold text-[#8652B8] dark:text-[#B68CE0]">
+                      {formatTrackLabel(job.enrichment?.category)}
+                    </span>
+                  </div>
+                  <div class="flex items-center gap-1 text-[11px] text-muted-foreground">
+                    <span class="truncate font-medium text-foreground/70">{formatSourceLabel(job.source)}</span>
+                    {#if job.posted_at}
+                      <span class="shrink-0">· {formatDateShort(job.posted_at)}</span>
+                    {/if}
+                  </div>
+                </div>
+
+                <!-- Col 5: Actions (Deterministic 160px container, aligned with header) -->
+                <div class="mt-3 flex w-full items-center justify-end gap-2 lg:mt-0 lg:w-[160px]">
+                  <a
+                    href={resolve('/jobs/[slug]', { slug: job.public_slug })}
+                    class="inline-flex h-8 items-center rounded-lg border border-border bg-background px-3 text-xs font-semibold text-foreground transition-all hover:border-[#9966CB] hover:bg-secondary/40 hover:text-[#9966CB]"
+                  >
+                    Details
+                  </a>
+                  {#if job.url}
+                    <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external ATS link -->
+                    <a
+                      href={job.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="inline-flex h-8 items-center gap-1 rounded-lg bg-[#9966CB] px-3 text-xs font-semibold text-white shadow-xs transition-all hover:bg-[#8652B8]"
+                    >
+                      <span>Apply</span>
+                      <ArrowUpRight class="size-3.5" />
+                    </a>
+                  {:else}
+                    <a
+                      href={resolve('/jobs/[slug]', { slug: job.public_slug })}
+                      class="inline-flex h-8 items-center gap-1 rounded-lg bg-[#9966CB] px-3 text-xs font-semibold text-white shadow-xs transition-all hover:bg-[#8652B8]"
+                    >
+                      <span>Apply</span>
+                      <ArrowUpRight class="size-3.5" />
+                    </a>
+                  {/if}
+                </div>
+              </article>
+            {/each}
+          </div>
+        </div>
+      {:else}
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+          {#each filteredJobs as job (job.public_slug)}
+            <article class="group flex flex-col justify-between gap-4 rounded-xl border border-border bg-card p-5 transition-colors hover:border-[#9966CB]">
+              <div class="flex flex-col gap-3">
+                <div class="flex items-start justify-between gap-3">
+                  <div class="flex items-center gap-3">
+                    <div class="flex size-10 shrink-0 items-center justify-center rounded-lg border border-border bg-secondary/60 text-sm font-bold text-[#9966CB]">
+                      {job.company.charAt(0)}
+                    </div>
+                    <div>
+                      <a
+                        href={resolve('/jobs/[slug]', { slug: job.public_slug })}
+                        class="text-base font-bold text-foreground transition-colors group-hover:text-[#9966CB]"
+                      >
+                        {job.title}
+                      </a>
+                      <div class="mt-0.5 flex flex-wrap items-center gap-2 text-xs text-[#888888]">
+                        {#if job.company_slug}
+                          <a
+                            href={resolve('/companies/[slug]', { slug: job.company_slug })}
+                            class="font-bold text-foreground hover:text-[#9966CB]"
+                          >
+                            {job.company}
+                          </a>
+                        {:else}
+                          <span class="font-bold text-foreground">{job.company}</span>
+                        {/if}
+                        <span>·</span>
+                        <span class="inline-flex items-center gap-1">
+                          <MapPin class="size-3 text-[#9966CB]" />
+                          {job.location || 'India / Global'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <span class="shrink-0 rounded-md bg-[#9966CB]/10 px-2 py-0.5 text-[11px] font-bold text-[#9966CB]">
+                    {formatTrackLabel(job.enrichment?.category)}
+                  </span>
+                </div>
+
+                {#if job.skills && job.skills.length > 0}
+                  <div class="flex flex-wrap gap-1.5">
+                    {#each job.skills.slice(0, 5) as skill (skill)}
+                      <span class="rounded bg-secondary px-2 py-0.5 text-[11px] text-[#888888]">
+                        {skill}
+                      </span>
+                    {/each}
+                  </div>
+                {/if}
+              </div>
+
+              <div class="flex items-center justify-between border-t border-border pt-3">
+                <span class="text-[11px] text-[#888888]">
+                  {formatWorkMode(job.work_mode)} · {formatSourceLabel(job.source)} · {formatDateShort(job.posted_at)}
+                </span>
+                <div class="flex items-center gap-2">
+                  <a
+                    href={resolve('/jobs/[slug]', { slug: job.public_slug })}
+                    class="inline-flex h-8 items-center rounded-lg border border-border bg-background px-3 text-xs font-bold text-foreground hover:border-[#9966CB] hover:text-[#9966CB]"
+                  >
+                    Details
+                  </a>
+                  {#if job.url}
+                    <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external ATS link -->
+                    <a
+                      href={job.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="inline-flex h-8 items-center gap-1 rounded-lg bg-[#9966CB] px-3 text-xs font-bold text-white hover:bg-[#8652B8]"
+                    >
+                      <span>Apply</span>
+                      <ArrowUpRight class="size-3.5" />
+                    </a>
+                  {/if}
+                </div>
+              </div>
+            </article>
+          {/each}
+        </div>
+      {/if}
+    {:else}
+      <!-- Empty Filter State -->
+      <div class="flex flex-col items-center justify-center gap-4 rounded-xl border border-border bg-card p-12 text-center">
+        <div class="flex size-11 items-center justify-center rounded-lg border border-border bg-secondary/50 text-[#9966CB]">
+          <SlidersHorizontal class="size-5" />
+        </div>
+        <div class="flex flex-col gap-1">
+          <h2 class="text-lg font-bold text-foreground">No VC mandates match your current filters</h2>
+          <p class="max-w-md text-xs text-[#888888]">
+            Try clearing one or more filters or broadening your search query to view all {allJobs.length} live venture capital roles.
+          </p>
+        </div>
         <button
           type="button"
-          onclick={resetAllFilters}
-          class="inline-flex h-10 cursor-pointer items-center gap-2 rounded-xl bg-[#9966CB] px-5 text-xs font-bold text-white"
+          onclick={clearFilters}
+          class="inline-flex h-9 items-center gap-2 rounded-lg bg-[#9966CB] px-4 text-xs font-bold text-white hover:bg-[#8652B8]"
         >
           Reset all filters
         </button>
-        <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- mailto link -->
-        <a
-          href="mailto:{data.postJobEmail}?subject=Post%20a%20VC%20job"
-          class="inline-flex h-10 items-center gap-2 rounded-xl border border-border bg-background px-5 text-xs font-bold text-foreground hover:border-[#9966CB]"
-        >
-          <Plus class="size-3.5" />
-          Post a job
-        </a>
       </div>
-    </div>
-  {:else}
-    <div class="mt-6 grid gap-4">
-      {#each filteredJobs as job (job.public_slug)}
-        <article
-          class="group flex flex-col justify-between gap-4 rounded-2xl border border-border bg-card p-5 transition-all hover:border-[#9966CB] sm:flex-row sm:items-center sm:p-6"
-        >
-          <div class="min-w-0 flex-1">
-            <div class="flex flex-wrap items-center gap-2">
-              <span
-                class="rounded-full bg-[#9966CB]/12 px-2.5 py-0.5 text-[11px] font-bold text-[#9966CB]"
-              >
-                {formatTrackBadge(job.enrichment?.category)}
-              </span>
-
-              <span
-                class="inline-flex items-center gap-1 rounded-full border border-border px-2.5 py-0.5 text-[11px] font-normal text-[#888888]"
-              >
-                {#if job.source === 'google_sheets'}
-                  <FileSpreadsheet class="size-3 text-[#9966CB]" />
-                {:else}
-                  <Globe class="size-3 text-[#9966CB]" />
-                {/if}
-                {formatSourceLabel(job.source)}
-              </span>
-
-              {#if job.posted_at}
-                <span class="text-[11px] font-normal text-[#888888]">
-                  Posted {job.posted_at.slice(0, 10)}
-                </span>
-              {/if}
-            </div>
-
-            <h2 class="mt-2.5 text-lg font-bold text-foreground group-hover:text-[#9966CB]">
-              <a href={resolve('/jobs/[slug]', { slug: job.public_slug })} class="hover:underline">
-                {job.title}
-              </a>
-            </h2>
-
-            <div class="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-normal text-[#888888]">
-              <a
-                href={resolve('/companies/[slug]', { slug: job.company_slug })}
-                class="inline-flex items-center gap-1.5 font-bold text-foreground hover:text-[#9966CB]"
-              >
-                <Building2 class="size-3.5 text-[#9966CB]" />
-                {job.company}
-              </a>
-              <span class="inline-flex items-center gap-1">
-                <MapPin class="size-3.5" />
-                {job.location}
-              </span>
-              <span class="inline-flex items-center gap-1">
-                <Briefcase class="size-3.5" />
-                {formatWorkMode(job.work_mode)}
-              </span>
-            </div>
-
-            {#if job.enrichment?.summary}
-              <p class="mt-2.5 line-clamp-2 max-w-3xl text-xs font-normal leading-relaxed text-[#888888]">
-                {job.enrichment.summary}
-              </p>
-            {/if}
-
-            {#if job.skills?.length > 0}
-              <div class="mt-3 flex flex-wrap gap-1.5">
-                {#each job.skills.slice(0, 5) as skill (skill)}
-                  <span
-                    class="rounded-md bg-secondary px-2 py-0.5 text-[11px] font-normal text-[#888888]"
-                  >
-                    {skill}
-                  </span>
-                {/each}
-              </div>
-            {/if}
-          </div>
-
-          <div class="flex shrink-0 items-center gap-2.5 sm:flex-col sm:items-end">
-            <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external ATS apply link -->
-            <a
-              href={job.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex h-10 items-center gap-1.5 rounded-xl bg-[#9966CB] px-4 text-xs font-bold text-white transition-opacity hover:opacity-90"
-            >
-              <span>Apply Now</span>
-              <ArrowUpRight class="size-3.5" />
-            </a>
-            <a
-              href={resolve('/jobs/[slug]', { slug: job.public_slug })}
-              class="inline-flex h-9 items-center justify-center rounded-xl border border-border px-3.5 text-xs font-bold text-foreground transition-colors hover:border-[#9966CB] hover:text-[#9966CB]"
-            >
-              Role details
-            </a>
-          </div>
-        </article>
-      {/each}
-    </div>
-  {/if}
+    {/if}
+  </div>
 </div>

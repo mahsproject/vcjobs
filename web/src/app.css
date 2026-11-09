@@ -28,19 +28,33 @@
     @apply bg-popover text-popover-foreground;
   }
   body {
-    @apply bg-background text-foreground font-sans antialiased;
-    font-family: "Century Gothic Std", "Century Gothic", Arial, sans-serif;
+    @apply bg-background text-foreground;
+    font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: -0.011em;
+    text-rendering: optimizeLegibility;
   }
   h1,
   h2,
   h3,
   h4,
-  button {
-    font-family: "Century Gothic Std", "Century Gothic", Arial, sans-serif;
+  h5,
+  h6 {
+    font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     font-weight: 700;
+    letter-spacing: -0.022em;
   }
-  input {
+  button,
+  th {
+    font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  input,
+  select,
+  textarea {
+    font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     @apply text-base sm:text-sm;
   }
 }
@@ -82,26 +96,53 @@
 /* Official VC Jobs Caret Pattern Backdrop (Brand Guidelines Pages 9 & 10):
    - Inspired by the caret above the "j" in the VC Jobs logo
    - Colours: Amethyst (#9966CB) on white or white/amethyst on dark
-   - Stroke: proportional 3-4px outline
+   - Stroke: proportional 3.5px outline (~168px motif width)
    - Opacity: ~30% to keep it subtly behind content
-   - Clear space: masked out around central text and logo */
-.dot-grid {
+   - Clear space: >= 200px clear space from text and logo */
+.dot-grid,
+.vc-caret-light {
   position: relative;
 }
-.dot-grid::before {
+.dot-grid::before,
+.vc-caret-light::before {
   content: '';
   position: absolute;
   inset: 0;
-  z-index: -1;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='140' viewBox='0 0 160 140' fill='none'%3E%3Cpath d='M80 14L138 112C141 117 136 123 130 121L80 100L30 121C24 123 19 117 22 112L80 14Z' stroke='%239966CB' stroke-width='3.5' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-size: 160px 140px;
+  pointer-events: none;
+  z-index: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='168' height='148' viewBox='0 0 168 148' fill='none'%3E%3Cpath d='M84 16L144 118C147 123 142 129 136 127L84 105L32 127C26 129 21 123 24 118L84 16Z' stroke='%239966CB' stroke-width='3.5' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-size: 168px 148px;
+  background-position: right -16px top -16px;
   opacity: 0.28;
-  -webkit-mask-image: radial-gradient(ellipse 65% 65% at 50% 48%, transparent 45%, #000 90%);
-  mask-image: radial-gradient(ellipse 65% 65% at 50% 48%, transparent 45%, #000 90%);
+  -webkit-mask-image: linear-gradient(105deg, transparent 0%, transparent 72%, rgba(0, 0, 0, 0.85) 100%);
+  mask-image: linear-gradient(105deg, transparent 0%, transparent 72%, rgba(0, 0, 0, 0.85) 100%);
+}
+.vc-caret-dark {
+  position: relative;
+}
+.vc-caret-dark::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='168' height='148' viewBox='0 0 168 148' fill='none'%3E%3Cpath d='M84 16L144 118C147 123 142 129 136 127L84 105L32 127C26 129 21 123 24 118L84 16Z' stroke='%239966CB' stroke-width='3.5' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-size: 168px 148px;
+  background-position: right -12px center;
+  opacity: 0.28;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, transparent calc(100% - 260px), #000 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, transparent calc(100% - 260px), #000 100%);
+}
+@media (max-width: 1023px) {
+  .dot-grid::before,
+  .vc-caret-light::before,
+  .vc-caret-dark::before {
+    display: none;
+  }
 }
 .dot-grid-centred::before {
-  -webkit-mask-image: radial-gradient(ellipse 62% 62% at 50% 46%, transparent 48%, #000 92%);
-  mask-image: radial-gradient(ellipse 62% 62% at 50% 46%, transparent 48%, #000 92%);
+  -webkit-mask-image: radial-gradient(ellipse 75% 75% at 50% 48%, transparent 62%, #000 96%);
+  mask-image: radial-gradient(ellipse 75% 75% at 50% 48%, transparent 62%, #000 96%);
 }
 
 .cli-banner-dismissed [data-cli-banner] {

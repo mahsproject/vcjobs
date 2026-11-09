@@ -279,3 +279,7 @@ extension/*.zip
 
 # Legacy static VC Jobs backup
 /legacy-static/
+
+# Vercel deployment artifacts
+.vercel
+web/.vercel

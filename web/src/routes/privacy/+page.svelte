@@ -25,7 +25,7 @@
 <div class="mx-auto w-full max-w-3xl px-4 py-6">
   <div class="flex flex-col gap-8">
     <header class="flex flex-col gap-3">
-      <p class="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">// legal</p>
+      <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-[#9966CB]">Legal &amp; Governance</p>
       <h1 class="text-4xl font-semibold leading-[1.0] tracking-tighter sm:text-5xl">
         Privacy Policy
       </h1>

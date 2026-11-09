@@ -5002,17 +5002,24 @@ async function refreshVcCatalog(): Promise<{ jobs: Job[]; updatesUrl: string }> 
 
   allJobs.sort((a, b) => (b.posted_at ?? '').localeCompare(a.posted_at ?? ''));
 
-  cachedCatalog = {
-    jobs: allJobs,
-    updatesUrl: sheetData.updatesUrl,
-    fetchedAt: Date.now(),
-  };
+  if (allJobs.length > 0 || !cachedCatalog) {
+    cachedCatalog = {
+      jobs: allJobs.length > 0 ? allJobs : (cachedCatalog?.jobs ?? []),
+      updatesUrl: sheetData.updatesUrl,
+      fetchedAt: Date.now(),
+    };
+  }
   return cachedCatalog;
 }
 
 function ensureAutoSyncDaemon() {
   if (autoSyncTimerStarted) return;
   autoSyncTimerStarted = true;
+  if (!syncInFlight && (!cachedCatalog || cachedCatalog.jobs.length === 0)) {
+    syncInFlight = refreshVcCatalog().finally(() => {
+      syncInFlight = null;
+    });
+  }
   setInterval(() => {
     if (!syncInFlight) {
       syncInFlight = refreshVcCatalog().finally(() => {
@@ -5025,7 +5032,12 @@ function ensureAutoSyncDaemon() {
 export async function getVcCatalog(forceRefresh = false): Promise<{ jobs: Job[]; updatesUrl: string; fetchedAt: number }> {
   ensureAutoSyncDaemon();
   const now = Date.now();
-  if (!forceRefresh && cachedCatalog && now - cachedCatalog.fetchedAt < CACHE_TTL_MS) {
+  if (
+    !forceRefresh &&
+    cachedCatalog &&
+    cachedCatalog.jobs.length > 0 &&
+    now - cachedCatalog.fetchedAt < CACHE_TTL_MS
+  ) {
     return {
       ...cachedCatalog,
       jobs: [...customSubmittedJobs, ...cachedCatalog.jobs],
@@ -5043,6 +5055,9 @@ export async function getVcCatalog(forceRefresh = false): Promise<{ jobs: Job[];
     fetchedAt: cachedCatalog?.fetchedAt ?? now,
   };
 }
+
+// Kick off background catalog warm-up on server startup
+ensureAutoSyncDaemon();
 
 function splitParam(params: URLSearchParams, key: string): string[] {
   const raw = params.getAll(key).flatMap((v) => v.split(','));

@@ -22,7 +22,7 @@
 <div class="mx-auto w-full max-w-3xl px-4 py-6">
   <div class="flex flex-col gap-8">
     <header class="flex flex-col gap-3">
-      <p class="font-mono text-xs uppercase tracking-widest text-muted-foreground">// support</p>
+      <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-[#9966CB]">Help &amp; Support</p>
       <h1 class="text-4xl font-semibold leading-none tracking-tighter sm:text-5xl">Support</h1>
     </header>
 

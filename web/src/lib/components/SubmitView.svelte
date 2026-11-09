@@ -229,7 +229,7 @@
 </script>
 
 {#if !isAuthenticated()}
-  <p class="py-12 text-center text-sm text-muted-foreground">Sign in to submit a job.</p>
+  <div class="mx-auto my-8 flex max-w-xl flex-col items-center gap-4 rounded-xl border border-border bg-card p-8 text-center"><div class="flex size-11 items-center justify-center rounded-lg border border-border bg-secondary/60 text-brand"><Briefcase class="size-5" /></div><h1 class="text-xl font-bold text-foreground">Submit a Venture Capital Mandate</h1><p class="text-sm text-muted-foreground">Sign in to submit a job.</p><div class="flex flex-wrap items-center justify-center gap-2.5 pt-1"><a href={resolve('/signin')} class="inline-flex h-9 items-center justify-center rounded-lg bg-brand px-4 text-xs font-bold text-brand-foreground transition-opacity hover:opacity-90">Sign in to continue</a></div></div>
 {:else}
   <div class="flex flex-col gap-8">
     <header class="flex flex-col gap-2 border-b border-border pb-6">
@@ -352,14 +352,14 @@
                 <Briefcase class="size-3.5 text-muted-foreground" />
                 Title <span class="text-destructive">*</span>
               </span>
-              <Input bind:value={title} placeholder="Senior Go Developer" class="w-full" />
+              <Input bind:value={title} placeholder="Associate — Investments" class="w-full" />
             </label>
             <label class="flex flex-1 flex-col gap-1">
               <span class="flex items-center gap-1.5 text-sm font-medium">
                 <Building2 class="size-3.5 text-muted-foreground" />
                 Company <span class="text-destructive">*</span>
               </span>
-              <Input bind:value={company} placeholder="Acme" class="w-full" />
+              <Input bind:value={company} placeholder="Peak XV Partners" class="w-full" />
             </label>
           </div>
         </fieldset>
@@ -375,7 +375,7 @@
                 <MapPin class="size-3.5 text-muted-foreground" />
                 Location
               </span>
-              <Input bind:value={location} placeholder="Berlin, Germany" class="w-full" />
+              <Input bind:value={location} placeholder="Bengaluru, India" class="w-full" />
             </label>
             <label class="flex flex-1 flex-col gap-1">
               <span class="flex items-center gap-1.5 text-sm font-medium">
@@ -459,7 +459,7 @@
               tokens={skills}
               onAdd={(v) => (skills = addToken(skills, v))}
               onRemove={(v) => (skills = skills.filter((s) => s !== v))}
-              placeholder="e.g. Go, Kubernetes — Enter to add"
+              placeholder="e.g. Due Diligence, Financial Modeling — Enter to add"
               label="Skills"
             />
           </div>

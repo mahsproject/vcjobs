@@ -13,7 +13,7 @@
       thead: 'border-b border-border [&_tr]:border-b',
       tbody: '[&_tr:last-child]:border-0',
       tr: 'border-b border-border transition-colors hover:bg-muted/50',
-      th: 'h-10 px-3 text-left font-medium text-muted-foreground',
+      th: 'h-10 px-3 text-left text-xs font-bold uppercase tracking-wider text-muted-foreground',
       td: 'p-3 align-middle',
     },
   });

@@ -1,127 +1,129 @@
 <script lang="ts">
-  import { page } from '$app/state';
   import { resolve } from '$app/paths';
-  import { Search, ArrowRight, Layers, MessageCircle, Plus } from '@lucide/svelte';
-  import Seo from '#lib/components/Seo.svelte';
+  import { Layers, ArrowRight, Building2, Briefcase, Search } from '@lucide/svelte';
   import type { PageData } from './$types';
 
   let { data }: { data: PageData } = $props();
 
-  let query = $state('');
-  const needle = $derived(query.trim().toLowerCase());
+  interface CollectionEntry {
+    slug: string;
+    title?: string;
+    name?: string;
+    category?: string;
+    tagline?: string;
+    description?: string;
+    jobCount?: number;
+    job_count?: number;
+    fundCount?: number;
+    company_count?: number;
+  }
 
-  const visibleCollections = $derived(
-    data.collections.filter(
-      (c) =>
-        !needle ||
-        c.title.toLowerCase().includes(needle) ||
-        c.description.toLowerCase().includes(needle) ||
-        c.category.toLowerCase().includes(needle),
-    ),
-  );
+  let filterText = $state('');
+  const allCollections = $derived<CollectionEntry[]>((data.collections ?? []) as CollectionEntry[]);
 
-  const canonical = $derived(`${page.url.origin}/collections`);
+  const filtered = $derived.by(() => {
+    const q = filterText.trim().toLowerCase();
+    if (!q) return allCollections;
+    return allCollections.filter((c) =>
+      `${c.title ?? c.name ?? ''} ${c.category ?? c.tagline ?? ''} ${c.description ?? ''}`.toLowerCase().includes(q),
+    );
+  });
 </script>
 
-<Seo
-  title="Curated Venture Capital Collections · VC Jobs"
-  description="Browse curated collections of venture capital roles by fund stage, geography (India & Global), and career track (Investment, Platform, EIR, Talent)."
-  {canonical}
-/>
+<svelte:head>
+  <title>Curated Venture Capital Collections — VC Jobs</title>
+  <meta
+    name="description"
+    content="Explore curated collections of venture capital roles and funds by stage, geography, and track."
+  />
+</svelte:head>
 
-<div class="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
-  <header
-    class="dot-grid relative overflow-hidden rounded-2xl border border-border bg-card p-6 sm:p-8"
-  >
-    <div class="flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
-      <div>
-        <div class="inline-flex items-center gap-2 rounded-full bg-[#9966CB]/12 px-3 py-1">
-          <span class="text-xs font-bold leading-none text-[#9966CB]">^</span>
-          <span class="text-xs font-bold tracking-[0.12em] uppercase text-[#9966CB]">
-            Curated Venture Collections
+<div class="flex flex-col">
+  <!-- ARCHITECTURAL HEADER -->
+  <section class="vc-caret-light border-b border-border bg-card">
+    <div class="relative z-10 mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
+      <div class="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
+        <div class="flex flex-col gap-2">
+          <span class="text-[11px] font-bold uppercase tracking-[0.14em] text-[#9966CB]">
+            Curated Tracks
           </span>
-        </div>
-        <h1 class="mt-3 text-2xl font-bold tracking-tight text-foreground sm:text-4xl">
-          Explore VC Roles by Track &amp; Ecosystem
-        </h1>
-        <p class="mt-2 max-w-2xl text-sm font-normal leading-relaxed text-[#888888] sm:text-base">
-          Curated slices across {data.totalFunds} monitored Indian and global venture capital funds and
-          {data.totalJobs} live openings.
-        </p>
-      </div>
-
-      <div class="flex flex-wrap items-center gap-2.5">
-        <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- mailto link -->
-        <a
-          href="mailto:{data.postJobEmail}?subject=Post%20a%20VC%20job"
-          class="inline-flex h-10 items-center gap-1.5 rounded-xl border border-border bg-background px-4 text-xs font-bold text-foreground transition-colors hover:border-[#9966CB] hover:text-[#9966CB]"
-        >
-          <Plus class="size-3.5" />
-          <span>Post a job</span>
-        </a>
-
-        <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external WhatsApp link -->
-        <a
-          href={data.whatsappUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-flex h-10 items-center gap-1.5 rounded-xl bg-[#9966CB] px-4 text-xs font-bold text-white transition-opacity hover:opacity-90"
-        >
-          <MessageCircle class="size-3.5" />
-          <span>Get job updates</span>
-        </a>
-      </div>
-    </div>
-
-    <div class="relative mt-6 max-w-md">
-      <Search
-        class="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-[#888888]"
-      />
-      <input
-        type="search"
-        bind:value={query}
-        placeholder="Filter collections (India, Seed, Investment, Platform)..."
-        aria-label="Search collections"
-        class="h-10 w-full rounded-xl border border-border bg-background pr-3 pl-10 text-sm font-normal text-foreground focus:border-[#9966CB] focus:outline-none"
-      />
-    </div>
-  </header>
-
-  <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-    {#each visibleCollections as col (col.slug)}
-      <a
-        href={resolve('/collections/[slug]', { slug: col.slug })}
-        class="group flex flex-col justify-between rounded-2xl border border-border bg-card p-6 transition-all hover:border-[#9966CB]"
-      >
-        <div>
-          <div class="flex items-center justify-between gap-2">
-            <span
-              class="inline-flex items-center gap-1.5 rounded-full bg-[#9966CB]/12 px-3 py-1 text-[11px] font-bold text-[#9966CB]"
-            >
-              <Layers class="size-3" />
-              {col.category}
-            </span>
-            <span class="text-xs font-bold text-foreground">
-              {col.jobCount} {col.jobCount === 1 ? 'role' : 'roles'}
-            </span>
-          </div>
-
-          <h2 class="mt-4 text-lg font-bold text-foreground group-hover:text-[#9966CB]">
-            {col.title}
-          </h2>
-          <p class="mt-2 text-xs font-normal leading-relaxed text-[#888888]">
-            {col.description}
+          <h1 class="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+            Venture Capital Collections ({allCollections.length})
+          </h1>
+          <p class="max-w-2xl text-sm text-[#888888]">
+            Focused views of the venture capital landscape — organized by investment stage, regional ecosystem, and functional career track.
           </p>
         </div>
 
-        <div class="mt-6 flex items-center justify-between border-t border-border pt-4 text-xs">
-          <span class="font-normal text-[#888888]">{col.fundCount} VC funds covered</span>
-          <span class="inline-flex items-center gap-1 font-bold text-[#9966CB]">
-            View roles
-            <ArrowRight class="size-3.5 transition-transform group-hover:translate-x-0.5" />
-          </span>
+        <div class="relative w-full max-w-sm">
+          <Search class="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-[#888888]" />
+          <input
+            type="search"
+            bind:value={filterText}
+            placeholder="Filter collections..."
+            aria-label="Filter collections"
+            class="h-10 w-full rounded-lg border border-border bg-background pr-4 pl-10 text-sm text-foreground placeholder:text-[#888888] focus:border-[#9966CB] focus:outline-none focus:ring-2 focus:ring-[#9966CB]/20"
+          />
         </div>
-      </a>
-    {/each}
+      </div>
+    </div>
+  </section>
+
+  <!-- COLLECTIONS MATRIX -->
+  <div class="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
+    {#if filtered.length > 0}
+      <div class="grid grid-cols-1 divide-y divide-border overflow-hidden rounded-xl border border-border bg-card md:grid-cols-2 md:divide-x lg:grid-cols-3">
+        {#each filtered as col (col.slug)}
+          <a
+            href={resolve('/collections/[slug]', { slug: col.slug })}
+            class="group flex flex-col justify-between gap-5 border-b border-border p-6 transition-colors hover:bg-secondary/35"
+          >
+            <div class="flex flex-col gap-3">
+              <div class="flex items-center justify-between">
+                <div class="flex size-10 items-center justify-center rounded-lg border border-border bg-secondary/60 text-[#9966CB] transition-colors group-hover:border-[#9966CB] group-hover:bg-[#9966CB] group-hover:text-white">
+                  <Layers class="size-4" />
+                </div>
+                <div class="flex items-center gap-2 text-xs">
+                  <span class="inline-flex items-center gap-1 rounded-md bg-[#9966CB]/12 px-2 py-0.5 font-bold tabular-nums text-[#9966CB]">
+                    <Briefcase class="size-3" />
+                    {col.jobCount ?? col.job_count ?? 0} {(col.jobCount ?? col.job_count ?? 0) === 1 ? 'role' : 'roles'}
+                  </span>
+                  <span class="inline-flex items-center gap-1 rounded-md border border-border px-2 py-0.5 tabular-nums text-[#888888]">
+                    <Building2 class="size-3" />
+                    {col.fundCount ?? col.company_count ?? 0} funds
+                  </span>
+                </div>
+              </div>
+
+              <div class="flex flex-col gap-1">
+                <h2 class="text-base font-bold text-foreground transition-colors group-hover:text-[#9966CB]">
+                  {col.title ?? col.name}
+                </h2>
+                {#if col.category || col.tagline}
+                  <p class="text-xs font-bold text-[#9966CB]">
+                    {col.category ?? col.tagline}
+                  </p>
+                {/if}
+              </div>
+
+              {#if col.description}
+                <p class="line-clamp-3 text-xs leading-relaxed text-[#888888]">
+                  {col.description}
+                </p>
+              {/if}
+            </div>
+
+            <div class="flex items-center justify-between border-t border-border/60 pt-3 text-xs font-bold text-foreground transition-colors group-hover:text-[#9966CB]">
+              <span>Explore collection</span>
+              <ArrowRight class="size-3.5 transition-transform group-hover:translate-x-0.5" />
+            </div>
+          </a>
+        {/each}
+      </div>
+    {:else}
+      <div class="rounded-xl border border-border bg-card p-10 text-center text-sm text-[#888888]">
+        No collections match "{filterText}".
+      </div>
+    {/if}
   </div>
 </div>

@@ -16,7 +16,7 @@
   }: { text: string; as?: 'p' | 'h2' | 'h3'; class?: string; style?: string } = $props();
 </script>
 
-<svelte:element this={as} class={cn('font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground', className)} {style}>
+<svelte:element this={as} class={cn('font-sans text-xs font-bold uppercase tracking-[0.16em] text-brand', className)} {style}>
   <span aria-hidden="true">//</span>
   {text}
 </svelte:element>

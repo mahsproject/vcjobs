@@ -1,263 +1,246 @@
 <script lang="ts">
   import { resolve } from '$app/paths';
-  import { page } from '$app/state';
   import {
     ArrowLeft,
     ArrowUpRight,
     Briefcase,
     Building2,
-    FileSpreadsheet,
-    Globe,
     Layers,
     MapPin,
-    MessageCircle,
-    Plus,
-    Search,
   } from '@lucide/svelte';
-  import Seo from '#lib/components/Seo.svelte';
-  import { breadcrumbJsonLd, collectionPageJsonLd, jobListItems, jsonLdScript } from '#lib/seo.js';
   import type { PageData } from './$types';
+  import type { Job } from '#lib/types.js';
 
   let { data }: { data: PageData } = $props();
 
-  let searchQuery = $state('');
-
-  const filteredJobs = $derived.by(() => {
-    const q = searchQuery.trim().toLowerCase();
-    if (!q) return data.jobs;
-    return data.jobs.filter((job) => {
-      const hay = `${job.title} ${job.company} ${job.location} ${job.skills.join(' ')}`.toLowerCase();
-      return hay.includes(q);
-    });
-  });
-
-  const origin = $derived(page.url.origin);
-  const canonical = $derived(`${origin}/collections/${data.slug}`);
-  const pageTitle = $derived(`${data.collection.title} (${data.jobs.length} Roles) · VC Jobs`);
-
-  const jsonLd = $derived(
-    jsonLdScript([
-      collectionPageJsonLd(
-        data.collection.title,
-        data.collection.description,
-        canonical,
-        jobListItems(data.jobs.slice(0, 20), origin),
-      ),
-      breadcrumbJsonLd([
-        { name: 'VC Jobs', url: `${origin}/` },
-        { name: 'Collections', url: `${origin}/collections` },
-        { name: data.collection.title, url: canonical },
-      ]),
-    ]),
+  const collection = $derived(
+    data.collection as {
+      title?: string;
+      name?: string;
+      category?: string;
+      tagline?: string;
+      description?: string;
+    },
   );
+  const collectionTitle = $derived(collection.title ?? collection.name ?? 'Collection');
+  const companies = $derived<Array<{ slug: string; name: string; tagline?: string; hq_country?: string; active_job_count?: number }>>(
+    ((data as unknown as { funds?: Array<{ slug: string; name: string; tagline?: string; hq_country?: string; active_job_count?: number }> }).funds ??
+      (data as unknown as { companies?: Array<{ slug: string; name: string; tagline?: string; hq_country?: string; active_job_count?: number }> }).companies ??
+      []),
+  );
+  const jobs = $derived<Job[]>(data.jobs ?? []);
 
-  function formatWorkMode(mode?: string): string {
-    if (mode === 'remote') return 'Remote';
-    if (mode === 'hybrid') return 'Hybrid';
-    return 'On-site';
+  function formatCategory(cat?: string | null): string {
+    switch ((cat ?? '').toLowerCase()) {
+      case 'finance':
+        return 'Investment Team';
+      case 'operations':
+        return 'Platform & Value Creation';
+      case 'product':
+        return 'Portfolio & EIR';
+      case 'marketing':
+        return 'Marketing & IR';
+      case 'recruiting':
+        return 'Talent & HR';
+      default:
+        return 'Venture Role';
+    }
   }
 </script>
 
-<Seo title={pageTitle} description={data.collection.description} {canonical} />
-
 <svelte:head>
-  <!-- eslint-disable-next-line svelte/no-at-html-tags -- non-executable JSON-LD built by jsonLdScript -->
-  {@html jsonLd}
+  <title>{collectionTitle} — Curated VC Collection — VC Jobs</title>
+  <meta
+    name="description"
+    content="{collection.description || collection.tagline || `Explore open venture capital roles and funds in ${collectionTitle}.`}"
+  />
 </svelte:head>
 
-<div class="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
-  <nav aria-label="Breadcrumb" class="mb-6">
-    <a
-      href={resolve('/collections')}
-      class="inline-flex items-center gap-1.5 text-xs font-bold text-[#888888] transition-colors hover:text-[#9966CB]"
-    >
-      <ArrowLeft class="size-3.5" />
-      <span>Back to all VC collections</span>
-    </a>
-  </nav>
+<div class="flex flex-col">
+  <!-- ARCHITECTURAL HEADER -->
+  <section class="vc-caret-light border-b border-border bg-card">
+    <div class="relative z-10 mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
+      <div class="mb-5">
+        <a
+          href={resolve('/collections')}
+          class="inline-flex items-center gap-1.5 text-xs font-bold text-[#888888] transition-colors hover:text-[#9966CB]"
+        >
+          <ArrowLeft class="size-3.5" />
+          <span>Back to Collections</span>
+        </a>
+      </div>
 
-  <header
-    class="dot-grid relative overflow-hidden rounded-2xl border border-border bg-card p-6 sm:p-8"
-  >
-    <div class="flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
-      <div>
-        <div class="inline-flex items-center gap-2 rounded-full bg-[#9966CB]/12 px-3 py-1">
-          <Layers class="size-3.5 text-[#9966CB]" />
-          <span class="text-xs font-bold tracking-[0.12em] uppercase text-[#9966CB]">
-            {data.collection.category}
+      <div class="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
+        <div class="flex flex-col gap-2">
+          <div class="inline-flex items-center gap-2">
+            <Layers class="size-3.5 text-[#9966CB]" />
+            <span class="text-[11px] font-bold uppercase tracking-[0.14em] text-[#9966CB]">
+              Curated Collection
+            </span>
+          </div>
+          <h1 class="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+            {collectionTitle}
+          </h1>
+          {#if collection.description || collection.tagline}
+            <p class="max-w-2xl text-sm leading-relaxed text-[#888888]">
+              {collection.description || collection.tagline}
+            </p>
+          {/if}
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2.5">
+          <span class="inline-flex items-center gap-1.5 rounded-lg bg-[#9966CB]/12 px-3.5 py-2 text-xs font-bold text-[#9966CB]">
+            <Briefcase class="size-3.5" />
+            <span>{jobs.length} Open {jobs.length === 1 ? 'Role' : 'Roles'}</span>
+          </span>
+          <span class="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3.5 py-2 text-xs font-bold text-foreground">
+            <Building2 class="size-3.5 text-[#9966CB]" />
+            <span>{companies.length} VC {companies.length === 1 ? 'Fund' : 'Funds'}</span>
           </span>
         </div>
-        <h1 class="mt-3 text-2xl font-bold tracking-tight text-foreground sm:text-4xl">
-          {data.collection.title}
-        </h1>
-        <p class="mt-2 max-w-2xl text-sm font-normal leading-relaxed text-[#888888] sm:text-base">
-          {data.collection.description}
-        </p>
-      </div>
-
-      <div class="flex flex-wrap items-center gap-2.5">
-        <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- mailto link -->
-        <a
-          href="mailto:{data.postJobEmail}?subject=Post%20a%20VC%20job"
-          class="inline-flex h-10 items-center gap-1.5 rounded-xl border border-border bg-background px-4 text-xs font-bold text-foreground transition-colors hover:border-[#9966CB] hover:text-[#9966CB]"
-        >
-          <Plus class="size-3.5" />
-          <span>Post a job</span>
-        </a>
-
-        <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external WhatsApp link -->
-        <a
-          href={data.whatsappUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-flex h-10 items-center gap-1.5 rounded-xl bg-[#9966CB] px-4 text-xs font-bold text-white transition-opacity hover:opacity-90"
-        >
-          <MessageCircle class="size-3.5" />
-          <span>Get job updates</span>
-        </a>
       </div>
     </div>
-
-    <div class="relative mt-6 max-w-md">
-      <Search
-        class="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-[#888888]"
-      />
-      <input
-        type="search"
-        bind:value={searchQuery}
-        placeholder="Filter roles in this collection..."
-        aria-label="Filter roles in this collection"
-        class="h-10 w-full rounded-xl border border-border bg-background pr-3 pl-10 text-sm font-normal text-foreground focus:border-[#9966CB] focus:outline-none"
-      />
-    </div>
-  </header>
-
-  <section class="mt-8" aria-labelledby="collection-roles-heading">
-    <div class="mb-4 flex items-center justify-between">
-      <h2 id="collection-roles-heading" class="text-lg font-bold text-foreground">
-        Open Roles ({filteredJobs.length})
-      </h2>
-      <a
-        href={resolve('/jobs')}
-        class="text-xs font-bold text-[#9966CB] hover:underline"
-      >
-        Browse all roles →
-      </a>
-    </div>
-
-    {#if filteredJobs.length === 0}
-      <div class="rounded-2xl border border-border bg-card p-10 text-center">
-        <p class="text-base font-bold text-foreground">No matching roles found in this collection</p>
-        <p class="mt-1 text-xs font-normal text-[#888888]">
-          Try clearing your search filter or explore all open roles across 221 venture funds.
-        </p>
-      </div>
-    {:else}
-      <div class="grid gap-4">
-        {#each filteredJobs as job (job.public_slug)}
-          <article
-            class="group flex flex-col justify-between gap-4 rounded-2xl border border-border bg-card p-5 transition-all hover:border-[#9966CB] sm:flex-row sm:items-center sm:p-6"
-          >
-            <div class="min-w-0 flex-1">
-              <div class="flex flex-wrap items-center gap-2">
-                <span
-                  class="inline-flex items-center gap-1 rounded-full border border-border px-2.5 py-0.5 text-[11px] font-normal text-[#888888]"
-                >
-                  {#if job.source === 'google_sheets'}
-                    <FileSpreadsheet class="size-3 text-[#9966CB]" />
-                    Google Sheet Sync
-                  {:else}
-                    <Globe class="size-3 text-[#9966CB]" />
-                    Live VC Career Board
-                  {/if}
-                </span>
-              </div>
-
-              <h3 class="mt-2 text-lg font-bold text-foreground group-hover:text-[#9966CB]">
-                <a href={resolve('/jobs/[slug]', { slug: job.public_slug })} class="hover:underline">
-                  {job.title}
-                </a>
-              </h3>
-
-              <div class="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-normal text-[#888888]">
-                <a
-                  href={resolve('/companies/[slug]', { slug: job.company_slug })}
-                  class="inline-flex items-center gap-1.5 font-bold text-foreground hover:text-[#9966CB]"
-                >
-                  <Building2 class="size-3.5 text-[#9966CB]" />
-                  {job.company}
-                </a>
-                <span class="inline-flex items-center gap-1">
-                  <MapPin class="size-3.5" />
-                  {job.location}
-                </span>
-                <span class="inline-flex items-center gap-1">
-                  <Briefcase class="size-3.5" />
-                  {formatWorkMode(job.work_mode)}
-                </span>
-              </div>
-            </div>
-
-            <div class="flex shrink-0 items-center gap-2.5">
-              <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external ATS apply link -->
-              <a
-                href={job.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex h-10 items-center gap-1.5 rounded-xl bg-[#9966CB] px-4 text-xs font-bold text-white transition-opacity hover:opacity-90"
-              >
-                <span>Apply Now</span>
-                <ArrowUpRight class="size-3.5" />
-              </a>
-              <a
-                href={resolve('/jobs/[slug]', { slug: job.public_slug })}
-                class="inline-flex h-10 items-center justify-center rounded-xl border border-border px-3.5 text-xs font-bold text-foreground transition-colors hover:border-[#9966CB] hover:text-[#9966CB]"
-              >
-                Details
-              </a>
-            </div>
-          </article>
-        {/each}
-      </div>
-    {/if}
   </section>
 
-  {#if data.funds.length > 0}
-    <section class="mt-12" aria-labelledby="collection-funds-heading">
-      <div class="mb-4 flex items-center justify-between">
-        <h2 id="collection-funds-heading" class="text-lg font-bold text-foreground">
-          Featured Venture Funds in This Collection
-        </h2>
-        <a
-          href={resolve('/companies')}
-          class="text-xs font-bold text-[#9966CB] hover:underline"
-        >
-          View all 221 funds →
+  <div class="mx-auto flex w-full max-w-7xl flex-col gap-10 px-4 py-8 sm:px-6 sm:py-10">
+    <!-- OPEN ROLES IN COLLECTION -->
+    <section class="flex flex-col gap-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <span class="text-[11px] font-bold uppercase tracking-[0.14em] text-[#9966CB]">
+            Mandates
+          </span>
+          <h2 class="text-xl font-bold text-foreground">
+            Open Roles in {collectionTitle} ({jobs.length})
+          </h2>
+        </div>
+        <a href={resolve('/jobs')} class="text-xs font-bold text-[#9966CB] hover:underline">
+          All open roles →
         </a>
       </div>
 
-      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {#each data.funds as fund (fund.slug)}
-          <a
-            href={resolve('/companies/[slug]', { slug: fund.slug })}
-            class="group flex flex-col justify-between rounded-2xl border border-border bg-card p-5 transition-all hover:border-[#9966CB]"
-          >
-            <div>
-              <div class="flex items-center justify-between gap-2">
-                <h3 class="text-base font-bold text-foreground group-hover:text-[#9966CB]">
-                  {fund.name}
-                </h3>
-                <span class="rounded-full bg-[#9966CB]/12 px-2.5 py-0.5 text-[10px] font-bold uppercase text-[#9966CB]">
-                  {fund.hq_country === 'in' ? 'India' : fund.hq_country.toUpperCase()}
+      {#if jobs.length > 0}
+        <div class="overflow-hidden rounded-xl border border-border bg-card">
+          <div class="hidden border-b border-border bg-secondary/40 px-5 py-3 text-[11px] font-bold uppercase tracking-[0.12em] text-[#888888] lg:grid lg:grid-cols-[2.2fr_1.3fr_1.2fr_1fr_auto] lg:items-center lg:gap-4">
+            <span>Role &amp; Focus</span>
+            <span>Venture Fund</span>
+            <span>Location</span>
+            <span>Track</span>
+            <span class="text-right">Action</span>
+          </div>
+
+          <div class="divide-y divide-border">
+            {#each jobs as job (job.public_slug)}
+              <article class="group flex flex-col justify-between gap-3 px-5 py-3.5 transition-colors hover:bg-secondary/30 lg:grid lg:grid-cols-[2.2fr_1.3fr_1.2fr_1fr_auto] lg:items-center lg:gap-4">
+                <a
+                  href={resolve('/jobs/[slug]', { slug: job.public_slug })}
+                  class="truncate text-sm font-bold text-foreground group-hover:text-[#9966CB]"
+                >
+                  {job.title}
+                </a>
+
+                <div class="flex items-center gap-2">
+                  <div class="flex size-7 shrink-0 items-center justify-center rounded-md border border-border bg-secondary/60 text-xs font-bold text-[#9966CB]">
+                    {job.company.charAt(0)}
+                  </div>
+                  <span class="truncate text-xs font-bold text-foreground">{job.company}</span>
+                </div>
+
+                <span class="inline-flex items-center gap-1 text-xs text-[#888888]">
+                  <MapPin class="size-3.5 text-[#9966CB]" />
+                  {job.location || 'India / Global'}
                 </span>
-              </div>
-              <p class="mt-2 line-clamp-2 text-xs font-normal leading-relaxed text-[#888888]">
-                {fund.tagline}
-              </p>
-            </div>
-          </a>
-        {/each}
-      </div>
+
+                <div>
+                  <span class="rounded-md bg-[#9966CB]/10 px-2 py-0.5 text-[11px] font-bold text-[#9966CB]">
+                    {formatCategory(job.enrichment?.category)}
+                  </span>
+                </div>
+
+                <div class="flex items-center justify-end gap-2">
+                  <a
+                    href={resolve('/jobs/[slug]', { slug: job.public_slug })}
+                    class="inline-flex h-8 items-center rounded-lg border border-border bg-background px-3 text-xs font-bold text-foreground hover:border-[#9966CB] hover:text-[#9966CB]"
+                  >
+                    Details
+                  </a>
+                  {#if job.url}
+                    <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external ATS link -->
+                    <a
+                      href={job.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="inline-flex h-8 items-center gap-1 rounded-lg bg-[#9966CB] px-3 text-xs font-bold text-white hover:bg-[#8652B8]"
+                    >
+                      <span>Apply</span>
+                      <ArrowUpRight class="size-3.5" />
+                    </a>
+                  {/if}
+                </div>
+              </article>
+            {/each}
+          </div>
+        </div>
+      {:else}
+        <div class="rounded-xl border border-border bg-card p-8 text-center text-sm text-[#888888]">
+          No active roles in this collection right now.
+        </div>
+      {/if}
     </section>
-  {/if}
+
+    <!-- FUNDS IN COLLECTION -->
+    {#if companies.length > 0}
+      <section class="flex flex-col gap-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <span class="text-[11px] font-bold uppercase tracking-[0.14em] text-[#9966CB]">
+              Institutional Directory
+            </span>
+            <h2 class="text-xl font-bold text-foreground">
+              Venture Capital Funds in {collectionTitle} ({companies.length})
+            </h2>
+          </div>
+          <a href={resolve('/companies')} class="text-xs font-bold text-[#9966CB] hover:underline">
+            All VC funds →
+          </a>
+        </div>
+
+        <div class="grid grid-cols-1 divide-y divide-border overflow-hidden rounded-xl border border-border bg-card sm:grid-cols-2 sm:divide-x lg:grid-cols-3">
+          {#each companies as company (company.slug)}
+            <a
+              href={resolve('/companies/[slug]', { slug: company.slug })}
+              class="group flex flex-col justify-between gap-3 border-b border-border p-5 transition-colors hover:bg-secondary/35"
+            >
+              <div class="flex items-center justify-between gap-3">
+                <div class="flex min-w-0 items-center gap-3">
+                  <div class="flex size-9 shrink-0 items-center justify-center rounded-lg border border-border bg-secondary/60 text-sm font-bold text-[#9966CB]">
+                    {company.name.charAt(0)}
+                  </div>
+                  <div class="min-w-0">
+                    <h3 class="truncate text-sm font-bold text-foreground group-hover:text-[#9966CB]">
+                      {company.name}
+                    </h3>
+                    {#if company.hq_country}
+                      <p class="text-[11px] font-bold uppercase text-[#888888]">{company.hq_country}</p>
+                    {/if}
+                  </div>
+                </div>
+                {#if (company.active_job_count ?? 0) > 0}
+                  <span class="shrink-0 rounded-md bg-[#9966CB]/12 px-2 py-0.5 text-[11px] font-bold text-[#9966CB]">
+                    {company.active_job_count} open
+                  </span>
+                {/if}
+              </div>
+
+              {#if company.tagline}
+                <p class="line-clamp-2 text-xs leading-relaxed text-[#888888]">
+                  {company.tagline}
+                </p>
+              {/if}
+            </a>
+          {/each}
+        </div>
+      </section>
+    {/if}
+  </div>
 </div>
